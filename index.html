@@ -9,13 +9,13 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;}
 :root{
-  --bg:#0a0a0c;
+  --bg:#0f0f0f;
   --bg2:#111114;
   --accent:#ffd900;
   --text:#e8e6e0;
   --muted:#c2c2c2;
   --dim:#494949;
-  --border:#1e1e22;
+  --border:#363638;
 }
 html{scroll-behavior:smooth;}
 body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-weight:300;overflow-x:hidden;}
@@ -26,7 +26,7 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
 .tab-nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   display:flex;align-items:stretch;
-  background:rgba(10,10,12,0.92);
+  background:rgba(19, 19, 20, 0.92);
   backdrop-filter:blur(12px);
   border-bottom:1px solid var(--border);
   height:52px;
@@ -148,6 +148,15 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
 }
 .project-card:hover .card-thumb img,
 .project-card:hover .card-thumb video{transform:scale(1.04);}
+
+.glitch-canvas{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  display:block;
+  pointer-events:none;
+  transition:opacity .4s ease;
+}
+.project-card:hover .glitch-canvas{opacity:0;}
 
 .card-overlay{
   position:absolute;inset:0;
@@ -745,6 +754,105 @@ window._vidErr = function(el, path){
   el.parentNode.replaceChild(ph, el);
 };
 
+/* ─── THUMBNAIL GLITCH EFFECT ───
+   Clean base thumbnail (always fully desaturated — grayscale filter) plus a
+   generative, tan()-driven scatter of additive rectangles on top, the same
+   "trippy grid" technique as the classic canvas demo that normally fires it
+   in separate red/green/blue passes. Here all three passes use the same white
+   fill instead of RGB, so the additive ('lighter') blending only ever builds
+   up brightness — never color. Everything is drawn with fillRect/drawImage
+   only (no getImageData/putImageData), so it isn't blocked by canvas
+   tainting when this page is opened directly via file://. Glitching pauses
+   on hover (card-thumb fades to the clean image) and while the full project
+   preview modal is open. */
+let glitchModalOpen = false;
+let glitchers = [];
+
+function computeCoverRect(img, w, h){
+  const ir = img.naturalWidth / img.naturalHeight;
+  const tr = w / h;
+  let sx, sy, sw, sh;
+  if(ir > tr){ sh = img.naturalHeight; sw = sh*tr; sx = (img.naturalWidth-sw)/2; sy = 0; }
+  else { sw = img.naturalWidth; sh = sw/tr; sx = 0; sy = (img.naturalHeight-sh)/2; }
+  return { sx, sy, sw, sh };
+}
+
+class ThumbGlitcher{
+  constructor(canvas, src){
+    this.canvas = canvas;
+    this.ctx = canvas.getContext('2d');
+    this.ready = false;
+    this.paused = false;
+    this.w = 0; this.h = 0;
+    this.t0 = Math.random() * 50; // random phase so cards don't sync up
+    const img = new Image();
+    img.onload = () => { this.img = img; this.ready = true; };
+    img.onerror = () => {};
+    img.src = src;
+  }
+  _resize(w, h){
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    this.canvas.width = Math.max(1, Math.round(w * dpr));
+    this.canvas.height = Math.max(1, Math.round(h * dpr));
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    this.w = w; this.h = h;
+  }
+  render(t){
+    const rect = this.canvas.getBoundingClientRect();
+    const w = Math.round(rect.width), h = Math.round(rect.height);
+    if(w < 2 || h < 2) return;
+    if(w !== this.w || h !== this.h) this._resize(w, h);
+
+    const ctx = this.ctx, img = this.img;
+    const cover = computeCoverRect(img, w, h);
+    ctx.clearRect(0, 0, w, h);
+    ctx.filter = 'grayscale(1) contrast(1.1)'; // whole thumbnail black & white, no color
+
+    // clean, undistorted base image
+    ctx.drawImage(img, cover.sx, cover.sy, cover.sw, cover.sh, 0, 0, w, h);
+
+    // generative tan()-driven rect scatter, additive, monochrome
+    const tt = t / 6 + this.t0;
+    const diameter = Math.max(9, w / 13); // slightly bigger grid step = a bit less dense
+    const sizeScale = 0.7; // squares themselves 30% smaller
+    const halfW = w / 2;
+    const ctan = x => Math.max(-3, Math.min(3, Math.tan(x))); // clamp so occasional tan() spikes
+                                                                // don't blow up into giant opaque blocks
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.fillStyle = '#ffffff';
+    for(let k = 0; k < 3; k++){
+      for(let i = 0; i < h; i += diameter){
+        for(let j = 0; j < halfW; j += diameter){
+          const index = i * w + j;
+          const alpha = Math.min(0.4, Math.abs(ctan(index * index - tt)) * 0.05);
+          if(alpha < 0.02) continue;
+          const rx = ctan(i * j - Math.sin(index + k / 100) + tt) * j + halfW - diameter / 0.5;
+          const rw = (ctan(index + i / j + tt + k / 100) / 2) * diameter / 0.5 * sizeScale;
+          const rh = (ctan(index * index - tt) * diameter) / 0.5 * sizeScale;
+          ctx.globalAlpha = alpha;
+          ctx.fillRect(rx, i, rw, rh);
+        }
+      }
+    }
+    ctx.restore();
+
+    ctx.filter = 'none';
+  }
+}
+
+function animateGlitchers(time){
+  const t = time / 1000;
+  if(!glitchModalOpen){
+    for(let i = 0; i < glitchers.length; i++){
+      const g = glitchers[i];
+      if(g.ready && !g.paused) g.render(t);
+    }
+  }
+  requestAnimationFrame(animateGlitchers);
+}
+requestAnimationFrame(animateGlitchers);
+
 function getNumCols(){
   return window.innerWidth < 540 ? 1 : window.innerWidth < 900 ? 2 : 3;
 }
@@ -752,6 +860,7 @@ function getNumCols(){
 function renderMasonry(filter='all'){
   const container = document.getElementById('masonry');
   container.innerHTML = '';
+  glitchers = [];
   closeModal();
 
   const filtered = filter === 'all'
@@ -780,6 +889,14 @@ function renderMasonry(filter='all'){
     img.alt = tr(proj, 'title');
     img.onerror = function(){ window._imgErr(this, proj.thumb); };
     thumb.appendChild(img);
+
+    const glitchCanvas = document.createElement('canvas');
+    glitchCanvas.className = 'glitch-canvas';
+    thumb.appendChild(glitchCanvas);
+    const glitcher = new ThumbGlitcher(glitchCanvas, proj.thumb);
+    glitchers.push(glitcher);
+    card.addEventListener('mouseenter', () => { glitcher.paused = true; });
+    card.addEventListener('mouseleave', () => { glitcher.paused = false; });
 
     const overlay = document.createElement('div');
     overlay.className = 'card-overlay';
@@ -824,6 +941,7 @@ function thumbsHTML(proj){
 function openModal(proj){
   activeProject = proj;
   currentIdx = 0;
+  glitchModalOpen = true;
   const modal = document.getElementById('projectModal');
   const inner = document.getElementById('projectModalInner');
 
@@ -856,6 +974,7 @@ function openModal(proj){
 }
 
 function closeModal(){
+  glitchModalOpen = false;
   const modal = document.getElementById('projectModal');
   if(!modal) return;
   modal.classList.remove('open');
@@ -1112,24 +1231,19 @@ applyLang('en');
   const canvas = document.getElementById('particles');
   const ctx = canvas.getContext('2d');
 
-  const dotRadius = 2;
-  const dotMargin = 40;
+  const dotRadius = 1.4;
+  const dotMargin = 28;
   const spaceForOneDot = 2 * dotMargin;
   const gridPadding = 20;
-  const smallDotRadius = 1;
-  const smallDotMargin = 10;
+  const smallDotRadius = 0.7;
+  const smallDotMargin = 7;
   const spaceForSmallDot = 2 * smallDotMargin;
-
-  const COLOR_AMBIENT = 'rgba(255, 217, 0, 0.14)';
-  const COLOR_AMBIENT_LINE = 'rgba(255, 217, 0, 0.28)';
 
   const RADIUS_MULT = 1.95;
 
   let W = 0, H = 0;
   let visibleDotCount = 3;
-  let mouseX = 0, mouseY = 0;
-
-  const FIXED_DOTS = [[3, 1], [4, 5], [4, 7], [6, 8], [8, 4], [10, 6], [20, 8]];
+  let mouseX = -9999, mouseY = -9999;
 
   // continuous sweep — a soft band of light drifting across the grid on its own
   let sweepX = -300;
@@ -1184,8 +1298,6 @@ applyLang('en');
     W = canvas.width = window.innerWidth;
     H = canvas.height = window.innerHeight;
     visibleDotCount = W < 600 ? 2 : 3;
-    mouseX = W / 2;
-    mouseY = H / 2;
     redraw(mouseX, mouseY);
   }
 
@@ -1219,8 +1331,8 @@ applyLang('en');
 
   function drawDotNearCursor(x, y, t) {
     const a = accentStrength(t);
-    const fill = `rgba(255, 217, 0, ${0.44 + 0.5 * a})`;
-    const stroke = `rgba(255, 217, 0, ${0.42 + 0.56 * a})`;
+    const fill = `rgba(255, 255, 255, ${0.44 + 0.5 * a})`;
+    const stroke = `rgba(255, 255, 255, ${0.42 + 0.56 * a})`;
     const lineW = 0.42 + 0.95 * a;
     drawDot(x, y, fill, stroke, lineW);
   }
@@ -1238,48 +1350,9 @@ applyLang('en');
     const radius = smallDotRadius + 0.65 * a;
     const color =
       a > 0.25
-        ? `rgba(255, 217, 0, ${alpha})`
-        : `rgba(170, 170, 168, ${alpha})`;
+        ? `rgba(255, 255, 255, ${alpha})`
+        : `rgba(200, 200, 200, ${alpha})`;
     drawSmallDot(x, y, color, radius);
-  }
-
-  function draw5x5(x, y) {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.fillStyle = COLOR_AMBIENT;
-    for (let i = 0; i < 5; i++) {
-      for (let j = 0; j < 5; j++) {
-        ctx.beginPath();
-        ctx.arc(i * 10, j * 10, 1, 0, Math.PI * 2);
-        ctx.fill();
-      }
-    }
-    ctx.restore();
-  }
-
-  function drawAmbientBlocks() {
-    draw5x5(W / 21, H / 6);
-    draw5x5(W / 21, H / 2);
-    draw5x5(W / 21, H / 1.2);
-    if (W > 500) {
-      draw5x5(W / 1.2, H / 6);
-      draw5x5(W / 1.2, H / 2);
-      draw5x5(W / 1.2, H / 1.2);
-    }
-  }
-
-  function drawFixedMarker(col, row) {
-    const { x, y } = gridPos(col, row);
-    drawDot(x, y, COLOR_AMBIENT, COLOR_AMBIENT_LINE, 0.45);
-    for (let i = -1; i < 2; i++) {
-      for (let j = -1; j < 2; j++) {
-        drawSmallDot(
-          x + i * spaceForSmallDot,
-          y + j * spaceForSmallDot,
-          'rgba(148, 148, 148, 0.22)'
-        );
-      }
-    }
   }
 
   function drawInteractiveGrid(mx, my) {
@@ -1312,10 +1385,6 @@ applyLang('en');
 
   function redraw(mx, my) {
     ctx.clearRect(0, 0, W, H);
-    drawAmbientBlocks();
-    FIXED_DOTS.forEach(([col, row]) => {
-      if (gridPos(col, row).x < W - gridPadding) drawFixedMarker(col, row);
-    });
     drawInteractiveGrid(mx, my);
   }
 
