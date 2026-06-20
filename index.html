@@ -11,7 +11,7 @@
 :root{
   --bg:#0f0f0f;
   --bg2:#111114;
-  --accent:#ffd904;
+  --accent:#ffd900;
   --text:#e8e6e0;
   --muted:#c2c2c2;
   --dim:#494949;
@@ -502,6 +502,7 @@ function switchTab(name, btn){
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('active');
   window.scrollTo(0,0);
+  portfolioVisible = (name === 'portfolio');
 }
 
 /* ─── CV TOGGLES ─── */
@@ -767,6 +768,13 @@ window._vidErr = function(el, path){
    preview modal is open. */
 let glitchModalOpen = false;
 let glitchers = [];
+let portfolioVisible = false;
+
+const glitchObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if(entry.target._glitcher) entry.target._glitcher.inView = entry.isIntersecting;
+  });
+}, { rootMargin: '50px' });
 
 function computeCoverRect(img, w, h){
   const ir = img.naturalWidth / img.naturalHeight;
@@ -783,6 +791,7 @@ class ThumbGlitcher{
     this.ctx = canvas.getContext('2d');
     this.ready = false;
     this.paused = false;
+    this.inView = true;
     this.w = 0; this.h = 0;
     this.t0 = Math.random() * 50; // random phase so cards don't sync up
     const img = new Image();
@@ -813,7 +822,7 @@ class ThumbGlitcher{
 
     // generative tan()-driven rect scatter, additive, monochrome
     const tt = t / 6 + this.t0;
-    const diameter = Math.max(9, w / 13); // slightly bigger grid step = a bit less dense
+    const diameter = Math.max(9, w / 10); // grid step +30% vs original (w/13) = less dense
     const sizeScale = 0.7; // squares themselves 30% smaller
     const halfW = w / 2;
     const ctan = x => Math.max(-3, Math.min(3, Math.tan(x))); // clamp so occasional tan() spikes
@@ -821,7 +830,7 @@ class ThumbGlitcher{
     ctx.save();
     ctx.globalCompositeOperation = 'lighter';
     ctx.fillStyle = '#ffffff';
-    for(let k = 0; k < 3; k++){
+    for(let k = 0; k < 1; k++){ // was 3 passes, cut ~30% twice (3→2→1) for perf
       for(let i = 0; i < h; i += diameter){
         for(let j = 0; j < halfW; j += diameter){
           const index = i * w + j;
@@ -841,12 +850,16 @@ class ThumbGlitcher{
   }
 }
 
+let lastGlitchFrame = 0;
+const GLITCH_FRAME_INTERVAL = 1000 / 30; // throttle to ~30fps, was uncapped
+
 function animateGlitchers(time){
   const t = time / 1000;
-  if(!glitchModalOpen){
+  if(portfolioVisible && !glitchModalOpen && time - lastGlitchFrame >= GLITCH_FRAME_INTERVAL){
+    lastGlitchFrame = time;
     for(let i = 0; i < glitchers.length; i++){
       const g = glitchers[i];
-      if(g.ready && !g.paused) g.render(t);
+      if(g.ready && !g.paused && g.inView) g.render(t);
     }
   }
   requestAnimationFrame(animateGlitchers);
@@ -895,6 +908,8 @@ function renderMasonry(filter='all'){
     thumb.appendChild(glitchCanvas);
     const glitcher = new ThumbGlitcher(glitchCanvas, proj.thumb);
     glitchers.push(glitcher);
+    glitchCanvas._glitcher = glitcher;
+    glitchObserver.observe(glitchCanvas);
     card.addEventListener('mouseenter', () => { glitcher.paused = true; });
     card.addEventListener('mouseleave', () => { glitcher.paused = false; });
 
