@@ -307,13 +307,13 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
 <!-- TAB NAV -->
 <nav class="tab-nav">
   <div class="tab-nav-inner">
-    <button class="tab-btn active" data-i18n="tab_cv" onclick="switchTab('cv',this)">CV</button>
-    <button class="tab-btn" data-i18n="tab_portfolio" onclick="switchTab('portfolio',this)">Portfolio</button>
+    <button class="tab-btn active" data-i18n="tab_portfolio" onclick="switchTab('portfolio',this)">Portfolio</button>
+    <button class="tab-btn" data-i18n="tab_cv" onclick="switchTab('cv',this)">CV</button>
   </div>
 </nav>
 
 <!-- ═══ CV PAGE ═══ -->
-<div class="page active" id="page-cv">
+<div class="page" id="page-cv">
 <div class="wrap">
 
   <div class="header">
@@ -343,7 +343,7 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
     <div class="job">
       <div class="job-header">
         <div class="job-title" data-i18n="j1_title">Senior VFX Artist</div>
-        <div class="job-date" data-i18n="j1_date">Mar 2022 — Present</div>
+        <div class="job-date" data-i18n="j1_date">Mar 2022 — Jun 2026</div>
       </div>
       <div class="job-company" data-i18n="j1_company">Millarc CGI · Kraków</div>
       <div class="job-body open" id="j1">
@@ -361,7 +361,7 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
     <div class="job">
       <div class="job-header">
         <div class="job-title" data-i18n="j2_title">Pipeline Developer &amp; IT Automation</div>
-        <div class="job-date" data-i18n="j2_date">Mar 2024 — Present</div>
+        <div class="job-date" data-i18n="j2_date">Mar 2024 — Jun 2026</div>
       </div>
       <div class="job-company" data-i18n="j2_company">Millarc CGI · Kraków</div>
       <div class="job-body" id="j2">
@@ -466,7 +466,7 @@ canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;
 </div>
 
 <!-- ═══ PORTFOLIO PAGE ═══ -->
-<div class="page" id="page-portfolio">
+<div class="page active" id="page-portfolio">
 <div class="port-wrap">
 
   <div class="port-header">
@@ -768,7 +768,7 @@ window._vidErr = function(el, path){
    preview modal is open. */
 let glitchModalOpen = false;
 let glitchers = [];
-let portfolioVisible = false;
+let portfolioVisible = true;
 
 const glitchObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -1048,7 +1048,7 @@ const i18n = {
     about_p3: "10+ years in CGI production, 4+ as a Senior VFX Artist, and the last two years moving deliberately into pipeline development and technical direction. I work across the full stack of VFX production — from lookdev and procedural effects to DCC integration, render farm orchestration and automation tooling. <strong>The creative and the technical aren't opposites for me — they inform each other constantly.</strong>",
 
     j1_title: "Senior VFX Artist",
-    j1_date: "Mar 2022 — Present",
+    j1_date: "Mar 2022 — Jun 2026",
     j1_company: "Millarc CGI · Kraków",
     j1_p1: "Created high-end visual effects and motion design content for commercial visuals, primarily for major Chinese tech brands including Huawei, OnePlus, Xiaomi, OPPO, Vivo and others. Delivered <strong>50+ projects</strong> across advertising, product visualization, and motion design.",
     j1_p2: "Among the work I'm most proud of: driving Millarc's signature <strong>motion wallpapers</strong> — factory-set animated visuals that ship on flagship smartphones and define the device's visual identity from the very first power-on. <a href=\"https://www.stashmedia.tv/mobile-motion-millarc-shows-off-smartphone-wallpapers/\" target=\"_blank\" style=\"color:var(--accent);\">Featured in Stash Magazine</a> as the studio cornering this niche — the most-viewed genre of motion design on the planet.",
@@ -1056,7 +1056,7 @@ const i18n = {
     j1_p4: "Actively integrated AI into the production workflow. Led concept development and creative direction on effects. Mentored junior artists and contributed to team adoption of new tools and workflows.",
 
     j2_title: "Pipeline Developer &amp; IT Automation",
-    j2_date: "Mar 2024 — Present",
+    j2_date: "Mar 2024 — Jun 2026",
     j2_company: "Millarc CGI · Kraków",
     j2_p1: "Took ownership of the studio's internal tooling and automation infrastructure — building, maintaining, and documenting systems used across a team of 20+, version-controlled via GitHub. Built and maintained a core integration suite connecting Houdini / 3ds Max + Deadline (render farm) + Flow Production (ShotGrid) via REST APIs and webhooks, plus a self-hosted Docker service for Slack API communication.",
     j2_p2: "Developed an automated render-to-preview pipeline (file naming, preview generation, project tracking) and a standalone monitoring app integrating Timetastic, Toggl, and Slack APIs for real-time KPI reporting. Active daily user of AI tools and agentic workflows (Cursor, Claude Code) in production; led the adoption of Ayon as the studio's pipeline management system.",
@@ -1132,7 +1132,7 @@ const i18n = {
     about_p3: "10+ lat w produkcji CGI, 4+ jako Senior VFX Artist, a ostatnie dwa lata świadomego przechodzenia w stronę pipeline development i technical direction. Pracuję w całym stacku produkcji VFX — od lookdev i efektów proceduralnych po integrację DCC, orkiestrację render farmy i narzędzia automatyzacji. <strong>Kreatywność i technika nie są dla mnie przeciwieństwami — stale się wzajemnie informują.</strong>",
 
     j1_title: "Senior VFX Artist",
-    j1_date: "mar 2022 — obecnie",
+    j1_date: "mar 2022 — cze 2026",
     j1_company: "Millarc CGI · Kraków",
     j1_p1: "Tworzyłam wysokiej jakości efekty wizualne i motion design dla materiałów komercyjnych, przede wszystkim dla czołowych chińskich marek technologicznych: Huawei, OnePlus, Xiaomi, OPPO, Vivo i innych. Dostarczyłam <strong>50+ projektów</strong> w obszarze reklamy, wizualizacji produktów i motion design.",
     j1_p2: "Wśród pracy, z której jestem najbardziej dumna: tworzenie charakterystycznych <strong>motion wallpapers</strong> Millarc — fabrycznie wgranych animowanych wizualizacji, które definiują identyfikację wizualną flagowych smartfonów od pierwszego włączenia. <a href=\"https://www.stashmedia.tv/mobile-motion-millarc-shows-off-smartphone-wallpapers/\" target=\"_blank\" style=\"color:var(--accent);\">Wyróżnione w Stash Magazine</a> jako studio, które ugruntowało tę niszę — najbardziej oglądany gatunek motion design na świecie.",
@@ -1140,7 +1140,7 @@ const i18n = {
     j1_p4: "Aktywnie integrowałam AI w workflow produkcyjny. Prowadziłam rozwój konceptów i kierunek kreatywny efektów. Mentorowałam młodszych artystów i przyczyniłam się do wdrożenia nowych narzędzi i workflowów w zespole.",
 
     j2_title: "Pipeline Developer &amp; Automatyzacja IT",
-    j2_date: "mar 2024 — obecnie",
+    j2_date: "mar 2024 — cze 2026",
     j2_company: "Millarc CGI · Kraków",
     j2_p1: "Przejęłam odpowiedzialność za wewnętrzny tooling i infrastrukturę automatyzacji studia — budując, utrzymując i dokumentując systemy używane przez 20-osobowy zespół, wersjonowane na GitHubie. Zbudowałam i utrzymuję core integrację łączącą Houdini / 3ds Max + Deadline (render farm) + Flow Production (ShotGrid) przez REST APIs i webhooks, a także self-hosted serwis na Dockerze do komunikacji przez Slack API.",
     j2_p2: "Opracowałam zautomatyzowany pipeline render-to-preview (nazewnictwo plików, generowanie podglądów, śledzenie projektów) oraz standalone aplikację monitorującą integrującą Timetastic, Toggl i Slack APIs do raportowania KPI w czasie rzeczywistym. Aktywna codzienna użytkowniczka narzędzi AI i agentic workflows (Cursor, Claude Code) w produkcji; wdrożyłam Ayon jako system zarządzania pipeline'em studia.",
