@@ -1,555 +1,1168 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hanna Kachurouskaya — Senior VFX Artist</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hanna Kachurouskaya — VFX Portfolio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&text=0123456789&display=swap">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-:root{
-  --bg:#0f0f0f;
-  --bg2:#111114;
-  --accent:#ffd900;
-  --text:#e8e6e0;
-  --muted:#c2c2c2;
-  --dim:#494949;
-  --border:#363638;
-}
-html{scroll-behavior:smooth;}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;font-weight:300;overflow-x:hidden;}
+@layer reset, base, layout, cube, components, overrides;
 
-canvas#particles{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0.4;pointer-events:none;z-index:0;}
+@property --arc-start { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
+@property --arc-end   { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
 
-/* TAB NAV */
-.tab-nav{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  display:flex;align-items:stretch;
-  background:rgba(19, 19, 20, 0.92);
-  backdrop-filter:blur(12px);
-  border-bottom:1px solid var(--border);
-  height:52px;
-}
-.tab-nav-inner{
-  max-width:900px;margin:0 auto;width:100%;padding:0 48px;
-  display:flex;align-items:center;justify-content:center;gap:12px;
-}
-.tab-btn{
-  font-family:'Space Mono',monospace;font-size:14px;font-weight:700;letter-spacing:2px;text-transform:uppercase;
-  color:var(--text);background:none;border:none;cursor:pointer;
-  padding:0 28px;height:52px;border-bottom:2px solid transparent;
-  transition:color .2s, border-color .2s;
-  display:flex;align-items:center;
-}
-.tab-btn:hover{color:var(--accent);}
-.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent);}
-
-/* LANG BUTTON */
-#lang-btn{
-  position:fixed;top:11px;right:24px;z-index:110;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;
-  padding:6px 14px;background:transparent;border:1px solid var(--dim);color:var(--muted);
-  cursor:pointer;transition:all .2s;
-}
-#lang-btn:hover{border-color:var(--accent);color:var(--accent);}
-
-/* PAGES */
-.page{display:none;position:relative;z-index:2;padding-top:52px;}
-.page.active{display:block;}
-
-/* ── CV PAGE ── */
-.wrap{max-width:900px;margin:0 auto;padding:48px 48px 100px;}
-
-.header{padding-bottom:40px;margin-bottom:56px;border-bottom:1px solid var(--border);animation:fadeUp .8s ease both;}
-.name{font-family:'Space Mono',monospace;font-size:42px;font-weight:700;letter-spacing:-2px;color:#fff;line-height:1;margin-bottom:10px;}
-.name em{color:var(--accent);font-style:normal;}
-.subtitle{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:24px;}
-.contacts{display:flex;flex-wrap:wrap;gap:24px;font-size:14px;color:var(--muted);}
-.contacts a{color:var(--accent);text-decoration:none;transition:opacity .2s;}
-.contacts a:hover{opacity:.6;}
-
-.section{margin-bottom:52px;animation:fadeUp .8s ease both;}
-.s1{animation-delay:.1s}.s2{animation-delay:.2s}.s3{animation-delay:.3s}
-
-.sec-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:24px;display:flex;align-items:center;gap:14px;}
-.sec-label::after{content:'';flex:1;height:1px;background:var(--border);}
-
-.about-text{font-size:19px;line-height:1.95;color:#d0d0d0;max-width:700px;}
-.about-text p{margin-bottom:16px;}
-.about-text p:last-child{margin-bottom:0;}
-
-.job{margin-bottom:32px;padding:20px 20px 20px 24px;border-left:2px solid var(--border);transition:border-color .3s;cursor:default;}
-.job:hover{border-left-color:var(--accent);}
-.job-header{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:4px;margin-bottom:2px;}
-.job-title{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;color:#fff;}
-.job-date{font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);white-space:nowrap;}
-.job-company{font-size:13px;color:var(--accent);margin-bottom:14px;letter-spacing:.5px;}
-.job-body{font-size:16.5px;line-height:1.9;color:#d8d8d8;display:none;}
-.job-body.open{display:block;animation:fadeUp .3s ease both;}
-.job-body p{margin-bottom:10px;}
-.job-body p:last-child{margin-bottom:0;}
-.tags{display:flex;flex-wrap:wrap;gap:7px;margin-top:14px;}
-.tag{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;padding:4px 9px;border:1px solid var(--dim);color:var(--muted);border-radius:2px;transition:all .2s;}
-.tag:hover{border-color:var(--accent);color:var(--accent);}
-.toggle{margin-top:12px;font-family:'Space Mono',monospace;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);cursor:pointer;transition:color .2s;user-select:none;display:inline-block;}
-.toggle:hover{color:var(--accent);}
-
-.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;}
-.sg-title{font-family:'Space Mono',monospace;font-size:11px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);margin-bottom:14px;}
-.sg-body{font-size:15px;line-height:2.1;color:#c0c0c0;}
-.sg-body strong{color:#ccc;font-weight:400;}
-
-/* ── PORTFOLIO PAGE ── */
-.port-wrap{max-width:1200px;margin:0 auto;padding:40px 40px 100px;}
-
-.port-header{margin-bottom:40px;animation:fadeUp .5s ease both;}
-.port-title{font-family:'Space Mono',monospace;font-size:32px;font-weight:700;letter-spacing:-1.5px;color:#fff;margin-bottom:8px;}
-.port-title em{color:var(--accent);font-style:normal;}
-.port-sub{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--muted);}
-
-/* FILTER */
-.filter-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:36px;}
-.filter-btn{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:6px 14px;border:1px solid var(--dim);color:var(--muted);background:none;cursor:pointer;border-radius:2px;transition:all .2s;}
-.filter-btn:hover,.filter-btn.active{border-color:var(--accent);color:var(--accent);}
-
-/* MASONRY */
-.masonry{
-  display:flex;
-  gap:16px;
-  align-items:flex-start;
-}
-.masonry-col{
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-  min-width:0;
+@layer reset {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 }
 
-/* PROJECT CARD */
-.project-card{
-  margin-bottom:0;
-  border:1px solid var(--border);
-  background:var(--bg2);
-  overflow:hidden;
-  cursor:pointer;
-  transition:border-color .25s, transform .2s;
-}
-.project-card:hover{border-color:var(--accent);}
+@layer base {
+  :root {
+    color-scheme: light;
 
-.card-thumb{
-  position:relative;overflow:hidden;
-  background:#0d0d10;
+    /* palette sampled from the red-branches-on-grey-sky reference */
+    --c-indigo: #c2cbdb;   /* sky */
+    --c-ink: #000;
+    --c-violet: #9aa6bd;   /* darker cloud */
+    --c-coral: #d42420;    /* branch red */
+    --c-teal: #aeb8ca;     /* mid sky */
+    --c-moss: #f0683f;     /* lighter branch */
+    --c-ultra: #b3341a;    /* deep branch */
+    --c-mist: #eef1f6;     /* pale sky */
+    --c-blue: #2f55ff;     /* strong blue accent: Open project */
+    --spectrum: linear-gradient(90deg, var(--c-ultra), var(--c-coral), var(--c-moss));
+
+    --bg: var(--c-indigo);
+    --bg-light: color-mix(in oklch, var(--bg) 60%, white);
+    --bg-edge: color-mix(in oklch, var(--bg) 85%, var(--c-violet));
+    --fg: #000;
+    --muted: #2a2d33;
+    --soft: var(--c-mist);
+    --border: color-mix(in oklch, var(--c-violet) 50%, var(--c-mist));
+    --border-strong: var(--c-violet);
+    --accent: var(--c-coral);
+    --shade-color: var(--c-ink);
+    --shadow-color: #2b3448;
+    --sheen-color: oklch(100% 0 0);
+
+    --cube-x: 50%;
+    --cube-y: 50%;
+    --light-x: var(--cube-x);
+    --light-y: var(--cube-y);
+
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    --font-numeral: "Inter", var(--font-sans);
+    --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+    --text-base: 1rem;
+    --text-sm: .875rem;
+    --text-xs: .8125rem;
+
+    --line: .5px;
+
+    --card-solid: #d42420;   /* red sheets and strips */
+    /* blue → red window, like the collage blocks */
+    --card-paint: color-mix(in oklch, var(--card-solid) 62%, transparent);   /* see-through, frosted strips */
+    --card-bg: color-mix(in oklch, var(--card-solid) 92%, transparent);
+    --card-shadow:
+      inset 0 1px 0 oklch(100% 0 0 / .06),
+      0 1px 2px color-mix(in oklch, var(--shadow-color) 8%, transparent),
+      0 16px 40px -16px color-mix(in oklch, var(--shadow-color) 22%, transparent);
+    /* page column, Behance-style: max width, black on the sides */
+    --frame-w: min(100vw, 1320px);
+    --cube-size: min(70svh, calc(var(--frame-w) * .56), var(--cube-max, 1024px));
+    /* big centred sheet; title strip above it, description strip below */
+    --sheet-h: min(52svh, calc((var(--frame-w) - 3rem) / 1.69));
+    --sheet-w: calc(var(--sheet-h) * 1.69);
+    --ui-inset: 1.5rem;
+    --reveal-duration: .5s;
+    --reveal-delay: 80ms;
+    --reveal-stagger: 60ms;
+    --reveal-ease: cubic-bezier(.2, .7, .2, 1);
+    --numeral-size: clamp(4.5rem, 7vw, 8rem);
+    --numeral-color: #000;
+    --face-fade: .35s;
+    --spinner-exit: .2s;
+    --scene-fade: .7s;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html { scroll-behavior: smooth; }
+  }
+
+  html { background: #000; }
+
+  body {
+    min-block-size: 100dvh;
+    background: transparent;   /* black comes from <html>; an opaque body would cover the sky layer */
+    color: var(--fg);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: 1.6;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    z-index: -1;
+    /* sky: deeper blue at the bottom fading to pale blue at the top */
+    background: linear-gradient(to top, #3f5ca3 0%, #6584c4 45%, #9db3e0 100%);
+    pointer-events: none;
+  }
+
+  /* ── smeared paint background ── */
+  .paint {
+    position: fixed;
+    inset: -10vmax;
+    z-index: -1;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .paint span {
+    position: absolute;
+    inset-block-start: var(--y);
+    inset-inline-start: var(--x);
+    inline-size: var(--w);
+    block-size: var(--h);
+    border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%;
+    background: var(--c);
+    opacity: var(--o, .7);
+    filter: blur(var(--b, 60px));
+    rotate: var(--r, 0deg);
+    animation: paint-drift var(--t, 40s) ease-in-out infinite alternate;
+    animation-delay: var(--d, 0s);
+  }
+
+  /* light streaks over the colour, like wet paint dragged sideways */
+  .paint::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(178deg, transparent 18%, oklch(100% 0 0 / .14) 22%, transparent 27%),
+      linear-gradient(181deg, transparent 52%, oklch(100% 0 0 / .1) 56%, transparent 61%),
+      linear-gradient(179deg, transparent 74%, oklch(100% 0 0 / .08) 77%, transparent 82%);
+    filter: blur(12px);
+  }
+
+  /* ── thread tree (generated on canvas) ── */
+  .threads {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+  }
+
+  /* plain black panels on both sides of the page column */
+  .side-glass {
+    position: fixed;
+    inset-block: 0;
+    z-index: 1;
+    inline-size: calc(50% - min(50%, 660px));
+    background: #000;   /* plain black sides */
+    pointer-events: none;
+  }
+
+  .side-glass.left  { inset-inline-start: 0; }
+  .side-glass.right { inset-inline-end: 0; }
+
+  @keyframes paint-drift {
+    0%   { translate: 0 0; scale: 1; border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%; }
+    50%  { translate: var(--dx, 4vw) var(--dy, 2vh); scale: 1.08 .94; border-radius: 40% 60% 35% 65% / 60% 38% 62% 40%; }
+    100% { translate: calc(var(--dx, 4vw) * -.6) calc(var(--dy, 2vh) * 1.4); scale: .95 1.06; border-radius: 55% 45% 68% 32% / 42% 55% 45% 58%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .paint span { animation: none; }
+  }
+
+  a { color: inherit; text-underline-offset: .15em; }
+  ::selection { background: var(--fg); color: var(--bg); }
+  :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
 }
-.card-thumb img,.card-thumb video{
-  width:100%;display:block;
-  filter:grayscale(1) contrast(1.1);
-  transition:transform .4s ease, filter .4s ease;
+
+@layer layout {
+  .frame-back {
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    inline-size: 100%;
+    z-index: 0;
+    overflow: hidden;
+    transform: translateZ(0);
+    pointer-events: none;
+  }
+
+  .scene {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    display: grid;
+    place-items: center;
+    perspective: 1100px;
+    pointer-events: none;
+  }
+
+  /* fixed one-cell grid: the oversized glow must not stretch the row and push the deck down */
+  .scene { grid-template: 100% / 100%; }
+  .scene > * { grid-area: 1 / 1; }
+
+  .page-loader {
+    --s: var(--cube-size);
+    position: fixed;
+    inset-block-start: var(--cube-y);
+    inset-inline-start: var(--cube-x);
+    z-index: 0;
+    display: grid;
+    translate: -50% -50%;
+    pointer-events: none;
+  }
+
+  [data-state]:not([data-state="loading"]) .page-loader .face-spinner { scale: .5; opacity: 0; }
+
+  .stops { position: relative; z-index: 1; min-block-size: calc(100vh + 1px); max-inline-size: var(--frame-w); margin-inline: auto; }
+  .pen-list { list-style: none; }
+
+  .stop {
+    display: flex;
+    align-items: center;
+    min-block-size: 100svh;
+    padding: clamp(1rem, 6svh, 4rem) clamp(1.5rem, 5vw, 5rem);
+  }
+
+  .stop.is-end { justify-content: flex-end; }
+
+  /* intro card sits higher, clear of the name on the cube face */
+  @media (min-width: 56.3em), (orientation: landscape) and (min-height: 30.01em) {
+    #s0 { align-items: flex-start; padding-block-start: clamp(4rem, 9svh, 7rem); }
+  }
+
+  .hud {
+    position: fixed;
+    inset-block-start: var(--ui-inset);
+    inset-inline-end: calc(50% - min(50%, 660px) + var(--ui-inset));
+    z-index: 2;
+    display: grid;
+    justify-items: end;
+    gap: .5rem;
+    color: #3a3f55;   /* muted dark grey counter */
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    pointer-events: none;
+  }
+
+  .lang-btn {
+    position: fixed;
+    inset-block-start: var(--ui-inset);
+    inset-inline-start: calc(50% - min(50%, 660px) + var(--ui-inset));
+    z-index: 3;
+    padding: .25rem .625rem;
+    border: var(--line) solid var(--border-strong);
+    background: var(--card-bg);
+    color: #10131a;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    transition: color .2s, border-color .2s;
+  }
+
+  .lang-btn:hover { border-color: var(--fg); color: var(--fg); }
+
+  @media (max-height: 30em) { .hud { display: none; } }
+
+  .progress {
+    display: block;
+    inline-size: 7.5rem;
+    block-size: 1px;
+    overflow: hidden;
+    background: oklch(70% .01 300 / .3);
+  }
+
+  .progress-fill {
+    display: block;
+    block-size: 100%;
+    background: #3a3f55;
+    transform: scaleX(0);
+    transform-origin: left;
+  }
+
+  @media (max-width: 56.25em) and (orientation: portrait) {
+    :root {
+      --ui-inset: 1rem;
+      --scene-min: 4.5rem;
+      --card-reserve: 17rem;
+      --cube-size: min(calc(100vw - 2 * var(--ui-inset)), 26rem, var(--cube-max, 26rem), calc((100svh - var(--scene-min) - var(--card-reserve)) / 1.2));
+      --scene-top: max(var(--scene-min), calc((100svh - var(--card-reserve) - var(--cube-size) * 1.2) / 2));
+      --cube-y: calc(var(--scene-top) + var(--cube-size) / 2);
+    }
+
+    .scene {
+      place-items: start center;
+      padding-block-start: var(--scene-top);
+      perspective-origin: 50% calc(var(--scene-top) + var(--cube-size) / 2);
+    }
+
+    .stop, .stop.is-end {
+      align-items: flex-end;
+      justify-content: stretch;
+      padding: 0 1rem 1rem;
+    }
+  }
+
+  @media (max-width: 56.25em) and (orientation: portrait) and (max-height: 42em) {
+    :root { --scene-min: 4rem; }
+  }
+
+  @media (orientation: landscape) and (max-height: 30em) {
+    :root {
+      --cube-size: min(64svh, 40vw, var(--cube-max, 1024px));
+      --scene-inset: clamp(1.5rem, 5vw, 5rem);
+      --cube-x: calc(var(--scene-inset) + var(--cube-size) / 2);
+    }
+
+    .scene {
+      place-items: center start;
+      padding-inline-start: var(--scene-inset);
+      perspective-origin: calc(var(--scene-inset) + var(--cube-size) / 2) 50%;
+    }
+
+    .stop, .stop.is-end { justify-content: flex-end; padding-block: 1rem; }
+  }
 }
-.project-card:hover .card-thumb img,
-.project-card:hover .card-thumb video{transform:scale(1.04);filter:grayscale(0) contrast(1);}
+
+@layer cube {
+  .cube-shadow {
+    --shadow-height: .14;
+    --shadow-gap: .04;
+    inline-size: var(--cube-size);
+    block-size: var(--cube-size);
+    background: radial-gradient(closest-side, color-mix(in oklch, var(--shadow-color) 30%, transparent), transparent) center / 100% calc(var(--shadow-height) * 100%) no-repeat;
+    translate: calc(var(--cube-size) * var(--shadow-shift, 0)) calc(var(--cube-size) * (.5 + var(--shadow-gap) + var(--shadow-height) / 2));
+    scale: var(--shadow-spread, 1) 1;
+    opacity: var(--shadow-alpha, 1);
+    pointer-events: none;
+    transition: filter var(--scene-fade) ease var(--spinner-exit);
+  }
+
+  .cube {
+    --s: var(--cube-size);
+    position: relative;
+    inline-size: var(--s);
+    block-size: var(--s);
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--s) / -2)) rotateX(-90deg) rotateY(0deg);
+    will-change: transform;
+    transition: translate var(--scene-fade) var(--reveal-ease) var(--spinner-exit);
+  }
+
+  .face {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    backface-visibility: hidden;
+    background: var(--card-paint);   /* see-through, frosted like the strips */
+    box-shadow: inset 0 0 0 var(--line) oklch(100% 0 0 / .18);
+    outline: 1px solid transparent;   /* smoother anti-aliased edges in 3D */
+    transition: opacity var(--scene-fade) ease var(--spinner-exit);
+  }
+
+  /* halo around the box */
+  .cube-glow {
+    inline-size: calc(var(--cube-size) * 1.7);
+    block-size: calc(var(--cube-size) * 1.7);
+    border-radius: 50%;
+    background:
+      radial-gradient(closest-side at 45% 45%, oklch(100% 0 0 / .7), transparent 90%),
+      radial-gradient(closest-side at 60% 60%, oklch(70% .17 35 / .18), transparent 90%);
+    filter: blur(calc(var(--cube-size) * .07));
+    pointer-events: none;
+    animation: halo-breathe 6s ease-in-out infinite alternate;
+    transition: opacity var(--scene-fade) ease var(--spinner-exit);
+  }
+
+  [data-state="loading"] .cube-glow { opacity: 0; }
+
+  @keyframes halo-breathe {
+    from { scale: .94; opacity: .7; }
+    to   { scale: 1.06; opacity: 1; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cube-glow { animation: none; }
+  }
 
 
-.card-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 50%);
-  opacity:0;transition:opacity .25s;
-  display:flex;align-items:flex-end;padding:14px;
-}
-.project-card:hover .card-overlay{opacity:1;}
-.card-overlay-text{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);}
+  [data-state="loading"] .face { opacity: 0; }
+  [data-state="loading"] .cube { translate: 0 1.5rem; }
+  [data-state="loading"] .cube-shadow { filter: opacity(0); }
 
-.card-info{padding:14px 16px 16px;}
-.card-title{font-family:'Space Mono',monospace;font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;letter-spacing:-.3px;}
-.card-meta{font-size:12px;color:var(--muted);}
-.card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
-.card-tag{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;padding:2px 7px;border:1px solid var(--dim);color:#666;border-radius:2px;}
+  .face[data-face="front"]  { transform: translateZ(calc(var(--s) / 2)); }
+  .face[data-face="back"]   { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
+  .face[data-face="right"]  { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
+  .face[data-face="left"]   { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
+  .face[data-face="top"]    { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
+  .face[data-face="bottom"] { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
 
-/* PROJECT MODAL OVERLAY */
-.project-modal-overlay{
-  display:none;
-  position:fixed;inset:0;
-  z-index:500;
-  background:rgba(0,0,0,.75);
-  backdrop-filter:blur(4px);
-  overflow-y:auto;
-  padding:60px 20px 40px;
-}
-.project-modal-overlay.open{display:flex;align-items:flex-start;justify-content:center;}
-.project-modal{
-  position:relative;
-  width:100%;max-width:860px;
-  border:1px solid var(--accent);
-  background:var(--bg2);
-  animation:expandIn .25s ease both;
+  .face::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    background:
+      radial-gradient(circle farthest-corner at var(--sheen-x, 50%) var(--sheen-y, 50%), color-mix(in oklab, var(--sheen-color) calc(var(--sheen, 0) * 100%), transparent), transparent 70%)
+      color-mix(in oklab, var(--shade-color) calc(var(--shade, 0) * 100%), transparent);
+    pointer-events: none;
+  }
+
+  .face img {
+    position: absolute;
+    inset: 0;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    animation: face-in var(--face-fade) ease-out backwards;
+    filter: url(#duotone);
+  }
+
+  /* ── deck of flying sheets (replaces the cube) ── */
+  .deck {
+    --s: var(--sheet-h);
+    --mat: calc(var(--s) * .07);         /* frame around the square thumbnail */
+    position: relative;
+    inline-size: var(--sheet-w);
+    block-size: var(--s);
+    transform-style: preserve-3d;
+    transition: translate var(--scene-fade) var(--reveal-ease) var(--spinner-exit);
+  }
+
+  [data-state="loading"] .deck { translate: 0 1.5rem; }
+
+  /* thumbnail stays square, centred on the wider sheet → coloured mat around it */
+  .sheet img {
+    inset: var(--mat) auto auto 50%;
+    inline-size: auto;
+    block-size: calc(100% - 2 * var(--mat));
+    aspect-ratio: 1;
+    translate: -50% 0;
+    outline: 1px solid #000;
+  }
+
+  .sheet {
+    -webkit-backdrop-filter: blur(5px) saturate(1.15);
+    backdrop-filter: blur(5px) saturate(1.15);
+    will-change: transform;
+    box-shadow: 0 18px 40px -12px oklch(0% 0 0 / .35);
+  }
+
+  /* only the sheet on top shows its content — the ones underneath are plain frosted glass,
+     so their images never ghost through the see-through top sheet */
+  .sheet > img,
+  .sheet > .face-open,
+  .sheet > .face-placeholder,
+  .sheet > .face-intro { opacity: var(--content-o, 1); }
+
+  .face-placeholder {
+    display: grid;
+    block-size: 100%;
+    place-items: center;
+    padding: calc(var(--s) * .08);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-align: center;
+  }
+
+  .face-spinner {
+    --spinner-size: clamp(1.5rem, calc(var(--s) * .07), 2.25rem);
+    --spinner-line: calc(var(--spinner-size) * .09);
+    --spinner-track: color-mix(in oklch, var(--border) 45%, transparent);
+    inline-size: var(--spinner-size);
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background:
+      conic-gradient(transparent var(--arc-start), var(--border-strong) 0 var(--arc-end), transparent 0),
+      linear-gradient(var(--spinner-track), var(--spinner-track));
+    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--spinner-line) - .5px), #000 calc(100% - var(--spinner-line)));
+    mask: radial-gradient(farthest-side, transparent calc(100% - var(--spinner-line) - .5px), #000 calc(100% - var(--spinner-line)));
+    animation:
+      face-in .2s ease-out .15s backwards,
+      face-spin 1.4s linear infinite,
+      face-arc 1.6s cubic-bezier(.65, 0, .35, 1) infinite;
+    transition: scale var(--spinner-exit) ease-in, opacity var(--spinner-exit) ease-in;
+  }
+
+  .face-placeholder.is-done .face-spinner { scale: .5; opacity: 0; }
+  .face-placeholder.is-done ~ img { animation-delay: var(--spinner-exit); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .face-spinner { animation-duration: .2s, 3s, 3.2s; }
+  }
+
+  @keyframes face-in { from { opacity: 0; } }
+  @keyframes face-spin { to { rotate: 1turn; } }
+  @keyframes face-arc {
+    0%   { --arc-start: 0%; --arc-end: 0%; }
+    15%  { --arc-start: 0%; }
+    65%  { --arc-end: 100%; }
+    100% { --arc-start: 100%; --arc-end: 100%; }
+  }
+
+  /* intro / contact faces match the cards: same colour + spectrum line on top */
+  .face:has(.face-intro) { background: var(--card-paint); }
+
+  .face-intro::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    block-size: max(2px, calc(var(--s) * .005));
+    background: var(--fg);
+  }
+
+  .face-intro {
+    position: relative;
+    display: grid;
+    align-content: end;
+    gap: calc(var(--s) * .025);
+    block-size: 100%;
+    padding: calc(var(--s) * .08) calc(var(--s) * .08) calc(var(--s) * .12);
+  }
+
+  .face-intro-label,
+  .face-intro-count {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .face-intro-title {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    line-clamp: 4;
+    font-size: calc(var(--s) * .09);
+    font-weight: 700;
+    letter-spacing: -.035em;
+    line-height: 1.05;
+    padding-block-end: .12em;   /* keep descenders (g, y) from being clipped */
+    overflow-wrap: anywhere;
+  }
+
+  .face-intro-title { color: var(--fg); }
+  .face-intro-title em { color: var(--accent); font-style: normal; }
 }
 
-@keyframes expandIn{from{opacity:0;transform:translateY(-12px) scale(.98);}to{opacity:1;transform:translateY(0) scale(1);}}
+@layer components {
+  .card {
+    position: relative;
+    --card-pad-block: clamp(2rem, 4svh, 3rem);
+    --card-pad-inline: clamp(1.75rem, 2.6vw, 2.75rem);
+    inline-size: 100%;
+    max-inline-size: clamp(24rem, calc(var(--frame-w) * .4), 42rem);
+    padding: var(--card-pad-block) var(--card-pad-inline);
+    border-inline-start: var(--line) solid var(--border-strong);
+    background: var(--card-paint);
+    box-shadow: var(--card-shadow);
+    -webkit-backdrop-filter: blur(5px) saturate(1.15);
+    backdrop-filter: blur(5px) saturate(1.15);
+  }
 
-/* MEDIA VIEWER */
-.viewer{position:relative;background:#000;}
-.viewer-main{
-  position:relative;
-  min-height:300px;max-height:70vh;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-}
-.viewer-main img,.viewer-main video{
-  max-width:100%;max-height:70vh;
-  object-fit:contain;display:block;
-}
-.viewer-main video{width:100%;}
+  .pen .card::before {
+    content: attr(data-index);
+    content: attr(data-index) / "";
+    position: absolute;
+    z-index: -1;
+    inset-block-end: calc(100% - .3em);
+    inset-inline-start: calc(var(--card-pad-inline) - .03em);
+    color: var(--numeral-color);
+    font-family: var(--font-numeral);
+    font-size: var(--numeral-size);
+    font-weight: 700;
+    letter-spacing: -.05em;
+    line-height: .8;
+    pointer-events: none;
+    user-select: none;
+  }
 
-.viewer-nav{
-  position:absolute;top:50%;transform:translateY(-50%);
-  z-index:10;
-  background:rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.15);
-  color:#fff;font-size:18px;width:40px;height:40px;
-  display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:background .2s, border-color .2s;
-  user-select:none;
-}
-.viewer-nav:hover{background:rgba(255,217,0,.15);border-color:var(--accent);color:var(--accent);}
-.viewer-nav.prev{left:12px;}
-.viewer-nav.next{right:12px;}
+  .pen.is-end .card::before { inset-inline: auto var(--card-pad-inline); }
 
-.viewer-counter{
-  position:absolute;bottom:10px;right:14px;
-  font-family:'Space Mono',monospace;font-size:11px;color:rgba(255,255,255,.45);
-  z-index:10;
+  .stop.is-end .card {
+    border-inline-start: 0;
+    border-inline-end: var(--line) solid var(--border-strong);
+    text-align: end;
+  }
+
+  .card-label,
+  .card-meta {
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .card h1 {
+    margin-block-start: .5rem;
+    font-size: clamp(2rem, 3.8vw, 3.25rem);
+    font-weight: 700;
+    letter-spacing: -.035em;
+    line-height: 1.08;
+    overflow-wrap: anywhere;
+  }
+
+  /* red windows: black text, light grey surname, black top edge */
+  .card,
+  .face-intro {
+    --fg: #000;
+    --muted: #2b0b03;
+    --soft: var(--bg);   /* button text = page background */
+    --border: oklch(0% 0 0 / .25);
+    --border-strong: oklch(0% 0 0 / .5);
+    --accent: var(--c-indigo);   /* surname: light grey */
+    color: var(--fg);
+  }
+
+  .card h1 { color: var(--fg); }
+  .card h1 em { color: var(--accent); font-style: normal; }
+
+  .card h2 {
+    margin-block-start: .5rem;
+    font-size: clamp(1.4rem, 2.4vw, 2.1rem);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .card-description {
+    display: -webkit-box;
+    margin-block-start: 1rem;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    line-clamp: 7;
+    color: var(--muted);
+    font-size: clamp(var(--text-base), 1.15vw, 1.15rem);
+    line-height: 1.65;
+  }
+
+  .card-meta,
+  .card-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .35rem 1rem;
+    margin-block-start: 1.25rem;
+  }
+
+  .card-meta + .card-meta { margin-block-start: .5rem; }
+
+  .tag {
+    padding: 0 .4rem;
+    border: var(--line) solid var(--border-strong);
+  }
+
+  .card-links { font-size: var(--text-sm); }
+
+  .card-links a {
+    --icon-size: 1em;
+    display: inline-flex;
+    align-items: baseline;
+    gap: .3em;
+  }
+
+  .stop.is-end :is(.card-meta, .card-links, .cta-row) { justify-content: flex-end; }
+
+  .cta-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-block-start: 1.75rem;
+  }
+
+  .cta,
+  .cta-back {
+    --icon-size: 1em;
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-content: center;
+    align-items: baseline;
+    gap: .4rem;
+    min-block-size: 2.75rem;
+    padding: .5rem 1rem;
+    border: var(--line) solid;
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-decoration: none;
+    transition: background .2s, color .2s, border-color .2s;
+  }
+
+  .cta { border-color: var(--fg); background: var(--fg); color: var(--soft); }
+  .cta:hover { border-color: #fff; background: #fff; color: #000; }
+  .cta-back { border-color: var(--border-strong); color: var(--muted); }
+  .cta-back:hover { border-color: var(--fg); color: var(--fg); }
+
+  /* thin spectrum line along the top edge of every card */
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    block-size: 2px;
+    background: var(--fg);
+    pointer-events: none;
+  }
+
+  .stop.is-end .card::after { background: var(--fg); }
+
+  .card-links a:hover { color: var(--accent); }
+  .tag { border-color: var(--border-strong); }
+
+  .icon {
+    flex: none;
+    inline-size: var(--icon-size, 1em);
+    block-size: var(--icon-size, 1em);
+    translate: 0 calc((var(--icon-size, 1em) - 1cap) / 2);
+  }
+
+  .stop .card {
+    --enter-x: -1.5rem;
+    --enter-y: 0;
+    opacity: 0;
+    translate: var(--enter-x) var(--enter-y);
+    transition: opacity var(--reveal-duration) ease, translate var(--reveal-duration) var(--reveal-ease);
+  }
+
+  .stop.is-end .card { --enter-x: 1.5rem; }
+
+  .stop .card > * {
+    opacity: 0;
+    translate: var(--enter-x) var(--enter-y);
+    transition: opacity var(--reveal-duration) ease, translate var(--reveal-duration) var(--reveal-ease);
+    transition-delay: calc(var(--reveal-delay) + var(--i, 0) * var(--reveal-stagger));
+  }
+
+  .stop .card.is-visible,
+  .stop .card.is-visible > * { opacity: 1; translate: 0 0; }
+
+  @media (max-width: 56.25em) and (orientation: portrait), (orientation: landscape) and (max-height: 30em) {
+    .card { --card-pad-block: 1.25rem; --card-pad-inline: 1.25rem; }
+
+    .stop.is-end .card {
+      border-inline-start: var(--line) solid var(--border-strong);
+      border-inline-end: 0;
+      text-align: start;
+    }
+
+    .pen.is-end .card::before { inset-inline: calc(var(--card-pad-inline) - .03em) auto; }
+
+    .stop.is-end :is(.card-meta, .card-links, .cta-row) { justify-content: flex-start; }
+  }
+
+  @media (max-width: 56.25em) and (orientation: portrait) {
+    .card { --card-pad-block: 1rem; --card-pad-inline: 1rem; max-inline-size: none; }
+    .card h2 { margin-block-start: .25rem; }
+    .cta, .cta-back { min-block-size: 2.25rem; padding: .375rem .875rem; }
+    .stop .card, .stop.is-end .card { --enter-x: 0; --enter-y: .75rem; }
+
+    .card-description {
+      margin-block-start: .5rem;
+      -webkit-line-clamp: 3;
+      line-clamp: 3;
+      font-size: var(--text-sm);
+      line-height: 1.55;
+    }
+
+    .card-meta, .card-links { margin-block-start: .625rem; }
+    .cta-row { gap: .5rem; margin-block-start: .875rem; }
+  }
+
+  @media (orientation: landscape) and (max-height: 30em) {
+    .card { max-inline-size: min(40rem, calc(100vw - var(--cube-size) - 3 * var(--scene-inset))); }
+    .stop .card, .stop.is-end .card { --enter-x: 1.5rem; }
+    .pen .card::before { content: none; }
+    .card-description { font-size: var(--text-sm); line-height: 1.6; }
+    .card-meta, .card-links { margin-block-start: .75rem; }
+    .cta-row { margin-block-start: 1rem; }
+  }
+
+  @media (max-width: 56.25em) and (orientation: portrait) and (max-height: 42em), (orientation: landscape) and (max-height: 30em) {
+    .card-description { margin-block-start: .5rem; -webkit-line-clamp: 2; line-clamp: 2; }
+  }
 }
 
-.viewer-caption{
-  padding:8px 16px;
-  font-family:'Space Mono',monospace;font-size:11px;letter-spacing:1px;
-  color:var(--muted);background:#0a0a0c;
-  border-top:1px solid var(--border);
-  min-height:30px;
-  text-align:center;
+@layer components {
+  /* clickable cube faces: the overlay lets clicks through to the cube */
+  .stops { pointer-events: none; }
+  .stops .card { pointer-events: auto; }
+
+  .face[data-open] { pointer-events: auto; cursor: pointer; }
+  .face[data-open] img { transition: scale .5s var(--reveal-ease); }
+  .face[data-open]:hover img { scale: 1.04; }
+
+  .face-open {
+    position: absolute;
+    inset-block-end: calc(var(--s) * .05);
+    inset-inline-start: calc(var(--s) * .05);
+    z-index: 4;
+    display: inline-grid;
+    grid-auto-flow: column;
+    align-items: baseline;
+    gap: .4rem;
+    padding: .375rem .75rem;
+    border: 1px solid var(--c-coral);   /* thin contrast frame, like the card buttons */
+    background: #000;
+    color: var(--c-blue);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    transition: background .2s, color .2s;
+  }
+
+  .face[data-open]:hover .face-open { background: var(--c-coral); color: #000; }
+
+
+
+  button.cta { cursor: pointer; }
+  .card .cta { color: var(--c-blue); }   /* Enter / Open project text */
+
+  /* ── PROJECT MODAL ── */
+  .project-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 500;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 4rem 1.25rem 2.5rem;
+    overflow-y: auto;
+    background: color-mix(in oklch, var(--fg) 55%, transparent);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+  }
+
+  .project-modal {
+    /* black window with red-orange text */
+    --fg: #ff5a14;      /* glowing-window orange-red */
+    --muted: #d9998b;   /* soft, dusty red for body text */
+    --soft: #0a0a0c;    /* black window — orange text at full contrast */
+    --border: #2e2e33;  /* black frames would vanish on black → dark grey hairlines */
+    --border-strong: #46464d;
+    position: relative;
+    inline-size: 100%;
+    max-inline-size: 54rem;
+    border: var(--line) solid var(--border-strong);
+    background: var(--soft);
+    color: var(--fg);
+    box-shadow: var(--card-shadow);
+    animation: modal-in .3s var(--reveal-ease) both;
+  }
+
+  @keyframes modal-in { from { opacity: 0; translate: 0 -.75rem; scale: .98; } }
+
+  .modal-x {
+    position: absolute;
+    inset-block-end: calc(100% + .5rem);
+    inset-inline-end: 0;
+    padding: .25rem .625rem;
+    border: var(--line) solid color-mix(in oklch, var(--bg) 60%, transparent);
+    background: none;
+    color: var(--bg);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    cursor: pointer;
+  }
+
+  .viewer { position: relative; background: oklch(12% 0 0); }
+
+  .viewer-main {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 18rem;
+    max-block-size: 70vh;
+    overflow: hidden;
+  }
+
+  .viewer-main img,
+  .viewer-main video {
+    display: block;
+    max-inline-size: 100%;
+    max-block-size: 70vh;
+    object-fit: contain;
+  }
+
+  .viewer-main video { inline-size: 100%; }
+
+  .viewer-nav {
+    position: absolute;
+    inset-block-start: 50%;
+    z-index: 10;
+    display: grid;
+    place-items: center;
+    inline-size: 2.5rem;
+    block-size: 2.5rem;
+    translate: 0 -50%;
+    border: var(--line) solid oklch(100% 0 0 / .25);
+    background: oklch(0% 0 0 / .45);
+    color: oklch(100% 0 0);
+    font-size: 1.1rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background .2s, color .2s;
+  }
+
+  .viewer-nav:hover { background: oklch(100% 0 0); color: var(--fg); }
+  .viewer-nav.prev { inset-inline-start: .75rem; }
+  .viewer-nav.next { inset-inline-end: .75rem; }
+
+  .viewer-counter {
+    position: absolute;
+    inset-block-end: .625rem;
+    inset-inline-end: .875rem;
+    z-index: 10;
+    color: oklch(100% 0 0 / .55);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .viewer-caption {
+    min-block-size: 2rem;
+    padding: .5rem 1rem;
+    border-block-start: var(--line) solid var(--border);
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-align: center;
+  }
+
+  .thumb-strip {
+    display: flex;
+    gap: .375rem;
+    padding: .625rem .75rem;
+    overflow-x: auto;
+    border-block-start: var(--line) solid var(--border);
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+
+  .thumb-item {
+    position: relative;
+    flex: 0 0 auto;
+    inline-size: 4.5rem;
+    block-size: 3rem;
+    overflow: hidden;
+    outline: var(--line) solid var(--border-strong);
+    background: var(--border);
+    cursor: pointer;
+    opacity: .6;
+    transition: opacity .15s, outline-color .15s;
+  }
+
+  .thumb-item:hover { opacity: 1; }
+  .thumb-item.active { opacity: 1; outline: 2px solid var(--fg); outline-offset: -2px; }
+
+  .thumb-item img,
+  .thumb-item video {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  .type-badge {
+    position: absolute;
+    inset-block-end: 2px;
+    inset-inline-end: 3px;
+    padding: 0 3px;
+    background: oklch(0% 0 0 / .65);
+    color: oklch(100% 0 0);
+    font-family: var(--font-mono);
+    font-size: .5625rem;
+  }
+
+  .expanded-info {
+    padding: 1.5rem 1.75rem 1.75rem;
+    border-block-start: var(--line) solid var(--border);
+  }
+
+  .exp-title {
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 700;
+    letter-spacing: -.02em;
+    line-height: 1.25;
+  }
+
+  .exp-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .75rem 1.5rem;
+    margin-block-start: 1rem;
+    font-size: var(--text-sm);
+  }
+
+  .exp-meta-label {
+    display: block;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+  }
+
+  .exp-desc {
+    margin-block-start: 1rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .exp-close {
+    margin-block-start: 1.5rem;
+    border: var(--line) solid var(--border-strong);
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+  }
+
+  .placeholder-thumb {
+    display: grid;
+    place-items: center;
+    align-content: center;
+    gap: .5rem;
+    inline-size: 100%;
+    aspect-ratio: 16 / 9;
+    color: oklch(100% 0 0 / .4);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    text-align: center;
+    word-break: break-all;
+  }
+
+  @media (max-width: 37.5em) {
+    .project-modal-overlay { padding: 3rem .5rem 1rem; }
+    .expanded-info { padding: 1rem; }
+  }
 }
 
-/* THUMBNAIL STRIP */
-.thumb-strip{
-  display:flex;gap:6px;padding:10px 12px;
-  overflow-x:auto;scrollbar-width:thin;scrollbar-color:var(--dim) transparent;
-  background:#0a0a0c;border-top:1px solid var(--border);
-}
-.thumb-strip::-webkit-scrollbar{height:3px;}
-.thumb-strip::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px;}
+@layer components {
+  /* ── split layout: [title strip] / [sheet] / [description strip] ── */
+  .scene { place-items: center !important; padding: 0 !important; perspective-origin: 50% 50% !important; }
 
-.thumb-item{
-  flex:0 0 auto;width:72px;height:48px;
-  overflow:hidden;cursor:pointer;
-  border:1px solid var(--dim);transition:border-color .15s;
-  position:relative;
-}
-.thumb-item.active{border-color:var(--accent);}
-.thumb-item img,.thumb-item video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;}
-.thumb-item .type-badge{
-  position:absolute;bottom:2px;right:3px;
-  font-family:'Space Mono',monospace;font-size:8px;letter-spacing:.5px;
-  color:var(--accent);background:rgba(0,0,0,.7);padding:1px 3px;
+  .stop,
+  .stop.is-end {
+    display: grid !important;
+    grid-template-rows: 1fr var(--sheet-h) 1fr;
+    justify-items: center;
+    align-items: stretch;
+    padding: 0 1rem !important;
+  }
+
+  .stop > .card {
+    inline-size: var(--sheet-w);
+    max-inline-size: 100%;
+    border: 0;
+    text-align: start;
+    --card-pad-block: clamp(.75rem, 2svh, 1.25rem);
+    --card-pad-inline: clamp(1rem, 2.4vw, 1.75rem);
+  }
+
+  .stop > .card-top    { grid-row: 1; align-self: end;   margin-block-end: clamp(.5rem, 1.6svh, 1rem); --enter-x: 0; --enter-y: -.75rem; }
+  .stop > .card-bottom { grid-row: 3; align-self: start; margin-block-start: clamp(.5rem, 1.6svh, 1rem); --enter-x: 0; --enter-y: .75rem; }
+
+  .card-top h1 { margin-block-start: .25rem; font-size: clamp(1.6rem, 3.4svh, 2.4rem); }
+  .card-top h2 { margin-block-start: .25rem; font-size: clamp(1.15rem, 2.6svh, 1.6rem); }
+  .card-top .card-label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+  .card-bottom .card-description {
+    margin-block-start: 0;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    font-size: var(--text-sm);
+    line-height: 1.55;
+  }
+
+  .card-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: .5rem 1rem;
+    margin-block-start: .75rem;
+  }
+
+  .card-row > * { margin-block-start: 0 !important; }
+  .card-row .cta,
+  .card-row .cta-back { min-block-size: 2.25rem; padding: .375rem .875rem; }
+
+  /* project number sits on the title strip */
+  .pen .card-top::before { inset-inline: auto var(--card-pad-inline) !important; inset-block: auto calc(100% - .3em) !important; }
+
 }
 
-/* EXPANDED INFO */
-.expanded-info{
-  padding:20px 24px 24px;
-  border-top:1px solid var(--border);
-}
-.exp-title{font-family:'Space Mono',monospace;font-size:15px;font-weight:700;color:#fff;margin-bottom:12px;}
-.exp-meta{display:flex;flex-wrap:wrap;gap:20px;margin-bottom:14px;}
-.exp-meta-item{font-size:13px;}
-.exp-meta-label{font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:2px;}
-.exp-meta-val{color:var(--text);}
-.exp-desc{font-size:15px;line-height:1.8;color:#b0b0b0;margin-bottom:14px;}
-.exp-close{
-  font-family:'Space Mono',monospace;font-size:10px;letter-spacing:2px;text-transform:uppercase;
-  color:var(--dim);cursor:pointer;transition:color .2s;user-select:none;
-}
-.exp-close:hover{color:var(--accent);}
-
-/* PLACEHOLDER MEDIA */
-.placeholder-thumb{
-  width:100%;aspect-ratio:16/9;
-  background:var(--bg2);
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:8px;color:var(--dim);
-}
-.placeholder-thumb .pt-icon{font-size:28px;}
-.placeholder-thumb .pt-label{font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2px;text-transform:uppercase;color:#444;}
-.placeholder-thumb .pt-path{font-family:'Space Mono',monospace;font-size:9px;color:#555;max-width:160px;text-align:center;word-break:break-all;}
-
-@keyframes fadeUp{from{opacity:0;transform:translateY(18px);}to{opacity:1;transform:translateY(0);}}
-
-@media(max-width:600px){
-  .wrap{padding:32px 20px 60px;}
-  .name{font-size:28px;}
-  .skills-grid{grid-template-columns:1fr;}
-  .port-wrap{padding:20px 16px 60px;}
-  .tab-nav-inner{padding:0 16px;}
-  #lang-btn{top:9px;right:10px;padding:4px 9px;font-size:10px;}
+@layer overrides {
+  [hidden] { display: none; }
 }
 </style>
 </head>
-<body>
 
-<canvas id="particles"></canvas>
-<button id="lang-btn" onclick="toggleLang()">PL</button>
+<body data-state="loading">
+  <!-- tritone for sheet thumbnails: shadows → black, mids → night-sky blue, light → rust -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <filter id="duotone" color-interpolation-filters="sRGB">
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer>
+        <feFuncR type="table" tableValues="0 0.02 0.133 0.66 0.937"/>
+        <feFuncG type="table" tableValues="0 0.03 0.216 0.247 0.541"/>
+        <feFuncB type="table" tableValues="0 0.09 0.561 0.118 0.333"/>
+      </feComponentTransfer>
+    </filter>
+  </svg>
 
-<!-- TAB NAV -->
-<nav class="tab-nav">
-  <div class="tab-nav-inner">
-    <button class="tab-btn active" data-i18n="tab_portfolio" onclick="switchTab('portfolio',this)">Portfolio</button>
-    <button class="tab-btn" data-i18n="tab_cv" onclick="switchTab('cv',this)">CV</button>
+  <div class="frame-back">
+  <div class="paint" aria-hidden="true">
+    <span style="--c:var(--c-mist);   --x:4%;  --y:6%;  --w:60vw; --h:32vh; --r:-8deg;  --o:.3;  --t:46s; --dx:6vw;  --dy:3vh"></span>
+    <span style="--c:var(--c-violet); --x:2%;  --y:50%; --w:62vw; --h:22vh; --r:3deg;   --o:.45; --b:70px; --t:52s; --dx:-5vw; --dy:2vh; --d:-12s"></span>
+    <span style="--c:var(--c-teal);   --x:52%; --y:66%; --w:46vw; --h:28vh; --r:-4deg;  --o:.6;  --b:80px; --t:58s; --dx:-4vw; --dy:-3vh; --d:-20s"></span>
+    <span style="--c:var(--c-violet); --x:60%; --y:14%; --w:30vw; --h:22vh; --r:-18deg; --o:.4;  --b:60px; --t:38s; --dx:-3vw; --dy:4vh; --d:-6s"></span>
+    <span style="--c:var(--c-coral);  --x:72%; --y:40%; --w:18vw; --h:12vh; --r:12deg;  --o:.18; --b:60px; --t:34s; --dx:-4vw; --dy:-2vh; --d:-9s"></span>
+    <span style="--c:var(--c-coral);  --x:10%; --y:82%; --w:30vw; --h:10vh; --r:-6deg;  --o:.14; --b:70px; --t:42s; --dx:3vw;  --dy:-2vh; --d:-15s"></span>
+    <span style="--c:var(--c-mist);   --x:30%; --y:30%; --w:36vw; --h:20vh; --r:6deg;   --o:.2;  --b:80px; --t:50s; --dx:-6vw; --dy:2vh; --d:-25s"></span>
   </div>
-</nav>
-
-<!-- ═══ CV PAGE ═══ -->
-<div class="page" id="page-cv">
-<div class="wrap">
-
-  <div class="header">
-    <div class="name">Hanna <em>Kachurouskaya</em></div>
-    <div class="subtitle" data-i18n="subtitle">Senior VFX Artist &nbsp;·&nbsp; Technical Artist &nbsp;·&nbsp; Pipeline Developer</div>
-    <div class="contacts">
-      <span data-i18n="location">Kraków, Poland</span>
-      <a href="mailto:valynets.h@gmail.com">valynets.h@gmail.com</a>
-      <span>+48 797 314 747</span>
-      <a href="https://www.linkedin.com/in/hanna-kachurouskaya-096aab114/" target="_blank">LinkedIn</a>
-      <a href="https://www.behance.net/ValHanna" target="_blank">Behance</a>
-    </div>
-  </div>
-
-  <div class="section s1">
-    <div class="sec-label" data-i18n="sec_about">About</div>
-    <div class="about-text">
-      <p data-i18n="about_p1"></p>
-      <p data-i18n="about_p2"></p>
-      <p data-i18n="about_p3"></p>
-    </div>
+  <canvas id="threads" class="threads" aria-hidden="true"></canvas>
+  <div id="page_loader" class="page-loader" aria-hidden="true">
+    <span class="face-spinner"></span>
   </div>
 
-  <div class="section s2">
-    <div class="sec-label" data-i18n="sec_experience">Experience</div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j1_title">Senior VFX Artist</div>
-        <div class="job-date" data-i18n="j1_date">Mar 2022 — Jun 2026</div>
-      </div>
-      <div class="job-company" data-i18n="j1_company">Millarc CGI · Kraków</div>
-      <div class="job-body open" id="j1">
-        <p data-i18n="j1_p1"></p>
-        <p data-i18n="j1_p2"></p>
-        <p data-i18n="j1_p3"></p>
-        <p data-i18n="j1_p4"></p>
-        <div class="tags">
-          <span class="tag">Houdini</span><span class="tag">VEX</span><span class="tag">Python</span><span class="tag">Nuke</span><span class="tag">Fusion</span><span class="tag">USD/Solaris</span><span class="tag">Redshift</span><span class="tag">Deadline</span><span class="tag">Gaea</span><span class="tag">ComfyUI</span><span class="tag">Midjourney</span><span class="tag">Kling</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j1" onclick="tog('j1',this)"></div>
-    </div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j2_title">Pipeline Developer &amp; IT Automation</div>
-        <div class="job-date" data-i18n="j2_date">Mar 2024 — Jun 2026</div>
-      </div>
-      <div class="job-company" data-i18n="j2_company">Millarc CGI · Kraków</div>
-      <div class="job-body" id="j2">
-        <p data-i18n="j2_p1"></p>
-        <p data-i18n="j2_p2"></p>
-        <div class="tags">
-          <span class="tag">Python</span><span class="tag">REST APIs</span><span class="tag">Webhooks</span><span class="tag">Docker</span><span class="tag">Deadline (render farm)</span><span class="tag">Flow Production / ShotGrid</span><span class="tag">Ayon</span><span class="tag">Slack API</span><span class="tag">Git / GitHub</span><span class="tag">JSON/XML</span><span class="tag">Postman</span><span class="tag">Cursor</span><span class="tag">Claude Code</span><span class="tag">AI agentic workflows</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j2" onclick="tog('j2',this)"></div>
-    </div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j3_title">Digital Artist</div>
-        <div class="job-date" data-i18n="j3_date">Mar 2021 — Mar 2022</div>
-      </div>
-      <div class="job-company" data-i18n="j3_company">The Digital Bunch · Warsaw</div>
-      <div class="job-body" id="j3">
-        <p data-i18n="j3_p1"></p>
-        <div class="tags">
-          <span class="tag">3ds Max</span><span class="tag">Houdini</span><span class="tag">Nuke</span><span class="tag">V-Ray</span><span class="tag">Corona</span><span class="tag">Photoshop</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j3" onclick="tog('j3',this)"></div>
-    </div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j4_title">3D Graphic Artist</div>
-        <div class="job-date" data-i18n="j4_date">Jan 2018 — Sep 2019</div>
-      </div>
-      <div class="job-company" data-i18n="j4_company">VERO Digital</div>
-      <div class="job-body" id="j4">
-        <p data-i18n="j4_p1"></p>
-        <div class="tags">
-          <span class="tag">3ds Max</span><span class="tag">V-Ray</span><span class="tag">Corona</span><span class="tag">Revit</span><span class="tag">SpeedTree</span><span class="tag">Unreal Engine</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j4" onclick="tog('j4',this)"></div>
-    </div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j5_title">3D Artist — Freelance</div>
-        <div class="job-date" data-i18n="j5_date">Oct 2016 — Jan 2018</div>
-      </div>
-      <div class="job-company" data-i18n="j5_company">Independent</div>
-      <div class="job-body" id="j5">
-        <p data-i18n="j5_p1"></p>
-        <div class="tags">
-          <span class="tag">3ds Max</span><span class="tag">V-Ray</span><span class="tag">Corona</span><span class="tag">Photoshop</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j5" onclick="tog('j5',this)"></div>
-    </div>
-
-    <div class="job">
-      <div class="job-header">
-        <div class="job-title" data-i18n="j6_title">Junior Structural Design Engineer</div>
-        <div class="job-date" data-i18n="j6_date">2013 — 2016</div>
-      </div>
-      <div class="job-company" data-i18n="j6_company">BRIG · Belarus</div>
-      <div class="job-body" id="j6">
-        <p data-i18n="j6_p1"></p>
-        <div class="tags">
-          <span class="tag">AutoCAD</span><span class="tag">Revit</span><span class="tag">BIM</span>
-        </div>
-      </div>
-      <div class="toggle" data-job="j6" onclick="tog('j6',this)"></div>
-    </div>
-
+  <div id="scene" class="scene" aria-hidden="true" hidden>
+    <div class="cube-glow"></div>
+    <div id="cube_shadow" class="cube-shadow"></div>
+    <div id="cube" class="deck"></div>
+  </div>
   </div>
 
-  <div class="section s3">
-    <div class="sec-label" data-i18n="sec_skills">Skills</div>
-    <div class="skills-grid">
-      <div>
-        <div class="sg-title" data-i18n="sg1_title">VFX & Production</div>
-        <div class="sg-body" data-i18n="sg1_body"></div>
-      </div>
-      <div>
-        <div class="sg-title" data-i18n="sg2_title">AI & Emerging</div>
-        <div class="sg-body" data-i18n="sg2_body"></div>
-      </div>
-      <div>
-        <div class="sg-title" data-i18n="sg3_title">Technical / Pipeline</div>
-        <div class="sg-body" data-i18n="sg3_body"></div>
-      </div>
-      <div>
-        <div class="sg-title" data-i18n="sg4_title">Soft Skills</div>
-        <div class="sg-body" data-i18n="sg4_body"></div>
-      </div>
-      <div>
-        <div class="sg-title" data-i18n="sg5_title">Education</div>
-        <div class="sg-body" data-i18n="sg5_body"></div>
-      </div>
-    </div>
+  <div class="side-glass left" aria-hidden="true"></div>
+  <div class="side-glass right" aria-hidden="true"></div>
+
+  <button id="lang_btn" class="lang-btn" type="button">PL</button>
+
+  <div id="hud" class="hud" aria-hidden="true" hidden>
+    <span id="hud_count">00 / 00</span>
+    <span class="progress"><span id="progress_fill" class="progress-fill"></span></span>
   </div>
 
-</div>
-</div>
+  <main id="stops" class="stops"></main>
 
-<!-- ═══ PORTFOLIO PAGE ═══ -->
-<div class="page active" id="page-portfolio">
-<div class="port-wrap">
-
-  <div class="port-header">
-    <div class="port-title" data-i18n="port_title">Selected <em>Work</em></div>
-    <div class="port-sub" data-i18n="port_sub">VFX · Motion Design · Commercial</div>
+  <div id="project_modal" class="project-modal-overlay" role="dialog" aria-modal="true" hidden>
+    <div id="project_modal_inner" class="project-modal"></div>
   </div>
-
-  <div class="filter-bar" id="filterBar">
-    <button class="filter-btn active" data-filter="all" data-i18n="filter_all" onclick="filterProjects(this)">All</button>
-    <button class="filter-btn" data-filter="wallpaper" data-i18n="filter_wallpaper" onclick="filterProjects(this)">Wallpaper</button>
-    <button class="filter-btn" data-filter="ai" data-i18n="filter_ai" onclick="filterProjects(this)">AI</button>
-    <button class="filter-btn" data-filter="product" data-i18n="filter_product" onclick="filterProjects(this)">Product</button>
-    <button class="filter-btn" data-filter="simulations" data-i18n="filter_simulations" onclick="filterProjects(this)">Simulations</button>
-    <button class="filter-btn" data-filter="procedural" data-i18n="filter_procedural" onclick="filterProjects(this)">Procedural</button>
-    <button class="filter-btn" data-filter="compo" data-i18n="filter_compo" onclick="filterProjects(this)">Compo</button>
-  </div>
-
-  <div class="masonry" id="masonry"></div>
-
-</div>
-</div>
-
-<!-- PROJECT MODAL -->
-<div class="project-modal-overlay" id="projectModal" onclick="handleModalOutsideClick(event)">
-  <div class="project-modal" id="projectModalInner"></div>
-</div>
 
 <script>
-/* ─── TAB SWITCHING ─── */
-function switchTab(name, btn){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('page-'+name).classList.add('active');
-  btn.classList.add('active');
-  window.scrollTo(0,0);
-  portfolioVisible = (name === 'portfolio');
-}
-
-/* ─── CV TOGGLES ─── */
-function tog(id, btn){
-  const el = document.getElementById(id);
-  el.classList.toggle('open');
-  const t = i18n[currentLang];
-  btn.textContent = el.classList.contains('open') ? t.collapse : t.expand;
-}
-
-/* ─── i18n HELPERS FOR DYNAMIC PORTFOLIO CONTENT ─── */
-const TAG_LABELS = {
-  wallpaper:   { en: 'Wallpaper',   pl: 'Tapeta' },
-  ai:          { en: 'AI',          pl: 'AI' },
-  product:     { en: 'Product',     pl: 'Produkt' },
-  simulations: { en: 'Simulations', pl: 'Symulacje' },
-  procedural:  { en: 'Procedural',  pl: 'Proceduralne' },
-  compo:       { en: 'Compo',       pl: 'Compo' },
-};
-
-function tr(proj, field){
-  const plField = field + '_pl';
-  if(currentLang === 'pl' && proj[plField]) return proj[plField];
-  return proj[field];
-}
-
-function trTag(tag){
-  const labels = TAG_LABELS[tag];
-  return labels ? labels[currentLang] : tag;
-}
-
-/* ─────────────────────────────────────────────
-   PROJECT DATA
-   
-   HOW TO ADD YOUR OWN FILES:
-   
-   1. Create a folder structure next to this HTML:
-      assets/
-        project-slug/
-          thumb.jpg          ← miniatura w gridzie
-          01.jpg
-          02.mp4
-          03.jpg
-   
-   2. In each project below, edit:
-      - title, client, year, software, desc
-      - tags: array of category strings (used for filtering)
-      - thumb: path to thumbnail
-      - files: array of { type:'image'|'video', src:'...', label:'...' }
-   
-   Supported formats: jpg, png, webp, mp4, mov
-   MOV files: use type:'video' — browser will play if codec is H.264.
-   For best compatibility convert MOV to MP4 (H.264) before deploying.
-───────────────────────────────────────────── */
+/* ─── DATA ─── */
 const PROJECTS = [
   {
     id: 'proj-01',
@@ -730,544 +1343,663 @@ const PROJECTS = [
   },
 ];
 
-/* ─── RENDER MASONRY ─── */
-let activeProject = null;
-let currentIdx = 0;
-
-/* Global error handler — avoids inline HTML with quotes inside onerror attribute */
-window._imgErr = function(el, path){
-  const ph = document.createElement('div');
-  ph.className = 'placeholder-thumb';
-  ph.innerHTML = '<div class="pt-icon">◻</div><div class="pt-label">image</div><div class="pt-path">'+path+'</div>';
-  el.parentNode.replaceChild(ph, el);
-};
-window._vidErr = function(el, path){
-  const ph = document.createElement('div');
-  ph.className = 'placeholder-thumb';
-  ph.innerHTML = '<div class="pt-icon">▶</div><div class="pt-label">video</div><div class="pt-path">'+path+'</div>';
-  el.parentNode.replaceChild(ph, el);
+const TAG_LABELS = {
+  wallpaper:   { en: 'Wallpaper',   pl: 'Tapeta' },
+  ai:          { en: 'AI',          pl: 'AI' },
+  product:     { en: 'Product',     pl: 'Produkt' },
+  simulations: { en: 'Simulations', pl: 'Symulacje' },
+  procedural:  { en: 'Procedural',  pl: 'Proceduralne' },
+  compo:       { en: 'Compo',       pl: 'Compo' },
 };
 
-let portfolioVisible = true;
+const CONTACT = {
+  email: 'valynets.h@gmail.com',
+  linkedin: 'https://www.linkedin.com/in/hanna-kachurouskaya-096aab114/',
+  behance: 'https://www.behance.net/ValHanna',
+};
 
-function getNumCols(){
-  return window.innerWidth < 540 ? 1 : window.innerWidth < 900 ? 2 : 3;
+/* ─── i18n ─── */
+const i18n = {
+  en: {
+    label: 'Portfolio · Selected Work',
+    role: 'Senior VFX Artist · Technical Artist',
+    intro_desc: 'Procedural simulations, motion wallpapers and product VFX for Huawei, Xiaomi and OnePlus — built in Houdini, from R&D to final delivery.',
+    projects: n => `${n} projects`,
+    enter: 'Enter',
+    back: 'Back',
+    next: 'Next',
+    end_label: 'Contact',
+    end_title: "Let's <em>work</em> together",
+    end_desc: 'Open to VFX, FX TD and technical artist roles — remote or on-site.',
+    top: 'Back to top',
+    open: 'Open project',
+    close_project: 'Close project',
+    label_client: 'Client',
+    label_year: 'Year',
+    label_software: 'Software',
+    lang_btn: 'PL',
+  },
+  pl: {
+    label: 'Portfolio · Wybrane prace',
+    role: 'Senior VFX Artist · Technical Artist',
+    intro_desc: 'Proceduralne symulacje, motion wallpapery i VFX produktowe dla Huawei, Xiaomi i OnePlus — w Houdini, od R&D po finalną dostawę.',
+    projects: n => `${n} projektów`,
+    enter: 'Wejdź',
+    back: 'Wstecz',
+    next: 'Dalej',
+    end_label: 'Kontakt',
+    end_title: 'Porozmawiajmy o <em>współpracy</em>',
+    end_desc: 'Otwarta na role VFX, FX TD i technical artist — zdalnie lub stacjonarnie.',
+    top: 'Na początek',
+    open: 'Otwórz projekt',
+    close_project: 'Zamknij projekt',
+    label_client: 'Klient',
+    label_year: 'Rok',
+    label_software: 'Software',
+    lang_btn: 'EN',
+  },
+};
+let lang = 'en';
+
+const tr = (p, field) => (lang === 'pl' && p[field + '_pl']) || p[field];
+const trTag = tag => (TAG_LABELS[tag] || {})[lang] || tag;
+const pad = n => String(n).padStart(2, '0');
+
+/* ─── ICONS ─── */
+const ICON_EXT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
+const ICON_NEXT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>';
+const ICON_OPEN = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>';
+const ICON_BACK ='<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+
+/* ─── DOM ─── */
+const root = document.documentElement;
+const stopsEl = document.getElementById('stops');
+const scene = document.getElementById('scene');
+const cube = document.getElementById('cube');
+const hud = document.getElementById('hud');
+const hudCount = document.getElementById('hud_count');
+const progressFill = document.getElementById('progress_fill');
+
+const N = PROJECTS.length;
+const LAST = N + 1;                    // stop index of the contact stop
+const sideOf = () => 1;   // cards always on the left, sheets always on the right
+
+/* ─── RENDER STOPS ─── */
+function withIndex(html) {
+  // staggered reveal: give each direct child of .card an --i
+  const tpl = document.createElement('template');
+  tpl.innerHTML = html.trim();
+  tpl.content.querySelectorAll('.card').forEach(card => {
+    [...card.children].forEach((c, i) => c.style.setProperty('--i', i));
+  });
+  return tpl.content;
 }
 
-function renderMasonry(filter='all'){
-  const container = document.getElementById('masonry');
-  container.innerHTML = '';
-  glitchers = [];
-  closeModal();
+function render() {
+  const t = i18n[lang];
+  document.getElementById('lang_btn').textContent = t.lang_btn;
+  root.lang = lang;
 
-  const filtered = filter === 'all'
-    ? PROJECTS
-    : PROJECTS.filter(p => p.tags.includes(filter));
+  // every stop: title strip above the sheet, description strip below it
+  const intro = `
+    <section id="s0" class="stop" aria-label="Hanna Kachurouskaya — ${t.label}">
+      <div class="card card-top">
+        <p class="card-label">${t.label}</p>
+      </div>
+      <div class="card card-bottom">
+        <p class="card-description">${t.intro_desc}</p>
+        <div class="card-row">
+          <p class="card-meta"><span>${t.role}</span><span>${t.projects(pad(N))}</span></p>
+          <p class="card-links">
+            <a href="${CONTACT.behance}" target="_blank" rel="noopener noreferrer">Behance ${ICON_EXT}</a>
+            <a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ${ICON_EXT}</a>
+          </p>
+          <div class="cta-row"><a class="cta" href="#s1">${t.enter} ${ICON_NEXT}</a></div>
+        </div>
+      </div>
+    </section>`;
 
-  const numCols = getNumCols();
-  const cols = Array.from({length: numCols}, () => {
-    const col = document.createElement('div');
-    col.className = 'masonry-col';
-    container.appendChild(col);
-    return col;
-  });
+  const pens = PROJECTS.map((p, j) => {
+    const k = j + 1;
+    return `
+      <li id="s${k}" class="stop pen" aria-labelledby="p${k}_title">
+        <div class="card card-top" data-index="${pad(k)}">
+          <p class="card-label">${p.client} · ${p.year} · ${p.software}</p>
+          <h2 id="p${k}_title">${tr(p, 'title')}</h2>
+        </div>
+        <div class="card card-bottom">
+          <p class="card-description">${tr(p, 'desc')}</p>
+          <div class="card-row">
+            <p class="card-meta">${p.tags.map(tag => `<span class="tag">${trTag(tag)}</span>`).join('')}</p>
+            <div class="cta-row">
+              <button class="cta" type="button" data-open="${j}">${t.open} ${ICON_OPEN}</button>
+              <a class="cta-back" href="#s${k - 1}">${ICON_BACK} ${t.back}</a>
+              <a class="cta-back" href="#s${k + 1}">${t.next} ${ICON_NEXT}</a>
+            </div>
+          </div>
+        </div>
+      </li>`;
+  }).join('');
 
-  filtered.forEach((proj, i) => {
-    const card = document.createElement('div');
-    card.className = 'project-card';
-    card.dataset.id = proj.id;
+  const outro = `
+    <section id="s${LAST}" class="stop" aria-label="${t.end_label}">
+      <div class="card card-top">
+        <p class="card-label">${t.end_label}</p>
+      </div>
+      <div class="card card-bottom">
+        <p class="card-description">${t.end_desc}</p>
+        <div class="card-row">
+          <p class="card-links">
+            <a href="mailto:${CONTACT.email}">${CONTACT.email}</a>
+            <a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ${ICON_EXT}</a>
+            <a href="${CONTACT.behance}" target="_blank" rel="noopener noreferrer">Behance ${ICON_EXT}</a>
+          </p>
+          <div class="cta-row"><a class="cta-back" href="#s0">${ICON_BACK} ${t.top}</a></div>
+        </div>
+      </div>
+    </section>`;
 
-    const thumb = document.createElement('div');
-    thumb.className = 'card-thumb';
-    thumb.style.aspectRatio = '16/10';
+  stopsEl.replaceChildren(withIndex(intro));
+  const ol = document.createElement('ol');
+  ol.className = 'pen-list';
+  ol.setAttribute('aria-label', 'Projects');
+  ol.append(withIndex(pens));
+  stopsEl.append(ol, withIndex(outro));
 
-    const img = document.createElement('img');
-    img.src = proj.thumb;
-    img.alt = tr(proj, 'title');
-    img.onerror = function(){ window._imgErr(this, proj.thumb); };
-    thumb.appendChild(img);
-
-    const overlay = document.createElement('div');
-    overlay.className = 'card-overlay';
-    overlay.innerHTML = `<span class="card-overlay-text">${i18n[currentLang].card_open}</span>`;
-    thumb.appendChild(overlay);
-
-    const info = document.createElement('div');
-    info.className = 'card-info';
-    info.innerHTML = `
-      <div class="card-title">${tr(proj, 'title')}</div>
-      <div class="card-meta">${proj.client} · ${proj.year}</div>
-      <div class="card-tags">${proj.tags.map(t=>`<span class="card-tag">${trTag(t)}</span>`).join('')}</div>`;
-
-    card.appendChild(thumb);
-    card.appendChild(info);
-    card.addEventListener('click', () => openModal(proj));
-    cols[i % numCols].appendChild(card);
-  });
+  sheets.forEach(f => { f.dataset.key = ''; });
+  observeStops();
+  measure();
+  update();
 }
 
-function mediaHTML(file){
-  if(file.type === 'video'){
-    return `<video src="${file.src}" controls playsinline preload="metadata"
-      onerror="_vidErr(this,'${file.src}')">
-      Your browser does not support video.
-    </video>`;
+/* ─── CARD REVEAL ─── */
+let observer;
+function observeStops() {
+  observer?.disconnect();
+  observer = new IntersectionObserver(entries => {
+    entries.forEach(e => e.target.querySelectorAll('.card').forEach(c => c.classList.toggle('is-visible', e.isIntersecting)));
+  }, { threshold: .45 });
+  stopsEl.querySelectorAll('.stop').forEach(s => observer.observe(s));
+}
+
+/* ─── SHEET CONTENT ─── */
+function buildProjectFace(face, p, j) {
+  face.dataset.open = j;
+  const label = document.createElement('span');
+  label.className = 'face-open';
+  label.innerHTML = `${i18n[lang].open} ${ICON_OPEN}`;
+  face.append(label);
+  const ph = document.createElement('div');
+  ph.className = 'face-placeholder';
+  ph.innerHTML = '<span class="face-spinner"></span>';
+  face.append(ph);
+  const img = new Image();
+  img.alt = '';
+  img.decoding = 'async';
+  img.onload = () => {
+    if (!ph.isConnected) return;
+    ph.classList.add('is-done');
+    face.append(img);
+  };
+  img.onerror = () => {
+    if (!ph.isConnected) return;
+    ph.classList.add('is-done');
+    ph.textContent = p.title;
+  };
+  img.src = p.thumb;
+}
+
+function buildIntroFace(face) {
+  const t = i18n[lang];
+  face.innerHTML = `<div class="face-intro">
+    <p class="face-intro-title">Hanna <em>Kachurouskaya</em></p>
+    <p class="face-intro-count">${t.projects(pad(N))}</p>
+  </div>`;
+}
+
+function buildEndFace(face) {
+  const t = i18n[lang];
+  face.innerHTML = `<div class="face-intro">
+    <p class="face-intro-title">${t.end_title}</p>
+    <p class="face-intro-count">${CONTACT.email}</p>
+  </div>`;
+}
+
+/* ─── SHEETS: one card per stop, stacked; the top one flies away on scroll ─── */
+const sheets = [];
+for (let i = 0; i <= LAST; i++) {
+  const el = document.createElement('div');
+  el.className = 'face sheet';
+  // a little random tilt so the stack looks like loose paper
+  el.dataset.rot = (i % 2 ? 1 : -1) * (3 + ((i * 7919) % 13) / 13 * 5);   // 3–8° either way
+  cube.append(el);
+  sheets.push(el);
+}
+
+function fillSheet(i) {
+  if (i < 0 || i > LAST) return;
+  const el = sheets[i];
+  const key = `${i}-${lang}`;
+  if (el.dataset.key === key) return;
+  el.dataset.key = key;
+  delete el.dataset.open;
+  el.replaceChildren();
+  if (i === 0) buildIntroFace(el);
+  else if (i === LAST) buildEndFace(el);
+  else buildProjectFace(el, PROJECTS[i - 1], i - 1);
+}
+
+/* ─── SCROLL → ORIENTATION ─── */
+let tops = [];
+let shiftAmount = 0;
+const compactMQ = matchMedia('(max-width: 56.25em) and (orientation: portrait), (orientation: landscape) and (max-height: 30em)');
+
+function measure() {
+  tops = [...stopsEl.querySelectorAll('.stop')].map(s => s.getBoundingClientRect().top + scrollY);
+  // push the deck away from the card, but never past the screen edge
+  shiftAmount = 0;   // sheets stay centred between the title and description strips
+}
+
+const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
+const lerp = (a, b, e) => a + (b - a) * e;
+const ease = x => x * x * (3 - 2 * x);
+
+function update() {
+  if (!tops.length) return;
+  const y = scrollY;
+  let k = 0;
+  while (k < tops.length - 1 && y >= tops[k + 1]) k++;
+  const f = k < tops.length - 1 ? clamp((y - tops[k]) / (tops[k + 1] - tops[k])) : 0;
+  const e = ease(clamp((f - .12) / .76));          // hold at each stop, roll in between
+  const shift = lerp(sideOf(k), sideOf(Math.min(k + 1, LAST)), e) * shiftAmount;
+  scene.style.translate = `${shift.toFixed(1)}px 0`;
+  root.style.setProperty('--light-x', `calc(50% + ${shift.toFixed(1)}px)`);
+
+  const pos = k + e;                       // continuous position in the deck
+  const W = scene.clientWidth || innerWidth, H = innerHeight;
+  for (let i = 0; i <= LAST; i++) {
+    const el = sheets[i];
+    const d = i - pos;                     // <0: flying off, 0: on top, >0: waiting underneath
+    if (d <= -1 || d > 4) { el.style.visibility = 'hidden'; continue; }
+    fillSheet(i);
+    el.style.visibility = '';
+    const rot = Number(el.dataset.rot);
+    let tf, shade;
+    if (d < 0) {
+      // lift, tilt and fly up and out to the side
+      const q = -d, dir = 1;   // every sheet flies off the same way: up and to the right
+      tf = `translate3d(${(dir * q * q * W * .55).toFixed(1)}px, ${(-q * H * 1.05).toFixed(1)}px, ${(q * 160).toFixed(1)}px)
+            rotateX(${(q * 38).toFixed(2)}deg) rotateZ(${(dir * q * 28).toFixed(2)}deg)`;
+      shade = 0;
+    } else {
+      // stacked behind: further back, lower, slightly rotated and darker
+      tf = `translate3d(${(rot * 1.5 * Math.min(1, d)).toFixed(1)}px, ${(d * 30).toFixed(1)}px, ${(-d * 60).toFixed(1)}px)
+            rotateZ(${(rot * Math.min(1, d)).toFixed(2)}deg) scale(${(1 - d * .03).toFixed(3)})`;
+      shade = Math.min(.45, d * .14);
+    }
+    el.style.transform = tf;
+    el.style.zIndex = String(100 - Math.round(d * 10));
+    el.style.opacity = d > 3 ? String(clamp(4 - d)) : '1';
+    el.style.setProperty('--shade', shade.toFixed(3));
+    el.style.setProperty('--sheen', '0');
+    el.style.setProperty('--content-o', clamp(1 - d * 2.5).toFixed(3));   // fade content in as the sheet reaches the top
   }
-  return `<img src="${file.src}" alt="${file.label}"
-    onerror="_imgErr(this,'${file.src}')">`;
+
+  const t = k + f;
+  const current = Math.round(t);
+  hudCount.textContent = `${pad(current)} / ${pad(LAST)}`;
+  progressFill.style.transform = `scaleX(${(t / LAST).toFixed(4)})`;
 }
 
-function thumbsHTML(proj){
-  return proj.files.map((f,i) => `
-    <div class="thumb-item${i===0?' active':''}" data-idx="${i}" onclick="setMedia(${i})">
+let ticking = false;
+function requestUpdate() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => { ticking = false; update(); });
+}
+
+addEventListener('scroll', requestUpdate, { passive: true });
+addEventListener('resize', () => { measure(); requestUpdate(); });
+
+/* ─── PROJECT MODAL (same viewer as portfolio.html) ─── */
+const modal = document.getElementById('project_modal');
+const modalInner = document.getElementById('project_modal_inner');
+let activeProject = null;
+let mediaIdx = 0;
+
+function placeholderHTML(file) {
+  return `<div class="placeholder-thumb"><span>${file.type === 'video' ? '▶' : '◻'}</span><span>${file.src}</span></div>`;
+}
+
+function mediaHTML(file) {
+  return file.type === 'video'
+    ? `<video src="${file.src}" controls playsinline preload="metadata" data-err></video>`
+    : `<img src="${file.src}" alt="${file.label}" data-err>`;
+}
+
+function thumbsHTML(p) {
+  return p.files.map((f, i) => `
+    <div class="thumb-item${i === 0 ? ' active' : ''}" data-media="${i}">
       ${f.type === 'video'
-        ? `<video src="${f.src}" preload="metadata" muted onerror="this.style.background='#222'"></video><span class="type-badge">mp4</span>`
-        : `<img src="${f.src}" alt="${f.label}" onerror="this.style.background='#222'">`
-      }
+        ? `<video src="${f.src}" preload="metadata" muted></video><span class="type-badge">mp4</span>`
+        : `<img src="${f.src}" alt="">`}
     </div>`).join('');
 }
 
-function openModal(proj){
-  activeProject = proj;
-  currentIdx = 0;
-  const modal = document.getElementById('projectModal');
-  const inner = document.getElementById('projectModalInner');
-
-  inner.innerHTML = `
-    <div class="viewer">
-      <div class="viewer-main" id="vm-modal">
-        ${mediaHTML(proj.files[0])}
-      </div>
-      ${proj.files.length > 1 ? `
-        <div class="viewer-nav prev" onclick="stepMedia(-1)">&#8592;</div>
-        <div class="viewer-nav next" onclick="stepMedia(1)">&#8594;</div>
-        <div class="viewer-counter" id="vc-modal">1 / ${proj.files.length}</div>
-      ` : ''}
-    </div>
-    <div class="viewer-caption" id="vcap-modal">${proj.files[0].label}</div>
-    ${proj.files.length > 1 ? `<div class="thumb-strip" id="ts-modal">${thumbsHTML(proj)}</div>` : ''}
-    <div class="expanded-info">
-      <div class="exp-title">${tr(proj, 'title')}</div>
-      <div class="exp-meta">
-        <div class="exp-meta-item"><span class="exp-meta-label">${i18n[currentLang].label_client}</span><span class="exp-meta-val">${proj.client}</span></div>
-        <div class="exp-meta-item"><span class="exp-meta-label">${i18n[currentLang].label_year}</span><span class="exp-meta-val">${proj.year}</span></div>
-        <div class="exp-meta-item"><span class="exp-meta-label">${i18n[currentLang].label_software}</span><span class="exp-meta-val">${proj.software}</span></div>
-      </div>
-      <div class="exp-desc">${tr(proj, 'desc')}</div>
-      <div class="exp-close" onclick="closeModal()">${i18n[currentLang].close_project}</div>
-    </div>`;
-
-  modal.classList.add('open');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeModal(){
-  const modal = document.getElementById('projectModal');
-  if(!modal) return;
-  modal.classList.remove('open');
-  document.getElementById('projectModalInner').innerHTML = '';
-  activeProject = null;
-  currentIdx = 0;
-  document.body.style.overflow = '';
-}
-
-function handleModalOutsideClick(e){
-  if(e.target === document.getElementById('projectModal')) closeModal();
-}
-
-window.setMedia = function(idx){
-  if(!activeProject) return;
-  currentIdx = idx;
-  const vm = document.getElementById('vm-modal');
-  if(!vm) return;
-  vm.innerHTML = mediaHTML(activeProject.files[idx]);
-  const vc = document.getElementById('vc-modal');
-  if(vc) vc.textContent = (idx+1)+' / '+activeProject.files.length;
-  const vcap = document.getElementById('vcap-modal');
-  if(vcap) vcap.textContent = activeProject.files[idx].label;
-  document.querySelectorAll('.thumb-item').forEach((t,i) => t.classList.toggle('active', i===idx));
-};
-
-window.stepMedia = function(dir){
-  if(!activeProject) return;
-  const next = (currentIdx + dir + activeProject.files.length) % activeProject.files.length;
-  setMedia(next);
-};
-
-// close modal with Escape key
-document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
-
-function filterProjects(btn){
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  renderMasonry(btn.dataset.filter);
-}
-
-/* ─── TRANSLATIONS ─── */
-const i18n = {
-  en: {
-    tab_cv: "CV",
-    tab_portfolio: "Portfolio",
-
-    subtitle: "Senior VFX Artist &nbsp;·&nbsp; Technical Artist &nbsp;·&nbsp; Pipeline Developer",
-    location: "Kraków, Poland",
-    sec_about: "About",
-    sec_experience: "Experience",
-    sec_skills: "Skills",
-
-    about_p1: "I started as an artist. I believe the strongest thing a moving image can do is make you stop and just <em>stare</em>. Over time I became just as curious about how everything works underneath. I started building the tools other people use, and I often see why a workflow will break before anyone else notices.",
-    about_p2: "I have <strong>an eye for what looks right</strong>, and I also see why the system behind it does not scale. I use both in my work.",
-    about_p3: "I have 10+ years in CGI production and 4+ years as a Senior VFX Artist. In the last two years I moved into pipeline development and technical direction. I work across the whole VFX production: lookdev, procedural effects, DCC integration, render farm and automation tools. <strong>For me, the creative and the technical side support each other.</strong>",
-
-    j1_title: "Senior VFX Artist",
-    j1_date: "Mar 2022 - Jun 2026",
-    j1_company: "Millarc CGI · Kraków",
-    j1_p1: "I created visual effects and motion design for commercials, mostly for Chinese tech brands: Huawei, OnePlus, Xiaomi, OPPO, Vivo and others. I delivered <strong>50+ projects</strong> in advertising, product visualization and motion design.",
-    j1_p2: "I am most proud of Millarc's <strong>motion wallpapers</strong>. These are animated wallpapers that come pre-installed on flagship smartphones. A user sees them the first time they turn the phone on. Our work was <a href=\"https://www.stashmedia.tv/mobile-motion-millarc-shows-off-smartphone-wallpapers/\" target=\"_blank\" style=\"color:var(--accent);\">featured in Stash Magazine</a>. Motion wallpapers are the most viewed type of motion design in the world.",
-    j1_p3: "I specialise in procedural effects and simulations: volumes, particles, Vellum, RBD, FLIP, VDB, KineFX and terrain generation. I build custom procedural setups in VEX and Python. I did the full production: effect development, lookdev, rendering, compositing and final delivery.",
-    j1_p4: "I brought AI tools into our production workflow. I led concept development and the creative direction of effects. I mentored junior artists and helped the team adopt new tools and workflows.",
-
-    j2_title: "Pipeline Developer",
-    j2_date: "Mar 2024 - Jun 2026",
-    j2_company: "Millarc CGI · Kraków",
-    j2_p1: "I built, maintained and documented the studio's internal tools and automation. A team of 20+ people used them every day. All my code is in Git. I built an integration that connects Houdini, 3ds Max, Deadline (render farm) and Flow Production (ShotGrid) through REST APIs and webhooks. I also deployed a Docker server for communication with the Slack API.",
-    j2_p2: "I automated the render-to-preview process: file naming, preview generation and project tracking. I built a standalone reporting app that connects to time management services and shows KPIs in real time. I use AI tools (Cursor, Claude Code) in my daily work. I led the adoption of Ayon as the studio's pipeline management system.",
-
-    j3_title: "Digital Artist",
-    j3_date: "Mar 2021 - Mar 2022",
-    j3_company: "The Digital Bunch · Warsaw",
-    j3_p1: "I led architectural and interior visualization projects and mentored junior artists. I also moved into motion design: I made animated project presentations and visual effects sequences.",
-
-    j4_title: "3D Graphic Artist",
-    j4_date: "Jan 2018 - Sep 2019",
-    j4_company: "VERO Digital",
-    j4_p1: "I created photorealistic architectural and interior visualizations, from drawings to post-production. I prepared 360° renders for client presentations in VR.",
-
-    j5_title: "3D Artist, Freelance",
-    j5_date: "Oct 2016 - Jan 2018",
-    j5_company: "Independent",
-    j5_p1: "I created architectural and interior visualizations. I did the whole process myself: drawings and references, modelling, rendering and post-production.",
-
-    j6_title: "Junior Structural Design Engineer",
-    j6_date: "2013 - 2016",
-    j6_company: "BRIG · Belarus",
-    j6_p1: "I inspected 50+ building structures on site. I prepared technical documentation in AutoCAD and Revit. I learned Revit on my own and introduced BIM to the team.",
-
-    sg1_title: "VFX &amp; Production",
-    sg1_body: "<strong>Houdini</strong> · VEX · Nuke · Fusion<br>Procedural systems · simulations<br>Lookdev · rendering · compositing<br>USD / Solaris · Redshift · Gaea<br>3ds Max · Photoshop · SpeedTree",
-
-    sg2_title: "AI &amp; Emerging",
-    sg2_body: "ComfyUI · Midjourney · Kling<br>Photoshop AI · ChatGPT<br>AI-assisted concept &amp; production",
-
-    sg3_title: "Technical / Pipeline",
-    sg3_body: "<strong>Python</strong> · REST APIs · Docker<br>Deadline · Flow Production · Ayon<br>Git / GitHub · custom tooling",
-
-    sg4_title: "Soft Skills",
-    sg4_body: "Mentoring and knowledge sharing<br>Teamwork and cross-department collaboration<br>Strategic problem solving<br>Building long-term working relationships",
-
-    sg5_title: "Education",
-    sg5_body: "<strong>Bachelor of Engineering</strong><br>Brest State Technical University<br>Belarus · 2009 - 2014<br><br>English · Polish · Russian",
-
-    port_title: "Selected <em>Work</em>",
-    port_sub: "VFX · Motion Design · Commercial",
-    filter_all: "All",
-    filter_wallpaper: "Wallpaper",
-    filter_ai: "AI",
-    filter_product: "Product",
-    filter_simulations: "Simulations",
-    filter_procedural: "Procedural",
-    filter_compo: "Compo",
-
-    card_open: "↓ open",
-    label_client: "Client",
-    label_year: "Year",
-    label_software: "Software",
-    close_project: "↑ close project",
-
-    collapse: "- collapse",
-    expand: "+ expand",
-    lang_btn: "PL",
-  },
-
-  pl: {
-    tab_cv: "CV",
-    tab_portfolio: "Portfolio",
-
-    subtitle: "Senior VFX Artist &nbsp;·&nbsp; Technical Artist &nbsp;·&nbsp; Pipeline Developer",
-    location: "Kraków, Polska",
-    sec_about: "O mnie",
-    sec_experience: "Doświadczenie",
-    sec_skills: "Umiejętności",
-
-    about_p1: "Zaczęłam jako artystka. Wierzę, że najsilniejsze, co może zrobić ruchomy obraz, to sprawić, że się zatrzymasz i po prostu <em>patrzysz</em>. Z czasem równie mocno zaczęło mnie interesować, jak wszystko działa pod spodem. Zaczęłam budować narzędzia, z których korzystają inni, i często widzę, dlaczego workflow się zepsuje, zanim ktokolwiek inny to zauważy.",
-    about_p2: "Mam <strong>oko do tego, co wygląda dobrze</strong>, i widzę też, dlaczego system za tym się nie skaluje. Używam obu tych rzeczy w pracy.",
-    about_p3: "Mam ponad 10 lat doświadczenia w produkcji CGI i ponad 4 lata jako Senior VFX Artist. Przez ostatnie dwa lata przeszłam w stronę pipeline developmentu i technical direction. Pracuję w całej produkcji VFX: lookdev, efekty proceduralne, integracja DCC, render farma i narzędzia do automatyzacji. <strong>Dla mnie strona kreatywna i techniczna wspierają się nawzajem.</strong>",
-
-    j1_title: "Senior VFX Artist",
-    j1_date: "mar 2022 - cze 2026",
-    j1_company: "Millarc CGI · Kraków",
-    j1_p1: "Tworzyłam efekty wizualne i motion design do reklam, głównie dla chińskich marek technologicznych: Huawei, OnePlus, Xiaomi, OPPO, Vivo i innych. Zrealizowałam <strong>ponad 50 projektów</strong> z reklamy, wizualizacji produktów i motion designu.",
-    j1_p2: "Najbardziej jestem dumna z <strong>motion wallpapers</strong> Millarc. To animowane tapety, które są fabrycznie wgrane na flagowe smartfony. Użytkownik widzi je przy pierwszym włączeniu telefonu. Pisał o naszej pracy <a href=\"https://www.stashmedia.tv/mobile-motion-millarc-shows-off-smartphone-wallpapers/\" target=\"_blank\" style=\"color:var(--accent);\">Stash Magazine</a>. Motion wallpapers to najczęściej oglądany rodzaj motion designu na świecie.",
-    j1_p3: "Specjalizuję się w efektach proceduralnych i symulacjach: volumes, particles, Vellum, RBD, FLIP, VDB, KineFX i generowanie terenu. Buduję własne setupy proceduralne w VEX i Pythonie. Robiłam całą produkcję: opracowanie efektu, lookdev, rendering, compositing i finalną dostawę.",
-    j1_p4: "Wprowadziłam narzędzia AI do naszego workflow produkcyjnego. Prowadziłam rozwój konceptów i kierunek kreatywny efektów. Mentorowałam młodszych artystów i pomagałam zespołowi wdrażać nowe narzędzia i workflow.",
-
-    j2_title: "Pipeline Developer",
-    j2_date: "mar 2024 - cze 2026",
-    j2_company: "Millarc CGI · Kraków",
-    j2_p1: "Zbudowałam, utrzymywałam i dokumentowałam wewnętrzne narzędzia i automatyzację studia. Zespół ponad 20 osób korzystał z nich codziennie. Cały mój kod jest w Gicie. Zbudowałam integrację, która łączy Houdini, 3ds Max, Deadline (render farmę) i Flow Production (ShotGrid) przez REST API i webhooki. Postawiłam też serwer na Dockerze do komunikacji ze Slack API.",
-    j2_p2: "Zautomatyzowałam proces render-to-preview: nazewnictwo plików, generowanie podglądów i śledzenie projektów. Zbudowałam standalone aplikację do raportowania, która łączy się z serwisami do zarządzania czasem pracy i pokazuje KPI w czasie rzeczywistym. Na co dzień używam narzędzi AI (Cursor, Claude Code). Wdrożyłam Ayon jako system zarządzania pipeline'em studia.",
-
-    j3_title: "Digital Artist",
-    j3_date: "mar 2021 - mar 2022",
-    j3_company: "The Digital Bunch · Warszawa",
-    j3_p1: "Prowadziłam projekty wizualizacji architektury i wnętrz i mentorowałam młodszych artystów. Weszłam też w motion design: robiłam animowane prezentacje projektów i sekwencje efektów wizualnych.",
-
-    j4_title: "3D Graphic Artist",
-    j4_date: "sty 2018 - wrz 2019",
-    j4_company: "VERO Digital",
-    j4_p1: "Tworzyłam fotorealistyczne wizualizacje architektury i wnętrz, od rysunków do postprodukcji. Przygotowywałam rendery 360° do prezentacji dla klientów w VR.",
-
-    j5_title: "3D Artist, Freelance",
-    j5_date: "paź 2016 - sty 2018",
-    j5_company: "Freelance",
-    j5_p1: "Tworzyłam wizualizacje architektury i wnętrz. Cały proces robiłam sama: rysunki i referencje, modelowanie, rendering i postprodukcja.",
-
-    j6_title: "Junior Structural Design Engineer",
-    j6_date: "2013 - 2016",
-    j6_company: "BRIG · Białoruś",
-    j6_p1: "Przeprowadziłam inspekcje ponad 50 konstrukcji budowlanych. Przygotowywałam dokumentację techniczną w AutoCAD i Revit. Sama nauczyłam się Revita i wprowadziłam BIM do zespołu.",
-
-    sg1_title: "VFX &amp; Produkcja",
-    sg1_body: "<strong>Houdini</strong> · VEX · Nuke · Fusion<br>Systemy proceduralne · symulacje<br>Lookdev · rendering · compositing<br>USD / Solaris · Redshift · Gaea<br>3ds Max · Photoshop · SpeedTree",
-
-    sg2_title: "AI &amp; Nowe technologie",
-    sg2_body: "ComfyUI · Midjourney · Kling<br>Photoshop AI · ChatGPT<br>Koncept i produkcja wspierane AI",
-
-    sg3_title: "Techniczne / Pipeline",
-    sg3_body: "<strong>Python</strong> · REST APIs · Docker<br>Deadline · Flow Production · Ayon<br>Git / GitHub · własny tooling",
-
-    sg4_title: "Umiejętności miękkie",
-    sg4_body: "Mentoring i dzielenie się wiedzą<br>Praca w zespole i współpraca między działami<br>Strategiczne rozwiązywanie problemów<br>Budowanie długofalowej współpracy",
-
-    sg5_title: "Wykształcenie",
-    sg5_body: "<strong>Inżynier</strong><br>Politechnika Brzeska<br>Białoruś · 2009 - 2014<br><br>Angielski · Polski · Rosyjski",
-
-    port_title: "Wybrane <em>Prace</em>",
-    port_sub: "VFX · Motion Design · Komercyjne",
-    filter_all: "Wszystko",
-    filter_wallpaper: "Tapeta",
-    filter_ai: "AI",
-    filter_product: "Produkt",
-    filter_simulations: "Symulacje",
-    filter_procedural: "Proceduralne",
-    filter_compo: "Compo",
-
-    card_open: "↓ otwórz",
-    label_client: "Klient",
-    label_year: "Rok",
-    label_software: "Software",
-    close_project: "↑ zamknij projekt",
-
-    collapse: "- zwiń",
-    expand: "+ rozwiń",
-    lang_btn: "EN",
-  }
-};
-
-let currentLang = 'en';
-
-function applyLang(lang){
-  currentLang = lang;
+function openModal(j, idx = 0) {
+  const p = PROJECTS[j];
   const t = i18n[lang];
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if(t[key] !== undefined) el.innerHTML = t[key];
-  });
-
-  document.querySelectorAll('.toggle').forEach(btn => {
-    const jobId = btn.getAttribute('data-job');
-    const el = document.getElementById(jobId);
-    btn.textContent = el && el.classList.contains('open') ? t.collapse : t.expand;
-  });
-
-  document.getElementById('lang-btn').textContent = t.lang_btn;
-  document.documentElement.lang = lang;
-
-  // re-render dynamic portfolio content in the new language
-  // (save modal state first — renderMasonry closes any open modal)
-  const savedProject = activeProject, savedIdx = currentIdx;
-  const activeFilterBtn = document.querySelector('.filter-btn.active');
-  renderMasonry(activeFilterBtn ? activeFilterBtn.dataset.filter : 'all');
-
-  if(savedProject){
-    openModal(savedProject);
-    if(savedIdx > 0) setMedia(savedIdx);
-  }
+  activeProject = j;
+  const multi = p.files.length > 1;
+  modalInner.innerHTML = `
+    <button class="modal-x" type="button" data-close>✕</button>
+    <div class="viewer">
+      <div class="viewer-main" id="viewer_main">${mediaHTML(p.files[0])}</div>
+      ${multi ? `
+        <div class="viewer-nav prev" data-step="-1">&#8592;</div>
+        <div class="viewer-nav next" data-step="1">&#8594;</div>
+        <div class="viewer-counter" id="viewer_counter">1 / ${p.files.length}</div>` : ''}
+    </div>
+    <div class="viewer-caption" id="viewer_caption">${p.files[0].label}</div>
+    ${multi ? `<div class="thumb-strip">${thumbsHTML(p)}</div>` : ''}
+    <div class="expanded-info">
+      <p class="card-label">${pad(j + 1)} / ${pad(N)}</p>
+      <h2 class="exp-title">${tr(p, 'title')}</h2>
+      <div class="exp-meta">
+        <div><span class="exp-meta-label">${t.label_client}</span>${p.client}</div>
+        <div><span class="exp-meta-label">${t.label_year}</span>${p.year}</div>
+        <div><span class="exp-meta-label">${t.label_software}</span>${p.software}</div>
+      </div>
+      <p class="exp-desc">${tr(p, 'desc')}</p>
+      <button class="cta-back exp-close" type="button" data-close>${ICON_BACK} ${t.close_project}</button>
+    </div>`;
+  modal.hidden = false;
+  modal.scrollTop = 0;
+  root.style.overflow = 'hidden';
+  watchErrors();
+  if (idx) setMedia(idx);
 }
 
-function toggleLang(){
-  applyLang(currentLang === 'en' ? 'pl' : 'en');
+function closeModal() {
+  if (activeProject === null) return;
+  modal.hidden = true;
+  modalInner.replaceChildren();   // stops any playing video
+  activeProject = null;
+  mediaIdx = 0;
+  root.style.overflow = '';
 }
 
-// init
-applyLang('en');
+function setMedia(i) {
+  if (activeProject === null) return;
+  const files = PROJECTS[activeProject].files;
+  mediaIdx = (i + files.length) % files.length;
+  document.getElementById('viewer_main').innerHTML = mediaHTML(files[mediaIdx]);
+  const counter = document.getElementById('viewer_counter');
+  if (counter) counter.textContent = `${mediaIdx + 1} / ${files.length}`;
+  document.getElementById('viewer_caption').textContent = files[mediaIdx].label;
+  modalInner.querySelectorAll('.thumb-item').forEach((el, k) => el.classList.toggle('active', k === mediaIdx));
+  watchErrors();
+}
 
-/* ─── DOT GRID BACKGROUND (mouse-reactive) ─── */
-(function () {
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d');
+// missing media → placeholder with the expected path
+function watchErrors() {
+  const files = PROJECTS[activeProject].files;
+  modalInner.querySelectorAll('[data-err]').forEach(el => {
+    el.removeAttribute('data-err');
+    el.addEventListener('error', () => { el.outerHTML = placeholderHTML(files[mediaIdx]); }, { once: true });
+  });
+}
 
-  const dotRadius = 1.4;
-  const dotMargin = 28;
-  const spaceForOneDot = 2 * dotMargin;
-  const gridPadding = 20;
-  const smallDotRadius = 0.7;
-  const smallDotMargin = 7;
-  const spaceForSmallDot = 2 * smallDotMargin;
+modal.addEventListener('click', e => {
+  if (e.target === modal || e.target.closest('[data-close]')) return closeModal();
+  const step = e.target.closest('[data-step]');
+  if (step) return setMedia(mediaIdx + Number(step.dataset.step));
+  const thumb = e.target.closest('[data-media]');
+  if (thumb) setMedia(Number(thumb.dataset.media));
+});
 
-  const RADIUS_MULT = 1.95;
+// open from a cube face or a card button
+document.addEventListener('click', e => {
+  const opener = e.target.closest('.face[data-open], .card [data-open]');
+  if (opener) openModal(Number(opener.dataset.open));
+});
 
-  let W = 0, H = 0;
-  let visibleDotCount = 3;
-  let mouseX = -9999, mouseY = -9999;
-
-  function cellHash(i, j) {
-    const n = Math.sin(i * 127.1 + j * 311.7) * 43758.5453;
-    return n - Math.floor(n);
+/* ─── KEYBOARD: ←/→ jump between stops (or media when a project is open) ─── */
+addEventListener('keydown', e => {
+  if (activeProject !== null) {
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowRight') setMedia(mediaIdx + 1);
+    if (e.key === 'ArrowLeft') setMedia(mediaIdx - 1);
+    return;
   }
+  const dir = { ArrowRight: 1, ArrowDown: 1, PageDown: 1, ' ': 1, ArrowLeft: -1, ArrowUp: -1, PageUp: -1 }[e.key];
+  if (!dir || e.target.closest?.('input, textarea, button, a')) return;
+  e.preventDefault();
+  if (!paging) goTo(currentStop() + dir);
+});
 
-  function blobMaxRadius() {
-    return spaceForOneDot * visibleDotCount * RADIUS_MULT;
-  }
+/* ─── PAGED SCROLLING: one wheel gesture = one project, fast animated jump ─── */
+const PAGE_MS = 650;
+let paging = false;
+let lastWheel = 0;
+let needQuiet = false;   // swallow trackpad inertia after a jump
 
-  function dotDistance(mx, my, x, y) {
-    return Math.hypot(x - mx, y - my);
-  }
+const easeInOut = x => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
 
-  function inRevealBlob(mx, my, x, y, i, j) {
-    const dx = x - mx;
-    const dy = y - my;
-    const d = Math.hypot(dx, dy);
-    const angle = Math.atan2(dy, dx);
-    const base = blobMaxRadius();
-    const wobble =
-      1 +
-      0.3 * Math.sin(angle * 2.3 + mx * 0.001) +
-      0.24 * Math.sin(angle * 4.1 - my * 0.001 + 1.7) +
-      0.18 * Math.cos(angle * 6.7 + 0.9);
-    const jitter = 0.68 + 0.5 * cellHash(i, j);
-    return d < base * wobble * jitter;
-  }
+function currentStop() {
+  let best = 0;
+  tops.forEach((top, i) => { if (Math.abs(top - scrollY) < Math.abs(tops[best] - scrollY)) best = i; });
+  return best;
+}
 
-  function cursorProximity(mx, my, x, y) {
-    const t = 1 - dotDistance(mx, my, x, y) / blobMaxRadius();
-    return Math.max(0, Math.min(1, t));
-  }
+function goTo(k) {
+  k = clamp(k, 0, LAST);
+  const from = scrollY;
+  const to = tops[k];
+  if (Math.abs(to - from) < 2) return;
+  paging = true;
+  const t0 = performance.now();
+  const step = now => {
+    const p = clamp((now - t0) / PAGE_MS);
+    scrollTo({ top: from + (to - from) * easeInOut(p), behavior: 'instant' });
+    if (p < 1) requestAnimationFrame(step);
+    else { paging = false; needQuiet = true; }
+  };
+  requestAnimationFrame(step);
+}
 
-  function accentStrength(t) {
-    return t * t;
-  }
+addEventListener('wheel', e => {
+  if (activeProject !== null || e.ctrlKey) return;   // modal scrolls normally, pinch-zoom untouched
+  e.preventDefault();
+  const now = performance.now();
+  const gap = now - lastWheel;
+  lastWheel = now;
+  if (paging) return;
+  if (needQuiet && gap < 180) return;                 // still the same flick → ignore
+  needQuiet = false;
+  if (Math.abs(e.deltaY) < 3) return;
+  goTo(currentStop() + (e.deltaY > 0 ? 1 : -1));
+}, { passive: false });
 
-  function resize() {
-    W = canvas.width = window.innerWidth;
-    H = canvas.height = window.innerHeight;
-    visibleDotCount = W < 600 ? 2 : 3;
-    redraw(mouseX, mouseY);
-  }
+// in-page links (Enter / Back / Next / Back to top) use the same quick jump
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href^="#s"]');
+  if (!a) return;
+  const k = Number(a.getAttribute('href').slice(2));
+  if (Number.isNaN(k)) return;
+  e.preventDefault();
+  goTo(k);
+});
 
-  function gridPos(col, row) {
-    return {
-      x: gridPadding + col * spaceForOneDot,
-      y: gridPadding + row * spaceForOneDot,
+/* ─── LANG ─── */
+document.getElementById('lang_btn').addEventListener('click', () => {
+  lang = lang === 'en' ? 'pl' : 'en';
+  render();
+  if (activeProject !== null) openModal(activeProject, mediaIdx);
+});
+
+/* ─── BACKGROUND: tree of red threads growing up from the bottom ─── */
+(function threadTree() {
+  const cv = document.getElementById('threads');
+  const ctx = cv.getContext('2d');
+  const COLOR = '#d01f1f';   // threads: true red, a step away from the orange cards
+  const GROW_MS = 2600;
+  let segs = [], maxT = 1, W = 0, H = 0;
+
+  // seeded RNG → the same tree on every visit
+  function rng(seed) {
+    return () => {
+      seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
     };
   }
 
-  function drawDot(x, y, fill, stroke, lineWidth) {
-    ctx.fillStyle = fill;
-    ctx.beginPath();
-    ctx.arc(x, y, dotRadius, 0, Math.PI * 2);
-    ctx.fill();
-    if (stroke) {
-      ctx.strokeStyle = stroke;
-      ctx.lineWidth = lineWidth ?? 0.45;
+  function build() {
+    const r = rng(11);
+    const k = Math.max(.6, Math.min(W, H) / 900);
+    const roots = Math.round((W / 45 + 10) * .5);    // 30% fewer than before
+    const queue = [];
+    segs = [];
+    for (let i = 0; i < roots; i++) {
+      queue.push({
+        x: ((i + .15 + r() * .7) / roots) * W * 1.1 - W * .05,
+        y: H + 20,
+        a: -Math.PI / 2 + (r() - .5) * 1.2,
+        w: (5 + r() * 9) * k,
+        len: H * (.9 + r() * .5),          // trunks reach the top of the screen
+        up: 1, down: false, t: 0, depth: 0,
+      });
+    }
+    // a second set hangs from the top edge, so the threads fill the whole background
+    const hang = Math.round(roots * .6);
+    for (let i = 0; i < hang; i++) {
+      queue.push({
+        x: ((i + .3 + r() * .4) / hang) * W * 1.1 - W * .05,
+        y: -20,
+        a: Math.PI / 2 + (r() - .5) * 1.2,
+        w: (3 + r() * 6) * k,
+        len: H * (.5 + r() * .45),
+        up: 1, down: true, t: 0, depth: 0,
+      });
+    }
+    // breadth-first, so the segment cap trims the finest threads, never whole trunks
+    while (queue.length && segs.length < 200000) {
+      let { x, y, a, w, len, up, down, t, depth } = queue.shift();
+      let curv = 0, gone = 0;
+      while (gone < len && w > .22) {
+        const thin = w < 1.5, mid = w < 4;
+        const step = (thin ? 3 : mid ? 4 : 5) * k + 1.5;
+        // jagged growth: per-step jitter + occasional sharp kink
+        curv = (curv + (r() - .5) * .05) * .85;   // gentle smooth bending…
+        a += curv + (r() - .5) * (thin ? .22 : mid ? .11 : .07);
+        // sharp kinks — thick trunks now snap direction too
+        if (r() < .035) a += (r() < .5 ? -1 : 1) * (.2 + r() * .4);   // …with only the occasional soft kink
+        a += ((down ? Math.PI / 2 : -Math.PI / 2) - a) * .016 * up;   // weak pull up (or down for hanging ones)
+        const nx = x + Math.cos(a) * step, ny = y + Math.sin(a) * step;
+        // thickest at the bottom of the screen, tapering toward the top
+        const rel = Math.min(1, Math.max(0, y / H));
+        const taper = .45 + .55 * (down ? 1 - rel : rel);   // thickest at the edge it grows from
+        segs.push({ x0: x, y0: y, x1: nx, y1: ny, w: w * taper * (.8 + r() * .4), t });   // knotty width
+        x = nx; y = ny; t += step; gone += step;
+        w *= .994;
+        // branch far more in the lower part of the screen → dense tangle at the bottom
+        const low = down ? 1 - Math.min(1, Math.max(0, y / H)) : Math.min(1, Math.max(0, y / H));
+        if (r() < (thin ? .0075 : .03) * (.55 + .45 * low) && depth < 9) {   // branch at every height; fewer fine wires
+          const side = r() < .5 ? -1 : 1;
+          const reach = r() < .14;          // a few long hairs climb into the open sky
+          const cw = w * (.3 + r() * .3);
+          if (cw >= 1.5 || r() < .5) {      // skip half of the hair-thin offshoots
+            queue.push({
+              x, y, t, depth: depth + 1,
+              a: a + side * (.4 + r() * .9),
+              w: cw,
+              len: reach ? H * (.45 + r() * .5) : (len - gone) * (.4 + r() * .6) + 70 * k,
+              up: reach ? 1.4 : .6, down,
+            });
+            w *= .88;
+          }
+        }
+        if (y < -60 || y > H + 60 || x < -100 || x > W + 100) break;
+      }
+    }
+    segs.sort((p, q) => p.t - q.t);
+    maxT = segs.length ? segs[segs.length - 1].t : 1;
+  }
+
+  function size() {
+    const dpr = Math.min(devicePixelRatio || 1, 2);
+    W = cv.clientWidth || innerWidth; H = cv.clientHeight || innerHeight;
+    cv.width = Math.round(W * dpr);
+    cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.lineCap = 'round';
+    ctx.strokeStyle = COLOR;
+  }
+
+  const THICK = 2;   // thread thickness multiplier
+
+  function drawRange(from, to) {
+    ctx.strokeStyle = COLOR;
+    for (let i = from; i < to; i++) {
+      const s = segs[i];
+      ctx.globalAlpha = Math.min(1, .75 + s.w * .15);
+      ctx.lineWidth = Math.max(.9, s.w) * THICK;   // hair-thin threads stay visible
       ctx.beginPath();
-      ctx.moveTo(x, y);
-      ctx.lineTo(x - dotMargin, y);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x + dotMargin, y);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x, y + dotMargin);
-      ctx.moveTo(x, y);
-      ctx.lineTo(x, y - dotMargin);
+      ctx.moveTo(s.x0, s.y0);
+      ctx.lineTo(s.x1, s.y1);
       ctx.stroke();
     }
   }
 
-  function drawDotNearCursor(x, y, t) {
-    const a = accentStrength(t);
-    const fill = `rgba(255, 255, 255, ${0.44 + 0.5 * a})`;
-    const stroke = `rgba(255, 255, 255, ${0.42 + 0.56 * a})`;
-    const lineW = 0.42 + 0.95 * a;
-    drawDot(x, y, fill, stroke, lineW);
-  }
-
-  function drawSmallDot(x, y, color, radius) {
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(x, y, radius ?? smallDotRadius, 0, Math.PI * 2);
-    ctx.fill();
-  }
-
-  function drawSmallDotNearCursor(x, y, t) {
-    const a = accentStrength(t);
-    const alpha = 0.38 + 0.52 * a;
-    const radius = smallDotRadius + 0.65 * a;
-    const color =
-      a > 0.25
-        ? `rgba(255, 255, 255, ${alpha})`
-        : `rgba(200, 200, 200, ${alpha})`;
-    drawSmallDot(x, y, color, radius);
-  }
-
-  function drawInteractiveGrid(mx, my) {
-    const cols = Math.floor((W - gridPadding) / spaceForOneDot);
-    const rows = Math.floor((H - gridPadding) / spaceForOneDot);
-
-    for (let i = 0; i < cols; i++) {
-      for (let j = 0; j < rows; j++) {
-        const { x, y } = gridPos(i, j);
-        if (inRevealBlob(mx, my, x, y, i, j)) {
-          drawDotNearCursor(x, y, cursorProximity(mx, my, x, y));
-        }
-      }
-    }
-
-    for (let i = 0; i < Math.floor((W - gridPadding) / spaceForSmallDot); i++) {
-      for (let j = 0; j < Math.floor((H - gridPadding) / spaceForSmallDot); j++) {
-        const x = gridPadding + i * spaceForSmallDot;
-        const y = gridPadding + j * spaceForSmallDot;
-        if (inRevealBlob(mx, my, x, y, i, j)) {
-          drawSmallDotNearCursor(x, y, cursorProximity(mx, my, x, y));
-        }
-      }
-    }
-  }
-
-  function redraw(mx, my) {
+  function render(animate) {
+    size();
+    build();
     ctx.clearRect(0, 0, W, H);
-    drawInteractiveGrid(mx, my);
+    if (!animate || matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      drawRange(0, segs.length);
+      return;
+    }
+    let done = 0;
+    const t0 = performance.now();
+    const frame = now => {
+      const p = Math.min(1, (now - t0) / GROW_MS);
+      const limit = maxT * (1 - Math.pow(1 - p, 2));
+      let end = done;
+      while (end < segs.length && segs[end].t <= limit) end++;
+      drawRange(done, end);
+      done = end;
+      if (p < 1) requestAnimationFrame(frame);
+      else drawRange(done, segs.length);
+    };
+    requestAnimationFrame(frame);
   }
 
-  window.addEventListener('resize', resize);
-  window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    redraw(mouseX, mouseY);
+  let lastW = 0, lastH = 0, timer;
+  addEventListener('resize', () => {
+    clearTimeout(timer);
+    timer = setTimeout(() => {
+      // ignore the mobile address bar showing/hiding
+      if (innerWidth === lastW && Math.abs(innerHeight - lastH) < 120) return;
+      lastW = innerWidth; lastH = innerHeight;
+      render(false);
+    }, 200);
   });
 
-  resize();
+  lastW = innerWidth; lastH = innerHeight;
+  render(true);
 })();
+
+/* ─── INIT ─── */
+scene.hidden = false;
+hud.hidden = false;
+render();
+requestAnimationFrame(() => requestAnimationFrame(() => {
+  document.body.dataset.state = 'ready';
+  measure();
+  update();
+}));
 </script>
 </body>
 </html>
