@@ -84,7 +84,6 @@
   /* highlighted slat: black box, white type, a small turn like a slat tilting */
   .slat:hover, .slat.lit, .slat[aria-current="true"] { background: var(--ink); color: #fff; transform: rotateX(-14deg); }
   .slat[aria-current="true"] .n { color: #fff; }
-  .blind.has-open .slat:not([aria-current="true"]):not(:hover):not(.lit) { transform: rotateX(20deg); }
 
   /* ── right panel ── */
   .panel { position: relative; height: 100%; overflow: hidden; }
@@ -210,7 +209,7 @@
 
 <script>
 /* ─── DATA ─── same projects and files as the live site, plus a look/build pair for the slider */
-const A = '../assets/';
+const A = 'assets/';
 const PROJECTS = [
   { id: 'proj-01', title: 'Huawei Mate X6', kind: 'Motion wallpaper', client: 'Huawei', year: 2024,
     software: 'Houdini · VEX · Redshift · Fusion', tags: 'Vellum · KineFX · POP',

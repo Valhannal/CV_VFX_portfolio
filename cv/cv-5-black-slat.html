@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Hanna Kachurouskaya — CV · Black slat</title>
+<link rel="stylesheet" href="cv.css">
+<style>
+  /* 5. Black slat: the name sits in the portfolio's highlighted state, black with white type;
+     section heads are small black slats too */
+  .sheet { display: grid; grid-template-rows: auto 1fr 20mm; }
+  .bar { display: grid; grid-template-columns: 30mm 1fr auto; gap: 7mm; align-items: end; padding: 9mm 12mm 7mm; background: var(--ink); color: #fff; }
+  .bar .photo { aspect-ratio: 4 / 5; background: #222; }
+  .bar .photo .ph { color: #aaa; border-color: #555; }
+  .bar h1 { color: var(--page); font-size: 32pt; font-weight: 700; letter-spacing: -.04em; line-height: .92; }
+  .bar .role { margin-top: 2.5mm; font-size: 11pt; font-weight: 500; opacity: .85; }
+  .bar .links { text-align: right; line-height: 1.6; }
+
+  .cols { display: grid; grid-template-columns: 1.6fr 1fr; gap: 0; min-height: 0; }
+  .cols > div { padding: 6mm 8mm 0 12mm; }
+  .cols > div + div { padding: 6mm 12mm 0 7mm; border-left: var(--hair) solid var(--ink); }
+  .head-slat { display: block; font-family: var(--sans); font-size: 9pt; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; color: var(--ink); padding: 0; margin: 5mm 0 2mm; }
+  .head-slat:first-child { margin-top: 0; }
+  .profile { font-size: 10pt; line-height: 1.45; margin-bottom: 1mm; }
+  .row { padding: 1.6mm 0; font-size: 8.3pt; line-height: 1.33; }
+  .job { display: grid; grid-template-columns: 1fr auto; align-items: baseline; }
+  .job h3 { font-size: 10.5pt; letter-spacing: -.02em; }
+  .job p, .job ul { grid-column: 1 / -1; margin-top: 1mm; }
+  .job ul { margin-block: 1mm 0; padding-left: 3.6mm; }
+  .job li + li { margin-top: .6mm; }
+  .job a { text-decoration: underline; text-underline-offset: .4mm; }
+  .job .org { display: block; font-size: 8.6pt; font-weight: 500; letter-spacing: 0; color: var(--quiet); margin-top: .4mm; }
+  .proj { display: grid; grid-template-columns: 9mm 36mm 1fr; gap: 2.5mm; align-items: baseline; padding-block: 1.35mm; }
+  .proj b { font-size: 9pt; }
+  .skill b { display: block; font-size: 8.8pt; }
+  .edu h3 { font-size: 8.8pt; letter-spacing: 0; }
+  .edu .org { font-size: 8.3pt; font-weight: 400; color: var(--ink); margin-top: 0; }
+  .kv { display: grid; grid-template-columns: 18mm 1fr; gap: 2mm; }
+  .kv > span:first-child { color: var(--quiet); }
+  .foot { display: grid; grid-template-columns: repeat(6, 1fr); gap: var(--hair); background: var(--ink); border-top: var(--hair) solid var(--ink); }
+  .foot img { width: 100%; height: 100%; object-fit: cover; display: block; filter: grayscale(1); }
+</style>
+</head>
+<body>
+<article class="sheet" id="cv"></article>
+<script src="cv-data.js"></script>
+<script>
+document.getElementById('cv').innerHTML = `
+  <header class="bar">
+    ${H.photo()}
+    <div><h1>${CV.name}</h1></div>
+    <div class="links mono">${H.contactLines()}</div>
+  </header>
+  <div class="cols">
+    <div>
+      <p class="head-slat mono">About</p>
+      <p class="profile">${CV.profile}</p>
+      <p class="head-slat mono">Experience</p><div class="rows">${H.jobRows()}</div>
+    </div>
+    <div>
+      <p class="head-slat mono">Skills</p><div class="rows">${H.skillRows()}</div>
+      <p class="head-slat mono">Details</p><div class="rows">${H.detailRows()}</div>
+      <p class="head-slat mono">Education</p><div class="rows">${H.eduRows()}</div>
+    </div>
+  </div>
+  <footer class="foot">${H.workStrip(6)}</footer>`;
+
+</script>
+</body>
+</html>
