@@ -2,2138 +2,482 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hanna Kachurouskaya — VFX Portfolio</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hanna Kachurouskaya — FX / Technical Artist</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@700&text=0123456789&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&display=swap">
 <style>
-@layer reset, base, layout, cube, components, overrides;
-
-@property --arc-start { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
-@property --arc-end   { syntax: "<percentage>"; inherits: false; initial-value: 0%; }
-
-@layer reset {
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-}
-
-@layer base {
+  /* Remix of 05 (typographic index) + 03 (look / build slider).
+     Left: the project list as a venetian blind. Right: thumbnails, or the open project. */
   :root {
-    color-scheme: light;
+    --sky: #ececec;
+    --sky-dark: #bdbdbd;
+    --mist: #f6f6f6;
+    --ink: #000;
+    --red: #d42420;
+    --blue: #2f55ff;
 
-    /* palette sampled from the red-branches-on-grey-sky reference */
-    --c-indigo: #c2cbdb;   /* sky */
-    --c-ink: #000;
-    --c-violet: #9aa6bd;   /* darker cloud */
-    --c-coral: #d42420;    /* branch red */
-    --c-teal: #aeb8ca;     /* mid sky */
-    --c-moss: #f0683f;     /* lighter branch */
-    --c-ultra: #b3341a;    /* deep branch */
-    --c-mist: #eef1f6;     /* pale sky */
-    --c-blue: #2f55ff;     /* strong blue accent: Open project */
-    --spectrum: linear-gradient(90deg, var(--c-ultra), var(--c-coral), var(--c-moss));
+    --sans: "Space Grotesk", system-ui, "Segoe UI", sans-serif;
+    --mono: ui-monospace, "SFMono-Regular", Consolas, monospace;
 
-    --bg: var(--c-indigo);
-    --bg-light: color-mix(in oklch, var(--bg) 60%, white);
-    --bg-edge: color-mix(in oklch, var(--bg) 85%, var(--c-violet));
-    --fg: #000;
-    --muted: #2a2d33;
-    --soft: var(--c-mist);
-    --border: color-mix(in oklch, var(--c-violet) 50%, var(--c-mist));
-    --border-strong: var(--c-violet);
-    --accent: var(--c-coral);
-    --shade-color: var(--c-ink);
-    --shadow-color: #2b3448;
-    --sheen-color: oklch(100% 0 0);
-
-    --cube-x: 50%;
-    --cube-y: 50%;
-    --light-x: var(--cube-x);
-    --light-y: var(--cube-y);
-
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    --font-numeral: "Inter", var(--font-sans);
-    --font-mono: ui-monospace, "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-
-    --text-base: 1rem;
-    --text-sm: .875rem;
-    --text-xs: .8125rem;
-
-    --line: .5px;
-
-    --card-solid: #d42420;   /* red sheets and strips */
-    /* blue → red window, like the collage blocks */
-    --card-paint: color-mix(in oklch, var(--card-solid) 62%, transparent);   /* see-through, frosted strips */
-    --card-bg: color-mix(in oklch, var(--card-solid) 92%, transparent);
-    --card-shadow:
-      inset 0 1px 0 oklch(100% 0 0 / .06),
-      0 1px 2px color-mix(in oklch, var(--shadow-color) 8%, transparent),
-      0 16px 40px -16px color-mix(in oklch, var(--shadow-color) 22%, transparent);
-    /* page column, Behance-style: max width, black on the sides */
-    --frame-w: min(100vw, 1320px);
-    --cube-size: min(70svh, calc(var(--frame-w) * .56), var(--cube-max, 1024px));
-    /* big centred sheet; title strip above it, description strip below */
-    --sheet-h: min(52svh, calc((var(--frame-w) - 3rem) / 1.69));
-    --sheet-w: calc(var(--sheet-h) * 1.69);
-    --ui-inset: 1.5rem;
-    --reveal-duration: .5s;
-    --reveal-delay: 80ms;
-    --reveal-stagger: 60ms;
-    --reveal-ease: cubic-bezier(.2, .7, .2, 1);
-    --numeral-size: clamp(4.5rem, 7vw, 8rem);
-    --numeral-color: #000;
-    --face-fade: .35s;
-    --spinner-exit: .2s;
-    --scene-fade: .7s;
+    --head-h: 3.5rem;
+    --list-w: minmax(0, 44fr);
+    --panel-w: minmax(0, 56fr);
+    --ease: cubic-bezier(.2, .7, .2, 1);
+    --hair: 1px;
+    --slat-gap: var(--hair);
+    --slat-h: calc((100svh - var(--head-h)) / 18 - var(--slat-gap));
+    --slat: var(--sky);   /* same grey as the page; only the black gaps draw the blind */
   }
 
-  @media (prefers-reduced-motion: no-preference) {
-    html { scroll-behavior: smooth; }
+  * , *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { font-family: var(--sans); color: var(--ink); background: var(--sky); overflow: hidden; -webkit-font-smoothing: antialiased; }
+  a { color: inherit; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .mono { font-family: var(--mono); font-size: .75rem; letter-spacing: .01em; }
+
+  /* ── header ── */
+  header {
+    height: var(--head-h); display: grid; grid-template-columns: var(--list-w) var(--panel-w);
+    align-items: center; border-bottom: var(--hair) solid var(--ink);
+  }
+  header .who { padding-inline: 1.5rem; font-weight: 700; font-size: clamp(1rem, calc(var(--slat-h) * .46), 2rem); letter-spacing: -.03em; line-height: 1; white-space: nowrap; }
+  header .who span { font-size: .75rem; letter-spacing: .01em; vertical-align: middle; }
+  header .who span { font-weight: 400; margin-left: .75rem; }
+  header nav { display: flex; justify-content: flex-end; gap: 1.5rem; padding-inline: 1.5rem; }
+  header nav a { text-decoration: none; }
+  header nav a:hover { text-decoration: underline; }
+  header .who span, header nav a { font-family: var(--mono); font-size: .68rem; font-weight: 400; letter-spacing: .01em; opacity: .4; transition: opacity .15s; }
+  header nav a:hover, header nav a[aria-current="page"] { opacity: .85; text-decoration: none; }
+
+  main { height: calc(100% - var(--head-h)); display: grid; grid-template-columns: var(--list-w) var(--panel-w); }
+
+  /* ── the blind ──
+     Flat slats with a thin gap between them; the ladder strings show only in the gaps.
+     Below the blind the column is the same grey as the rest of the page. */
+  .blind { position: relative; height: 100%; overflow: hidden; background: var(--sky); border-right: var(--hair) solid var(--ink); }
+
+  .slats {
+    position: relative; list-style: none; margin: 0; padding: 0 0 var(--slat-gap);
+    display: grid; grid-auto-rows: var(--slat-h); gap: var(--slat-gap); perspective: 900px;
+    background: var(--ink);   /* the gaps between slats */
   }
 
-  html { background: #000; }
-
-  body {
-    min-block-size: 100dvh;
-    background: transparent;   /* black comes from <html>; an opaque body would cover the sky layer */
-    color: var(--fg);
-    font-family: var(--font-sans);
-    font-size: var(--text-base);
-    line-height: 1.6;
+  .slat {
+    position: relative; z-index: 1; display: grid; grid-template-columns: 2.5rem 1fr auto; align-items: center; gap: .75rem;
+    width: 100%; height: 100%; padding: 0 1.25rem 0 1.5rem; border: 0; cursor: pointer; text-align: left;
+    background: var(--slat);
+    transform: rotateX(0deg); transition: transform .3s var(--ease), background .15s, color .15s;
   }
-
-  body::before {
-    content: "";
-    position: fixed;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 100%;
-    z-index: -1;
-    /* sky: deeper blue at the bottom fading to pale blue at the top */
-    background: linear-gradient(to top, #3f5ca3 0%, #6584c4 45%, #9db3e0 100%);
-    pointer-events: none;
+  .slat .n { font: 700 .8rem var(--sans); }
+  .slat .t {
+    font-family: var(--sans); font-weight: 700; letter-spacing: -.035em; line-height: 1;
+    font-size: clamp(1rem, calc(var(--slat-h) * .56), 2.4rem);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
+  .slat .meta { text-align: right; font-size: .68rem; line-height: 1.25; white-space: nowrap; opacity: .4; transition: opacity .15s; }
+  .slat:hover .meta, .slat.lit .meta, .slat[aria-current="true"] .meta { opacity: .85; }
 
-  /* ── smeared paint background ── */
-  .paint {
-    position: fixed;
-    inset: -10vmax;
-    z-index: -1;
-    overflow: hidden;
-    pointer-events: none;
+  /* highlighted slat: black box, white type, a small turn like a slat tilting */
+  .slat:hover, .slat.lit, .slat[aria-current="true"] { background: var(--ink); color: #fff; transform: rotateX(-14deg); }
+  .slat[aria-current="true"] .n { color: #fff; }
+  .blind.has-open .slat:not([aria-current="true"]):not(:hover):not(.lit) { transform: rotateX(20deg); }
+
+  /* ── right panel ── */
+  .panel { position: relative; height: 100%; overflow: hidden; }
+  .view { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; }
+  .view[hidden] { display: none; }
+
+  /* thumbnails */
+  .thumbs-foot { display: flex; justify-content: space-between; align-items: baseline; gap: 2rem; padding: 0 1.5rem 1.5rem; opacity: .5; }
+  .thumbs-foot p { margin: 0; max-width: 60ch; font-size: .8rem; line-height: 1.45; }
+  .thumbs { columns: 3 220px; column-gap: .75rem; padding: 1.5rem 1.5rem .75rem; }
+  .thumb {
+    display: block; width: 100%; margin: 0 0 .75rem; padding: 0; border: 0; background: #000; cursor: pointer;
+    break-inside: avoid; position: relative; overflow: hidden;
   }
-
-  .paint span {
-    position: absolute;
-    inset-block-start: var(--y);
-    inset-inline-start: var(--x);
-    inline-size: var(--w);
-    block-size: var(--h);
-    border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%;
-    background: var(--c);
-    opacity: var(--o, .7);
-    filter: blur(var(--b, 60px));
-    rotate: var(--r, 0deg);
-    animation: paint-drift var(--t, 40s) ease-in-out infinite alternate;
-    animation-delay: var(--d, 0s);
+  .thumb img { width: 100%; display: block; transition: transform .5s var(--ease), filter .35s; }
+  .thumb .cap {
+    position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; gap: .5rem;
+    padding: .45rem .6rem; background: var(--ink); color: #fff; text-align: left;
+    translate: 0 100%; transition: translate .25s var(--ease);
   }
+  .thumb:hover img, .thumb.lit img { transform: scale(1.03); }
+  .thumb:hover .cap, .thumb.lit .cap { translate: 0 0; }
+  .thumbs.dim .thumb:not(.lit):not(:hover) img { filter: grayscale(1) contrast(1.05); }
 
-  /* light streaks over the colour, like wet paint dragged sideways */
-  .paint::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background:
-      linear-gradient(178deg, transparent 18%, oklch(100% 0 0 / .14) 22%, transparent 27%),
-      linear-gradient(181deg, transparent 52%, oklch(100% 0 0 / .1) 56%, transparent 61%),
-      linear-gradient(179deg, transparent 74%, oklch(100% 0 0 / .08) 77%, transparent 82%);
-    filter: blur(12px);
+  /* project view */
+  .proj-bar {
+    position: sticky; top: 0; z-index: 5; display: grid; grid-template-columns: auto 1fr auto auto; align-items: center; gap: 1rem;
+    padding: .7rem 1.5rem; background: var(--ink); color: #fff;
   }
-
-  /* ── thread tree (generated on canvas) ── */
-  .threads {
-    position: fixed;
-    inset: 0;
-    z-index: -1;
-    inline-size: 100%;
-    block-size: 100%;
-    pointer-events: none;
+  .proj-bar .n { font: 700 1rem var(--sans); color: #fff; opacity: .6; }
+  .proj-bar h1 { margin: 0; font: 700 clamp(1.1rem, 1.7vw, 1.5rem)/1.1 var(--sans); letter-spacing: -.03em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .proj-bar .step { display: flex; gap: .25rem; }
+  .icon-btn {
+    min-width: 2.25rem; height: 2.25rem; display: inline-grid; place-items: center; padding: 0 .6rem;
+    border: 1px solid rgb(255 255 255 / .35); background: transparent; color: #fff; cursor: pointer;
   }
+  .icon-btn:hover { background: #fff; color: #000; }
 
-  /* plain black panels on both sides of the page column */
-  .side-glass {
-    position: fixed;
-    inset-block: 0;
-    z-index: 1;
-    inline-size: calc(50% - min(50%, 660px));
-    background: #000;   /* plain black sides */
-    pointer-events: none;
+  .proj-body { padding: 1.25rem 1.5rem 3rem; }
+
+  /* look / build slider (from 03) */
+  .compare { position: relative; background: #000; overflow: hidden; cursor: ew-resize; touch-action: pan-y; user-select: none; }
+  .compare .layer { position: absolute; inset: 0; }
+  .compare .layer > * { width: 100%; height: 100%; object-fit: contain; display: block; }
+  .compare .build { clip-path: inset(0 0 0 var(--x, 50%)); background: #000; }
+  .compare .build::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background-image: linear-gradient(rgb(255 255 255 / .1) 1px, transparent 1px), linear-gradient(90deg, rgb(255 255 255 / .1) 1px, transparent 1px);
+    background-size: 40px 40px;
   }
-
-  .side-glass.left  { inset-inline-start: 0; }
-  .side-glass.right { inset-inline-end: 0; }
-
-  @keyframes paint-drift {
-    0%   { translate: 0 0; scale: 1; border-radius: 62% 38% 55% 45% / 48% 60% 40% 52%; }
-    50%  { translate: var(--dx, 4vw) var(--dy, 2vh); scale: 1.08 .94; border-radius: 40% 60% 35% 65% / 60% 38% 62% 40%; }
-    100% { translate: calc(var(--dx, 4vw) * -.6) calc(var(--dy, 2vh) * 1.4); scale: .95 1.06; border-radius: 55% 45% 68% 32% / 42% 55% 45% 58%; }
+  .compare .handle { position: absolute; top: 0; bottom: 0; left: var(--x, 50%); width: 2px; translate: -1px; background: #fff; pointer-events: none; }
+  .compare .handle::after {
+    content: "⟷"; position: absolute; top: 50%; left: 50%; translate: -50% -50%; width: 40px; height: 40px;
+    display: grid; place-items: center; border-radius: 50%; background: #fff; color: #000;
   }
+  .compare .side { position: absolute; top: .75rem; padding: .3rem .55rem; color: #fff; pointer-events: none; font-weight: 700; }
+  .compare .side.look { left: .75rem; background: #fff; color: #000; }
+  .compare .side.tech { right: .75rem; background: #000; color: #fff; box-shadow: inset 0 0 0 1px #fff; }
 
+  .facts { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin: 1.25rem 0 2rem; }
+  .facts p { margin: 0; font-size: 1.02rem; line-height: 1.55; max-width: 56ch; }
+  .facts dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .35rem .9rem; align-content: start; }
+  .facts dt { color: #3a3f48; }
+  .facts dd { margin: 0; }
+  .how { margin: .9rem 0 0; padding: 0; list-style: none; display: grid; gap: .3rem; }
+  .how li::before { content: "+ "; font-weight: 700; }
+
+  .materials-h { display: flex; justify-content: space-between; align-items: baseline; border-top: 1px solid var(--ink); padding: .6rem 0 .9rem; }
+  .materials-h b { font-weight: 900; font-size: 1.1rem; letter-spacing: -.02em; }
+  .materials { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .materials figure { margin: 0; }
+  .materials figure.wide { grid-column: 1 / -1; }
+  .materials .frame { background: #000; }
+  .materials video, .materials img { width: 100%; display: block; max-height: 78vh; object-fit: contain; margin-inline: auto; }
+  .materials figcaption { padding-top: .4rem; }
+
+  .next { margin-top: 2.5rem; width: 100%; display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.25rem; border: 0; cursor: pointer; background: var(--ink); color: #fff; text-align: left; }
+  .next b { font: 700 1.5rem/1 var(--sans); letter-spacing: -.03em; }
+  .next:hover { background: #333; }
+
+  @media (max-width: 900px) {
+    body { overflow: auto; }
+    header, main { grid-template-columns: 1fr; }
+    header nav { display: none; }
+    main { height: auto; }
+    .blind { height: auto; border-right: 0; }
+    .slats { grid-auto-rows: 4.25rem; }
+    .slat .meta { display: none; }
+    .panel { height: auto; }
+    .view { position: static; overflow: visible; }
+    .view.project { position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: var(--sky); }
+    .facts, .materials { grid-template-columns: 1fr; }
+  }
   @media (prefers-reduced-motion: reduce) {
-    .paint span { animation: none; }
+    .slat, .thumb img, .thumb .cap { transition: none; }
   }
-
-  a { color: inherit; text-underline-offset: .15em; }
-  ::selection { background: var(--fg); color: var(--bg); }
-  :focus-visible { outline: 2px solid var(--fg); outline-offset: 3px; }
-}
-
-@layer layout {
-  .frame-back {
-    position: fixed;
-    inset-block: 0;
-    inset-inline-start: 0;
-    inline-size: 100%;
-    z-index: 0;
-    overflow: hidden;
-    transform: translateZ(0);
-    pointer-events: none;
-  }
-
-  .scene {
-    position: fixed;
-    inset: 0;
-    z-index: 0;
-    display: grid;
-    place-items: center;
-    perspective: 1100px;
-    pointer-events: none;
-  }
-
-  /* fixed one-cell grid: the oversized glow must not stretch the row and push the deck down */
-  .scene { grid-template: 100% / 100%; }
-  .scene > * { grid-area: 1 / 1; }
-
-  .page-loader {
-    --s: var(--cube-size);
-    position: fixed;
-    inset-block-start: var(--cube-y);
-    inset-inline-start: var(--cube-x);
-    z-index: 0;
-    display: grid;
-    translate: -50% -50%;
-    pointer-events: none;
-  }
-
-  [data-state]:not([data-state="loading"]) .page-loader .face-spinner { scale: .5; opacity: 0; }
-
-  .stops { position: relative; z-index: 1; min-block-size: calc(100vh + 1px); max-inline-size: var(--frame-w); margin-inline: auto; }
-  .pen-list { list-style: none; }
-
-  .stop {
-    display: flex;
-    align-items: center;
-    min-block-size: 100svh;
-    padding: clamp(1rem, 6svh, 4rem) clamp(1.5rem, 5vw, 5rem);
-  }
-
-  .stop.is-end { justify-content: flex-end; }
-
-  /* intro card sits higher, clear of the name on the cube face */
-  @media (min-width: 56.3em), (orientation: landscape) and (min-height: 30.01em) {
-    #s0 { align-items: flex-start; padding-block-start: clamp(4rem, 9svh, 7rem); }
-  }
-
-  .hud {
-    position: fixed;
-    inset-block-start: var(--ui-inset);
-    inset-inline-end: calc(50% - min(50%, 660px) + var(--ui-inset));
-    z-index: 2;
-    display: grid;
-    justify-items: end;
-    gap: .5rem;
-    color: #3a3f55;   /* muted dark grey counter */
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    pointer-events: none;
-  }
-
-  .lang-btn {
-    position: fixed;
-    inset-block-start: var(--ui-inset);
-    inset-inline-start: calc(50% - min(50%, 660px) + var(--ui-inset));
-    z-index: 3;
-    padding: .25rem .625rem;
-    border: var(--line) solid var(--border-strong);
-    background: var(--card-bg);
-    color: #10131a;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    cursor: pointer;
-    -webkit-backdrop-filter: blur(12px);
-    backdrop-filter: blur(12px);
-    transition: color .2s, border-color .2s;
-  }
-
-  .lang-btn:hover { border-color: var(--fg); color: var(--fg); }
-
-  @media (max-height: 30em) { .hud { display: none; } }
-
-  .progress {
-    display: block;
-    inline-size: 7.5rem;
-    block-size: 1px;
-    overflow: hidden;
-    background: oklch(70% .01 300 / .3);
-  }
-
-  .progress-fill {
-    display: block;
-    block-size: 100%;
-    background: #3a3f55;
-    transform: scaleX(0);
-    transform-origin: left;
-  }
-
-  @media (max-width: 56.25em) and (orientation: portrait) {
-    :root {
-      --ui-inset: 1rem;
-      --scene-min: 4.5rem;
-      --card-reserve: 17rem;
-      --cube-size: min(calc(100vw - 2 * var(--ui-inset)), 26rem, var(--cube-max, 26rem), calc((100svh - var(--scene-min) - var(--card-reserve)) / 1.2));
-      --scene-top: max(var(--scene-min), calc((100svh - var(--card-reserve) - var(--cube-size) * 1.2) / 2));
-      --cube-y: calc(var(--scene-top) + var(--cube-size) / 2);
-    }
-
-    .scene {
-      place-items: start center;
-      padding-block-start: var(--scene-top);
-      perspective-origin: 50% calc(var(--scene-top) + var(--cube-size) / 2);
-    }
-
-    .stop, .stop.is-end {
-      align-items: flex-end;
-      justify-content: stretch;
-      padding: 0 1rem 1rem;
-    }
-  }
-
-  @media (max-width: 56.25em) and (orientation: portrait) and (max-height: 42em) {
-    :root { --scene-min: 4rem; }
-  }
-
-  @media (orientation: landscape) and (max-height: 30em) {
-    :root {
-      --cube-size: min(64svh, 40vw, var(--cube-max, 1024px));
-      --scene-inset: clamp(1.5rem, 5vw, 5rem);
-      --cube-x: calc(var(--scene-inset) + var(--cube-size) / 2);
-    }
-
-    .scene {
-      place-items: center start;
-      padding-inline-start: var(--scene-inset);
-      perspective-origin: calc(var(--scene-inset) + var(--cube-size) / 2) 50%;
-    }
-
-    .stop, .stop.is-end { justify-content: flex-end; padding-block: 1rem; }
-  }
-}
-
-@layer cube {
-  .cube-shadow {
-    --shadow-height: .14;
-    --shadow-gap: .04;
-    inline-size: var(--cube-size);
-    block-size: var(--cube-size);
-    background: radial-gradient(closest-side, color-mix(in oklch, var(--shadow-color) 30%, transparent), transparent) center / 100% calc(var(--shadow-height) * 100%) no-repeat;
-    translate: calc(var(--cube-size) * var(--shadow-shift, 0)) calc(var(--cube-size) * (.5 + var(--shadow-gap) + var(--shadow-height) / 2));
-    scale: var(--shadow-spread, 1) 1;
-    opacity: var(--shadow-alpha, 1);
-    pointer-events: none;
-    transition: filter var(--scene-fade) ease var(--spinner-exit);
-  }
-
-  .cube {
-    --s: var(--cube-size);
-    position: relative;
-    inline-size: var(--s);
-    block-size: var(--s);
-    transform-style: preserve-3d;
-    transform: translateZ(calc(var(--s) / -2)) rotateX(-90deg) rotateY(0deg);
-    will-change: transform;
-    transition: translate var(--scene-fade) var(--reveal-ease) var(--spinner-exit);
-  }
-
-  .face {
-    position: absolute;
-    inset: 0;
-    overflow: hidden;
-    backface-visibility: hidden;
-    background: var(--card-paint);   /* see-through, frosted like the strips */
-    box-shadow: inset 0 0 0 var(--line) oklch(100% 0 0 / .18);
-    outline: 1px solid transparent;   /* smoother anti-aliased edges in 3D */
-    transition: opacity var(--scene-fade) ease var(--spinner-exit);
-  }
-
-  /* halo around the box */
-  .cube-glow {
-    inline-size: calc(var(--cube-size) * 1.7);
-    block-size: calc(var(--cube-size) * 1.7);
-    border-radius: 50%;
-    background:
-      radial-gradient(closest-side at 45% 45%, oklch(100% 0 0 / .7), transparent 90%),
-      radial-gradient(closest-side at 60% 60%, oklch(70% .17 35 / .18), transparent 90%);
-    filter: blur(calc(var(--cube-size) * .07));
-    pointer-events: none;
-    animation: halo-breathe 6s ease-in-out infinite alternate;
-    transition: opacity var(--scene-fade) ease var(--spinner-exit);
-  }
-
-  [data-state="loading"] .cube-glow { opacity: 0; }
-
-  @keyframes halo-breathe {
-    from { scale: .94; opacity: .7; }
-    to   { scale: 1.06; opacity: 1; }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .cube-glow { animation: none; }
-  }
-
-
-  [data-state="loading"] .face { opacity: 0; }
-  [data-state="loading"] .cube { translate: 0 1.5rem; }
-  [data-state="loading"] .cube-shadow { filter: opacity(0); }
-
-  .face[data-face="front"]  { transform: translateZ(calc(var(--s) / 2)); }
-  .face[data-face="back"]   { transform: rotateY(180deg) translateZ(calc(var(--s) / 2)); }
-  .face[data-face="right"]  { transform: rotateY(90deg) translateZ(calc(var(--s) / 2)); }
-  .face[data-face="left"]   { transform: rotateY(-90deg) translateZ(calc(var(--s) / 2)); }
-  .face[data-face="top"]    { transform: rotateX(-90deg) translateZ(calc(var(--s) / 2)); }
-  .face[data-face="bottom"] { transform: rotateX(90deg) translateZ(calc(var(--s) / 2)); }
-
-  .face::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: 2;
-    background:
-      radial-gradient(circle farthest-corner at var(--sheen-x, 50%) var(--sheen-y, 50%), color-mix(in oklab, var(--sheen-color) calc(var(--sheen, 0) * 100%), transparent), transparent 70%)
-      color-mix(in oklab, var(--shade-color) calc(var(--shade, 0) * 100%), transparent);
-    pointer-events: none;
-  }
-
-  .face img {
-    position: absolute;
-    inset: 0;
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    animation: face-in var(--face-fade) ease-out backwards;
-    filter: url(#duotone);
-  }
-
-  /* ── deck of flying sheets (replaces the cube) ── */
-  .deck {
-    --s: var(--sheet-h);
-    --mat: calc(var(--s) * .07);         /* frame around the square thumbnail */
-    position: relative;
-    inline-size: var(--sheet-w);
-    block-size: var(--s);
-    transform-style: preserve-3d;
-    transition: translate var(--scene-fade) var(--reveal-ease) var(--spinner-exit);
-  }
-
-  [data-state="loading"] .deck { translate: 0 1.5rem; }
-
-  /* thumbnail stays square, centred on the wider sheet → coloured mat around it */
-  .sheet img {
-    inset: var(--mat) auto auto 50%;
-    inline-size: auto;
-    block-size: calc(100% - 2 * var(--mat));
-    aspect-ratio: 1;
-    translate: -50% 0;
-    outline: 1px solid #000;
-  }
-
-  .sheet {
-    -webkit-backdrop-filter: blur(5px) saturate(1.15);
-    backdrop-filter: blur(5px) saturate(1.15);
-    will-change: transform;
-    box-shadow: 0 18px 40px -12px oklch(0% 0 0 / .35);
-  }
-
-  /* only the sheet on top shows its content — the ones underneath are plain frosted glass,
-     so their images never ghost through the see-through top sheet */
-  .sheet > img,
-  .sheet > .face-open,
-  .sheet > .face-placeholder,
-  .sheet > .face-intro { opacity: var(--content-o, 1); }
-
-  .face-placeholder {
-    display: grid;
-    block-size: 100%;
-    place-items: center;
-    padding: calc(var(--s) * .08);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-align: center;
-  }
-
-  .face-spinner {
-    --spinner-size: clamp(1.5rem, calc(var(--s) * .07), 2.25rem);
-    --spinner-line: calc(var(--spinner-size) * .09);
-    --spinner-track: color-mix(in oklch, var(--border) 45%, transparent);
-    inline-size: var(--spinner-size);
-    aspect-ratio: 1;
-    border-radius: 50%;
-    background:
-      conic-gradient(transparent var(--arc-start), var(--border-strong) 0 var(--arc-end), transparent 0),
-      linear-gradient(var(--spinner-track), var(--spinner-track));
-    -webkit-mask: radial-gradient(farthest-side, transparent calc(100% - var(--spinner-line) - .5px), #000 calc(100% - var(--spinner-line)));
-    mask: radial-gradient(farthest-side, transparent calc(100% - var(--spinner-line) - .5px), #000 calc(100% - var(--spinner-line)));
-    animation:
-      face-in .2s ease-out .15s backwards,
-      face-spin 1.4s linear infinite,
-      face-arc 1.6s cubic-bezier(.65, 0, .35, 1) infinite;
-    transition: scale var(--spinner-exit) ease-in, opacity var(--spinner-exit) ease-in;
-  }
-
-  .face-placeholder.is-done .face-spinner { scale: .5; opacity: 0; }
-  .face-placeholder.is-done ~ img { animation-delay: var(--spinner-exit); }
-
-  @media (prefers-reduced-motion: reduce) {
-    .face-spinner { animation-duration: .2s, 3s, 3.2s; }
-  }
-
-  @keyframes face-in { from { opacity: 0; } }
-  @keyframes face-spin { to { rotate: 1turn; } }
-  @keyframes face-arc {
-    0%   { --arc-start: 0%; --arc-end: 0%; }
-    15%  { --arc-start: 0%; }
-    65%  { --arc-end: 100%; }
-    100% { --arc-start: 100%; --arc-end: 100%; }
-  }
-
-  /* intro / contact faces match the cards: same colour + spectrum line on top */
-  .face:has(.face-intro) { background: var(--card-paint); }
-
-  .face-intro::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    block-size: max(2px, calc(var(--s) * .005));
-    background: var(--fg);
-  }
-
-  .face-intro {
-    position: relative;
-    display: grid;
-    align-content: end;
-    gap: calc(var(--s) * .025);
-    block-size: 100%;
-    padding: calc(var(--s) * .08) calc(var(--s) * .08) calc(var(--s) * .12);
-  }
-
-  .face-intro-label,
-  .face-intro-count {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .face-intro-title {
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 4;
-    line-clamp: 4;
-    font-size: calc(var(--s) * .09);
-    font-weight: 700;
-    letter-spacing: -.035em;
-    line-height: 1.05;
-    padding-block-end: .12em;   /* keep descenders (g, y) from being clipped */
-    overflow-wrap: anywhere;
-  }
-
-  .face-intro-title { color: var(--fg); }
-  .face-intro-title em { color: var(--accent); font-style: normal; }
-}
-
-@layer components {
-  .card {
-    position: relative;
-    --card-pad-block: clamp(2rem, 4svh, 3rem);
-    --card-pad-inline: clamp(1.75rem, 2.6vw, 2.75rem);
-    inline-size: 100%;
-    max-inline-size: clamp(24rem, calc(var(--frame-w) * .4), 42rem);
-    padding: var(--card-pad-block) var(--card-pad-inline);
-    border-inline-start: var(--line) solid var(--border-strong);
-    background: var(--card-paint);
-    box-shadow: var(--card-shadow);
-    -webkit-backdrop-filter: blur(5px) saturate(1.15);
-    backdrop-filter: blur(5px) saturate(1.15);
-  }
-
-  .pen .card::before {
-    content: attr(data-index);
-    content: attr(data-index) / "";
-    position: absolute;
-    z-index: -1;
-    inset-block-end: calc(100% - .3em);
-    inset-inline-start: calc(var(--card-pad-inline) - .03em);
-    color: var(--numeral-color);
-    font-family: var(--font-numeral);
-    font-size: var(--numeral-size);
-    font-weight: 700;
-    letter-spacing: -.05em;
-    line-height: .8;
-    pointer-events: none;
-    user-select: none;
-  }
-
-  .pen.is-end .card::before { inset-inline: auto var(--card-pad-inline); }
-
-  .stop.is-end .card {
-    border-inline-start: 0;
-    border-inline-end: var(--line) solid var(--border-strong);
-    text-align: end;
-  }
-
-  .card-label,
-  .card-meta {
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .card h1 {
-    margin-block-start: .5rem;
-    font-size: clamp(2rem, 3.8vw, 3.25rem);
-    font-weight: 700;
-    letter-spacing: -.035em;
-    line-height: 1.08;
-    overflow-wrap: anywhere;
-  }
-
-  /* red windows: black text, light grey surname, black top edge */
-  .card,
-  .face-intro {
-    --fg: #000;
-    --muted: #2b0b03;
-    --soft: var(--bg);   /* button text = page background */
-    --border: oklch(0% 0 0 / .25);
-    --border-strong: oklch(0% 0 0 / .5);
-    --accent: var(--c-indigo);   /* surname: light grey */
-    color: var(--fg);
-  }
-
-  .card h1 { color: var(--fg); }
-  .card h1 em { color: var(--accent); font-style: normal; }
-
-  .card h2 {
-    margin-block-start: .5rem;
-    font-size: clamp(1.4rem, 2.4vw, 2.1rem);
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.25;
-    overflow-wrap: anywhere;
-  }
-
-  .card-description {
-    display: -webkit-box;
-    margin-block-start: 1rem;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 7;
-    line-clamp: 7;
-    color: var(--muted);
-    font-size: clamp(var(--text-base), 1.15vw, 1.15rem);
-    line-height: 1.65;
-  }
-
-  .card-meta,
-  .card-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .35rem 1rem;
-    margin-block-start: 1.25rem;
-  }
-
-  .card-meta + .card-meta { margin-block-start: .5rem; }
-
-  .tag {
-    padding: 0 .4rem;
-    border: var(--line) solid var(--border-strong);
-  }
-
-  .card-links { font-size: var(--text-sm); }
-
-  .card-links a {
-    --icon-size: 1em;
-    display: inline-flex;
-    align-items: baseline;
-    gap: .3em;
-  }
-
-  .stop.is-end :is(.card-meta, .card-links, .cta-row) { justify-content: flex-end; }
-
-  .cta-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .75rem;
-    margin-block-start: 1.75rem;
-  }
-
-  .cta,
-  .cta-back {
-    --icon-size: 1em;
-    display: inline-grid;
-    grid-auto-flow: column;
-    align-content: center;
-    align-items: baseline;
-    gap: .4rem;
-    min-block-size: 2.75rem;
-    padding: .5rem 1rem;
-    border: var(--line) solid;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-decoration: none;
-    transition: background .2s, color .2s, border-color .2s;
-  }
-
-  .cta { border-color: var(--fg); background: var(--fg); color: var(--soft); }
-  .cta:hover { border-color: #fff; background: #fff; color: #000; }
-  .cta-back { border-color: var(--border-strong); color: var(--muted); }
-  .cta-back:hover { border-color: var(--fg); color: var(--fg); }
-
-  /* thin spectrum line along the top edge of every card */
-  .card::after {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    block-size: 2px;
-    background: var(--fg);
-    pointer-events: none;
-  }
-
-  .stop.is-end .card::after { background: var(--fg); }
-
-  .card-links a:hover { color: var(--accent); }
-  .tag { border-color: var(--border-strong); }
-
-  .icon {
-    flex: none;
-    inline-size: var(--icon-size, 1em);
-    block-size: var(--icon-size, 1em);
-    translate: 0 calc((var(--icon-size, 1em) - 1cap) / 2);
-  }
-
-  .stop .card {
-    --enter-x: -1.5rem;
-    --enter-y: 0;
-    opacity: 0;
-    translate: var(--enter-x) var(--enter-y);
-    transition: opacity var(--reveal-duration) ease, translate var(--reveal-duration) var(--reveal-ease);
-  }
-
-  .stop.is-end .card { --enter-x: 1.5rem; }
-
-  .stop .card > * {
-    opacity: 0;
-    translate: var(--enter-x) var(--enter-y);
-    transition: opacity var(--reveal-duration) ease, translate var(--reveal-duration) var(--reveal-ease);
-    transition-delay: calc(var(--reveal-delay) + var(--i, 0) * var(--reveal-stagger));
-  }
-
-  .stop .card.is-visible,
-  .stop .card.is-visible > * { opacity: 1; translate: 0 0; }
-
-  @media (max-width: 56.25em) and (orientation: portrait), (orientation: landscape) and (max-height: 30em) {
-    .card { --card-pad-block: 1.25rem; --card-pad-inline: 1.25rem; }
-
-    .stop.is-end .card {
-      border-inline-start: var(--line) solid var(--border-strong);
-      border-inline-end: 0;
-      text-align: start;
-    }
-
-    .pen.is-end .card::before { inset-inline: calc(var(--card-pad-inline) - .03em) auto; }
-
-    .stop.is-end :is(.card-meta, .card-links, .cta-row) { justify-content: flex-start; }
-  }
-
-  @media (max-width: 56.25em) and (orientation: portrait) {
-    .card { --card-pad-block: 1rem; --card-pad-inline: 1rem; max-inline-size: none; }
-    .card h2 { margin-block-start: .25rem; }
-    .cta, .cta-back { min-block-size: 2.25rem; padding: .375rem .875rem; }
-    .stop .card, .stop.is-end .card { --enter-x: 0; --enter-y: .75rem; }
-
-    .card-description {
-      margin-block-start: .5rem;
-      -webkit-line-clamp: 3;
-      line-clamp: 3;
-      font-size: var(--text-sm);
-      line-height: 1.55;
-    }
-
-    .card-meta, .card-links { margin-block-start: .625rem; }
-    .cta-row { gap: .5rem; margin-block-start: .875rem; }
-  }
-
-  @media (orientation: landscape) and (max-height: 30em) {
-    .card { max-inline-size: min(40rem, calc(100vw - var(--cube-size) - 3 * var(--scene-inset))); }
-    .stop .card, .stop.is-end .card { --enter-x: 1.5rem; }
-    .pen .card::before { content: none; }
-    .card-description { font-size: var(--text-sm); line-height: 1.6; }
-    .card-meta, .card-links { margin-block-start: .75rem; }
-    .cta-row { margin-block-start: 1rem; }
-  }
-
-  @media (max-width: 56.25em) and (orientation: portrait) and (max-height: 42em), (orientation: landscape) and (max-height: 30em) {
-    .card-description { margin-block-start: .5rem; -webkit-line-clamp: 2; line-clamp: 2; }
-  }
-}
-
-@layer components {
-  /* clickable cube faces: the overlay lets clicks through to the cube */
-  .stops { pointer-events: none; }
-  .stops .card { pointer-events: auto; }
-
-  .face[data-open] { pointer-events: auto; cursor: pointer; }
-  .face[data-open] img { transition: scale .5s var(--reveal-ease); }
-  .face[data-open]:hover img { scale: 1.04; }
-
-  .face-open {
-    position: absolute;
-    inset-block-end: calc(var(--s) * .05);
-    inset-inline-start: calc(var(--s) * .05);
-    z-index: 4;
-    display: inline-grid;
-    grid-auto-flow: column;
-    align-items: baseline;
-    gap: .4rem;
-    padding: .375rem .75rem;
-    border: 1px solid var(--c-coral);   /* thin contrast frame, like the card buttons */
-    background: #000;
-    color: var(--c-blue);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    transition: background .2s, color .2s;
-  }
-
-  .face[data-open]:hover .face-open { background: var(--c-coral); color: #000; }
-
-
-
-  button.cta { cursor: pointer; }
-  .card .cta { color: var(--c-blue); }   /* Enter / Open project text */
-
-  /* ── PROJECT MODAL ── */
-  .project-modal-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 4rem 1.25rem 2.5rem;
-    overflow-y: auto;
-    background: color-mix(in oklch, var(--fg) 55%, transparent);
-    -webkit-backdrop-filter: blur(6px);
-    backdrop-filter: blur(6px);
-  }
-
-  .project-modal {
-    /* black window with red-orange text */
-    --fg: #ff5a14;      /* glowing-window orange-red */
-    --muted: #d9998b;   /* soft, dusty red for body text */
-    --soft: #0a0a0c;    /* black window — orange text at full contrast */
-    --border: #2e2e33;  /* black frames would vanish on black → dark grey hairlines */
-    --border-strong: #46464d;
-    position: relative;
-    inline-size: 100%;
-    max-inline-size: 54rem;
-    border: var(--line) solid var(--border-strong);
-    background: var(--soft);
-    color: var(--fg);
-    box-shadow: var(--card-shadow);
-    animation: modal-in .3s var(--reveal-ease) both;
-  }
-
-  @keyframes modal-in { from { opacity: 0; translate: 0 -.75rem; scale: .98; } }
-
-  .modal-x {
-    position: absolute;
-    inset-block-end: calc(100% + .5rem);
-    inset-inline-end: 0;
-    padding: .25rem .625rem;
-    border: var(--line) solid color-mix(in oklch, var(--bg) 60%, transparent);
-    background: none;
-    color: var(--bg);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    cursor: pointer;
-  }
-
-  .viewer { position: relative; background: oklch(12% 0 0); }
-
-  .viewer-main {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-block-size: 18rem;
-    max-block-size: 70vh;
-    overflow: hidden;
-  }
-
-  .viewer-main img,
-  .viewer-main video {
-    display: block;
-    max-inline-size: 100%;
-    max-block-size: 70vh;
-    object-fit: contain;
-  }
-
-  .viewer-main video { inline-size: 100%; }
-
-  .viewer-nav {
-    position: absolute;
-    inset-block-start: 50%;
-    z-index: 10;
-    display: grid;
-    place-items: center;
-    inline-size: 2.5rem;
-    block-size: 2.5rem;
-    translate: 0 -50%;
-    border: var(--line) solid oklch(100% 0 0 / .25);
-    background: oklch(0% 0 0 / .45);
-    color: oklch(100% 0 0);
-    font-size: 1.1rem;
-    cursor: pointer;
-    user-select: none;
-    transition: background .2s, color .2s;
-  }
-
-  .viewer-nav:hover { background: oklch(100% 0 0); color: var(--fg); }
-  .viewer-nav.prev { inset-inline-start: .75rem; }
-  .viewer-nav.next { inset-inline-end: .75rem; }
-
-  .viewer-counter {
-    position: absolute;
-    inset-block-end: .625rem;
-    inset-inline-end: .875rem;
-    z-index: 10;
-    color: oklch(100% 0 0 / .55);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .viewer-caption {
-    min-block-size: 2rem;
-    padding: .5rem 1rem;
-    border-block-start: var(--line) solid var(--border);
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-align: center;
-  }
-
-  .thumb-strip {
-    display: flex;
-    gap: .375rem;
-    padding: .625rem .75rem;
-    overflow-x: auto;
-    border-block-start: var(--line) solid var(--border);
-    scrollbar-width: thin;
-    scrollbar-color: var(--border-strong) transparent;
-  }
-
-  .thumb-item {
-    position: relative;
-    flex: 0 0 auto;
-    inline-size: 4.5rem;
-    block-size: 3rem;
-    overflow: hidden;
-    outline: var(--line) solid var(--border-strong);
-    background: var(--border);
-    cursor: pointer;
-    opacity: .6;
-    transition: opacity .15s, outline-color .15s;
-  }
-
-  .thumb-item:hover { opacity: 1; }
-  .thumb-item.active { opacity: 1; outline: 2px solid var(--fg); outline-offset: -2px; }
-
-  .thumb-item img,
-  .thumb-item video {
-    display: block;
-    inline-size: 100%;
-    block-size: 100%;
-    object-fit: cover;
-    pointer-events: none;
-  }
-
-  .type-badge {
-    position: absolute;
-    inset-block-end: 2px;
-    inset-inline-end: 3px;
-    padding: 0 3px;
-    background: oklch(0% 0 0 / .65);
-    color: oklch(100% 0 0);
-    font-family: var(--font-mono);
-    font-size: .5625rem;
-  }
-
-  .expanded-info {
-    padding: 1.5rem 1.75rem 1.75rem;
-    border-block-start: var(--line) solid var(--border);
-  }
-
-  .exp-title {
-    font-size: clamp(1.25rem, 2vw, 1.5rem);
-    font-weight: 700;
-    letter-spacing: -.02em;
-    line-height: 1.25;
-  }
-
-  .exp-meta {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .75rem 1.5rem;
-    margin-block-start: 1rem;
-    font-size: var(--text-sm);
-  }
-
-  .exp-meta-label {
-    display: block;
-    color: var(--muted);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-  }
-
-  .exp-desc {
-    margin-block-start: 1rem;
-    color: var(--muted);
-    line-height: 1.7;
-  }
-
-  .exp-close {
-    margin-block-start: 1.5rem;
-    border: var(--line) solid var(--border-strong);
-    background: none;
-    color: var(--muted);
-    cursor: pointer;
-  }
-
-  .placeholder-thumb {
-    display: grid;
-    place-items: center;
-    align-content: center;
-    gap: .5rem;
-    inline-size: 100%;
-    aspect-ratio: 16 / 9;
-    color: oklch(100% 0 0 / .4);
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    text-align: center;
-    word-break: break-all;
-  }
-
-  @media (max-width: 37.5em) {
-    .project-modal-overlay { padding: 3rem .5rem 1rem; }
-    .expanded-info { padding: 1rem; }
-  }
-}
-
-@layer components {
-  /* ── split layout: [title strip] / [sheet] / [description strip] ── */
-  .scene { place-items: center !important; padding: 0 !important; perspective-origin: 50% 50% !important; }
-
-  .stop,
-  .stop.is-end {
-    display: grid !important;
-    grid-template-rows: 1fr var(--sheet-h) 1fr;
-    justify-items: center;
-    align-items: stretch;
-    padding: 0 1rem !important;
-  }
-
-  .stop > .card {
-    inline-size: var(--sheet-w);
-    max-inline-size: 100%;
-    border: 0;
-    text-align: start;
-    --card-pad-block: clamp(.75rem, 2svh, 1.25rem);
-    --card-pad-inline: clamp(1rem, 2.4vw, 1.75rem);
-  }
-
-  .stop > .card-top    { grid-row: 1; align-self: end;   margin-block-end: clamp(.5rem, 1.6svh, 1rem); --enter-x: 0; --enter-y: -.75rem; }
-  .stop > .card-bottom { grid-row: 3; align-self: start; margin-block-start: clamp(.5rem, 1.6svh, 1rem); --enter-x: 0; --enter-y: .75rem; }
-
-  .card-top h1 { margin-block-start: .25rem; font-size: clamp(1.6rem, 3.4svh, 2.4rem); }
-  .card-top h2 { margin-block-start: .25rem; font-size: clamp(1.15rem, 2.6svh, 1.6rem); }
-  .card-top .card-label { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
-
-  .card-bottom .card-description {
-    margin-block-start: 0;
-    -webkit-line-clamp: 3;
-    line-clamp: 3;
-    font-size: var(--text-sm);
-    line-height: 1.55;
-  }
-
-  .card-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: .5rem 1rem;
-    margin-block-start: .75rem;
-  }
-
-  .card-row > * { margin-block-start: 0 !important; }
-  .card-row .cta,
-  .card-row .cta-back { min-block-size: 2.25rem; padding: .375rem .875rem; }
-
-  /* project number sits on the title strip */
-  .pen .card-top::before { inset-inline: auto var(--card-pad-inline) !important; inset-block: auto calc(100% - .3em) !important; }
-
-}
-
-@layer overrides {
-  [hidden] { display: none; }
-}
 </style>
 </head>
+<body>
+  <header>
+    <div class="who">Hanna Kachurouskaya <span class="mono">FX / Technical Artist</span></div>
+    <nav class="mono" aria-label="Main">
+      <a href="#" data-home aria-current="page">Work</a><a href="cv/index.html">CV</a><a href="mailto:valynets.h@gmail.com">valynets.h@gmail.com</a>
+    </nav>
+  </header>
 
-<body data-state="loading">
-  <!-- tritone for sheet thumbnails: shadows → black, mids → night-sky blue, light → rust -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-    <filter id="duotone" color-interpolation-filters="sRGB">
-      <feColorMatrix type="saturate" values="0"/>
-      <feComponentTransfer>
-        <feFuncR type="table" tableValues="0 0.02 0.133 0.66 0.937"/>
-        <feFuncG type="table" tableValues="0 0.03 0.216 0.247 0.541"/>
-        <feFuncB type="table" tableValues="0 0.09 0.561 0.118 0.333"/>
-      </feComponentTransfer>
-    </filter>
-  </svg>
+  <main>
+    <nav class="blind" id="blind" aria-label="Projects">
+      <ol class="slats" id="slats"></ol>
+    </nav>
 
-  <div class="frame-back">
-  <canvas id="water" class="threads" aria-hidden="true"></canvas>
-  <div id="page_loader" class="page-loader" aria-hidden="true">
-    <span class="face-spinner"></span>
-  </div>
-
-  <div id="scene" class="scene" aria-hidden="true" hidden>
-    <div class="cube-glow"></div>
-    <div id="cube_shadow" class="cube-shadow"></div>
-    <div id="cube" class="deck"></div>
-  </div>
-  </div>
-
-  <div class="side-glass left" aria-hidden="true"></div>
-  <div class="side-glass right" aria-hidden="true"></div>
-
-  <button id="lang_btn" class="lang-btn" type="button">PL</button>
-
-  <div id="hud" class="hud" aria-hidden="true" hidden>
-    <span id="hud_count">00 / 00</span>
-    <span class="progress"><span id="progress_fill" class="progress-fill"></span></span>
-  </div>
-
-  <main id="stops" class="stops"></main>
-
-  <div id="project_modal" class="project-modal-overlay" role="dialog" aria-modal="true" hidden>
-    <div id="project_modal_inner" class="project-modal"></div>
-  </div>
+    <section class="panel" aria-live="polite">
+      <div class="view thumbs-view" id="thumbs_view">
+        <div class="thumbs" id="thumbs"></div>
+        <div class="thumbs-foot">
+          <p>Simulations, motion wallpapers and product FX for Huawei, Xiaomi and OnePlus — from concept and R&amp;D to final delivery. Pick a project to see it built.</p>
+          <span class="mono" id="count"></span>
+        </div>
+      </div>
+      <article class="view project" id="project_view" hidden></article>
+    </section>
+  </main>
 
 <script>
-/* ─── DATA ─── */
+/* ─── DATA ─── same projects and files as the live site, plus a look/build pair for the slider */
+const A = '../assets/';
 const PROJECTS = [
-  {
-    id: 'proj-01',
-    title: 'Huawei Mate X6 — Motion Wallpaper, R&D - final delivery pipeline',
-    title_pl: 'Huawei Mate X6 — Motion Wallpaper, R&D - pełny pipeline produkcji',
-    client: 'Huawei',
-    year: '2024',
-    software: 'Houdini · VEX · Redshift · Fusion',
-    desc: 'Procedural vellum & particle simulation for a factory-set motion wallpaper shipped on Huawei Mate X6 flagship devices. The AI-generated concept dictated the final frame\'s composition, but the real challenge was motion: a single vellum simulation pass produced stiff, chaotic movement instead of the soft, flowing unfold the brief called for. The solution was a multi-stage approach — a kinefx-driven base setup followed by two to three additional vellum simulation passes, layering motion until it read as smooth and natural while still landing on the required final composition. The setup also layered a particle simulation on top of the vellum geometry for additional fine, sparkling detail.',
-    desc_pl: 'Proceduralna symulacja vellum i particles dla motion wallpaper wgranego fabrycznie na flagowe urządzenia Huawei Mate X6. Koncept wygenerowany przez AI determinował kompozycję finalnej klatki, ale prawdziwym wyzwaniem był ruch: pojedynczy pass symulacji vellum dawał sztywny, chaotyczny ruch zamiast miękkiego, płynnego rozkładania wymaganego w briefie. Rozwiązaniem było podejście wieloetapowe — bazowy setup oparty na kinefx, a następnie dwa do trzech dodatkowych passów symulacji vellum, nakładających ruch aż do uzyskania gładkiego i naturalnego efektu przy zachowaniu wymaganej finalnej kompozycji. Setup zawierał też symulację particles nałożoną na geometrię vellum, dodającą drobny, błyszczący detal.',
-    tags: ['wallpaper', 'simulations', 'procedural'],
-    thumb: 'assets/proj-01/thumb.jpg',
+  { id: 'proj-01', title: 'Huawei Mate X6', kind: 'Motion wallpaper', client: 'Huawei', year: 2024,
+    software: 'Houdini · VEX · Redshift · Fusion', tags: 'Vellum · KineFX · POP',
+    short: 'A factory-set motion wallpaper for the Mate X6. One vellum pass moved stiffly, so the unfold was built from a KineFX base and two to three stacked vellum passes until it felt soft, while still landing on the approved final frame.',
+    how: ['KineFX-driven base motion', 'Two to three stacked vellum passes', 'Particle sparkle on the vellum geometry'],
+    look: 'proj-01/video_01.mp4', build: 'proj-01/sim_preview_01.mp4', ratio: '1 / 1',
     files: [
-      { type: 'video', src: 'assets/proj-01/video_01.mp4', label: 'Final frames' },
-      { type: 'video', src: 'assets/proj-01/video_02.mp4', label: 'Main simulation' },
-      { type: 'video', src: 'assets/proj-01/sim_preview_01.mp4', label: 'Sim R&D' },
-      { type: 'video', src: 'assets/proj-01/sim_preview_02.mp4', label: 'Sim preview' },
-      { type: 'image', src: 'assets/proj-01/render_01.jpg', label: 'Colour version' },
-      { type: 'image', src: 'assets/proj-01/render_02.jpg', label: 'Colour version' },
-      { type: 'image', src: 'assets/proj-01/screen_0.png', label: 'Houdini setup' },
-      { type: 'image', src: 'assets/proj-01/screen_1.png', label: 'Houdini setup' },
-    ]
-  },
-  {
-    id: 'proj-02',
-    title: 'OnePlus ACE 6T — Series of vfx shots, full production pipeline from concept to delivery',
-    title_pl: 'OnePlus ACE 6T — Seria ujęć VFX, pełny pipeline produkcji od konceptu do dostawy',
-    client: 'OnePlus',
-    year: '2025',
-    software: 'Houdini · VEX · Redshift · Fusion',
-    desc: 'Series of VFX shots for the OnePlus ACE 6T launch campaign, split across two phone colourways — each with its own visual identity. The purple variant called for a blinking, cyberpunk/techno look, while the black variant leaned into a luxury ferrofluid / black-diamond feel. All effects were fully procedural (no simulations), built from concept through lighting, rendering and final delivery. The main challenge was scale rather than technique — instead of the usual 2-3 shots per project, this one required around 5-6 distinct shots/effects, each going through its own round of R&D to land the right look.',
-    desc_pl: 'Seria ujęć VFX dla kampanii startowej OnePlus ACE 6T, podzielona na dwie kolorystyki telefonu — każda z własną identyfikacją wizualną. Wariant fioletowy wymagał migającego, cyberpunkowego/techno looku, podczas gdy wariant czarny szedł w stronę luksusowego, ferrofluidowego efektu black-diamond. Wszystkie efekty były w pełni proceduralne (bez symulacji), zrealizowane od konceptu przez oświetlenie, rendering po finalną dostawę. Głównym wyzwaniem była skala, nie technika — zamiast zwykłych 2-3 ujęć na projekt, ten wymagał około 5-6 odrębnych ujęć/efektów, każde przechodzące własną rundę R&D, by uzyskać właściwy look.',
-    tags: ['product', 'procedural'],
-    thumb: 'assets/proj-02/thumb.png',
+      ['video', 'proj-01/video_02.mp4', 'Main simulation'],
+      ['video', 'proj-01/sim_preview_02.mp4', 'Sim preview'],
+      ['image', 'proj-01/render_01.jpg', 'Colour version'],
+      ['image', 'proj-01/render_02.jpg', 'Colour version'],
+      ['image', 'proj-01/screen_0.png', 'Houdini setup', 'wide'],
+      ['image', 'proj-01/screen_1.png', 'Houdini setup', 'wide'],
+    ] },
+  { id: 'proj-03', title: 'Xiaomi Mix Flip 2', kind: 'Motion wallpaper, solo', client: 'Xiaomi', year: 2025,
+    software: 'Midjourney · Houdini · VEX · Redshift · Fusion', tags: 'Concept · Vellum · Lookdev',
+    short: 'My favourite project: a feminine, luxurious wallpaper built alone from concept to delivery. The fan-shaped glass petals were iterated in Midjourney, then rebuilt as vellum on high-poly meshes with a particle shimmer.',
+    how: ['AI concept iterations to lock the look', 'Vellum on high-poly petals', 'Particle shimmer pass'],
+    look: 'proj-03/hero.mp4', build: 'proj-03/sim_preview.mp4', ratio: '860 / 1920',
     files: [
-      { type: 'video', src: 'assets/proj-02/hero.mp4', label: 'Tunel shot' },
-      { type: 'video', src: 'assets/proj-02/cameras_preview.mp4', label: 'Camera previews' },
-      { type: 'video', src: 'assets/proj-02/video_00.mp4', label: 'R&D - Stereo effect' },
-      { type: 'video', src: 'assets/proj-02/video_01.mp4', label: 'R&D - Stereo effect' },
-      { type: 'video', src: 'assets/proj-02/video_02.mp4', label: 'Purple version shot' },
-      { type: 'video', src: 'assets/proj-02/video_03.mp4', label: 'R&D - Detail' },
-      { type: 'video', src: 'assets/proj-02/video_04.mp4', label: 'Black version shot' },
-      { type: 'video', src: 'assets/proj-02/video_05.mp4', label: 'R&D - Ferrofluid effect' },
-      { type: 'video', src: 'assets/proj-02/video_06.mp4', label: 'R&D - Ferrofluid effect' },
-      { type: 'image', src: 'assets/proj-02/screen_0.png', label: 'Houdini setup' },
-      { type: 'image', src: 'assets/proj-02/screen_1.png', label: 'Houdini setup' },
-    ]
-  },
-  {
-    id: 'proj-03',
-    title: 'Xiaomi Mix Flip 2 — Motion Wallpaper, concept - R&D - final delivery pipeline',
-    title_pl: 'Xiaomi Mix Flip 2 — Motion Wallpaper, koncept - R&D - pełny pipeline produkcji',
-    client: 'Xiaomi',
-    year: '2025',
-    software: 'Midjourney · Houdini · VEX · Redshift · Fusion',
-    desc: 'My favourite project to date — a feminine, luxury-style motion wallpaper for the Xiaomi Mix Flip 2, built entirely solo from concept to final delivery. The concept phase went through countless iterations using Midjourney, Photoshop and ChatGPT to land on the fan-shaped, translucent petal look, built on the same vellum + high-poly mesh approach used on the Mate X6 project. Because I\'d defined the target look and composition myself from the start, the R&D and simulation stages (vellum and particle sims) went smoothly, with no major surprises along the way.',
-    desc_pl: 'Mój dotychczasowy ulubiony projekt — kobiecy, luksusowy motion wallpaper na Xiaomi Mix Flip 2, zrealizowany w pełni samodzielnie od konceptu do finalnej dostawy. Faza konceptu przeszła przez wiele iteracji w Midjourney, Photoshopie i ChatGPT, by dojść do wachlarzowego, przezroczystego looku płatków, zbudowanego na tym samym podejściu vellum + high-poly mesh co w projekcie Mate X6. Dzięki temu, że sama zdefiniowałam docelowy look i kompozycję od początku, etapy R&D i symulacji (vellum i particles) przebiegły bez większych niespodzianek.',
-    tags: ['wallpaper', 'ai', 'simulations', 'procedural'],
-    thumb: 'assets/proj-03/thumb.png',
+      ['image', 'proj-03/render_01.png', 'Hero render, violet'],
+      ['image', 'proj-03/ai_concept_01.png', 'Concept, AI generated'],
+      ['image', 'proj-03/ai_concept_02.png', 'Concept, AI generated'],
+      ['video', 'proj-03/video_01.mp4', 'First render stage, blue'],
+      ['video', 'proj-03/video_02.mp4', 'Final render stage, gold'],
+      ['image', 'proj-03/screen_0.png', 'Houdini setup', 'wide'],
+    ] },
+  { id: 'proj-05', title: 'Huawei Maestro', kind: 'AI video + VFX', client: 'Huawei', year: 2026,
+    software: 'ComfyUI · Kling · Houdini · Karma · Fusion', tags: 'AI env · Volume · Comp',
+    short: 'The opening shot of the film and the studio’s first production AI pipeline: a client dragon with a patronus-style volume, flying through simulated clouds in a generated environment, composited in Fusion.',
+    how: ['Environment generated in ComfyUI and Kling', 'Clay camera matched to the AI plate', 'Patronus volume and cloud sim, comp in Fusion'],
+    look: 'proj-05/hero.mp4', build: 'proj-05/camera_clay_02.mp4', ratio: '3 / 1',
     files: [
-      { type: 'image', src: 'assets/proj-03/render_01.png', label: 'Hero render - violet version' },
-      { type: 'image', src: 'assets/proj-03/ai_concept_01.png', label: 'Concept - AI generated' },
-      { type: 'image', src: 'assets/proj-03/ai_concept_02.png', label: 'Concept - AI generated' },
-      { type: 'video', src: 'assets/proj-03/hero.mp4', label: 'Hero shot - blue version' },
-      { type: 'video', src: 'assets/proj-03/sim_preview.mp4', label: 'Sim preview' },
-      { type: 'video', src: 'assets/proj-03/video_01.mp4', label: 'First render stage, blue version' },
-      { type: 'video', src: 'assets/proj-03/video_02.mp4', label: 'Final render stage, yellow version' },
-      { type: 'image', src: 'assets/proj-03/screen_0.png', label: 'Houdini setup' },
-    ]
-  },
-  {
-    id: 'proj-04',
-    title: 'Xiaomi Amoled — Motion Wallpaper, R&D - simulation',
-    title_pl: 'Xiaomi Amoled — Motion Wallpaper, R&D - symulacja',
-    client: 'Xiaomi',
-    year: '2024',
-    software: 'Houdini · Redshift',
-    desc: 'Earlier motion wallpaper project for Xiaomi, built entirely from particles. The brief called for a shape reading somewhere between a flower and a circle. The particle sim had to hold that silhouette while keeping natural drift and dispersion with no flickering. Effect/simulation only, no final lighting or render. Reaching the approved look took many R&D passes exploring different shapes and particle behaviours — a few earlier R&D frames are included alongside the final result.',
-    desc_pl: 'Wcześniejszy projekt motion wallpaper dla Xiaomi, zbudowany w całości z particles. Brief wymagał formy odczytywanej gdzieś między kwiatem a kołem. Symulacja particles musiała utrzymać tę sylwetkę, zachowując naturalny dryf i rozproszenie, bez migotania. Tylko efekt/symulacja, bez finalnego oświetlenia i renderu. Dotarcie do zaakceptowanego looku wymagało wielu passów R&D eksplorujących różne formy i zachowania particles — kilka wcześniejszych klatek R&D jest dołączonych razem z finalnym rezultatem.',
-    tags: ['wallpaper', 'simulations'],
-    thumb: 'assets/proj-04/thumb.png',
+      ['video', 'proj-05/sim_preview.mp4', 'Sim preview'],
+      ['video', 'proj-05/camera_clay_01.mp4', 'Camera clay preview', 'wide'],
+      ['image', 'proj-05/ai_concept_iteration.png', 'AI concept iteration'],
+      ['image', 'proj-05/ai_first_frame.png', 'AI first frame'],
+      ['video', 'proj-05/ai_video.mp4', 'AI video, Kling', 'wide'],
+    ] },
+  { id: 'proj-02', title: 'OnePlus ACE 6T', kind: 'Launch VFX series', client: 'OnePlus', year: 2025,
+    software: 'Houdini · VEX · Redshift · Fusion', tags: 'Procedural · Lighting',
+    short: 'Six launch shots across two colourways: a blinking techno look for purple, a ferrofluid black-diamond look for black. Fully procedural, from concept through lighting to delivery.',
+    how: ['Six shots, each with its own look R&D', 'Procedural ferrofluid, no simulation', 'Lighting, rendering and delivery'],
+    look: 'proj-02/video_04.mp4', build: 'proj-02/video_05.mp4', ratio: '16 / 9',
     files: [
-      { type: 'video', src: 'assets/proj-04/hero.mp4', label: 'Hero shot' },
-      { type: 'image', src: 'assets/proj-04/preview_01.png', label: 'R&D preview 01' },
-      { type: 'image', src: 'assets/proj-04/preview_02.png', label: 'R&D preview 02' },
-    ]
-  },
-  {
-    id: 'proj-05',
-    title: 'Huawei Maestro — AI generated video + VFX composition',
-    title_pl: 'Huawei Maestro — Wideo generowane przez AI + kompozycja VFX',
-    client: 'Huawei',
-    year: '2026',
-    software: 'ComfyUI · Adobe Photoshop · Kling · Houdini · Redshift · Axiom · Karma · Solaris · Fusion',
-    desc: 'A demanding shot — the opening shot of the piece, and the first project where the studio moved to a production AI pipeline. The brief: take a client-supplied dragon asset, add a "patronus"-style volume effect to it, and place it flying through a generated cloud environment — which also meant a cloud simulation for the dragon to pass through. Camera animation was manageable once driven by a clay base and reference composition, but getting the right overall look and convincing cloud animation out of AI took many rounds of generation in ComfyUI and Kling. I rendered the dragon with the patronus volume and cloud sim in the matching camera, then composited everything in Fusion. A single shot, but a heavy workload — the VFX itself was only part of the challenge here.',
-    desc_pl: 'Wymagające ujęcie — otwierające ujęcie całości i pierwszy projekt, w którym studio przeszło na produkcyjny pipeline AI. Brief: wziąć dostarczony przez klienta asset draka, dodać do niego efekt typu „patronus" na bazie volume, i umieścić go lecącego przez wygenerowane środowisko z obłokami — co oznaczało też symulację obłoków, przez które drak przelatuje. Animacja kamery była do opanowania przy bazie clay i kompozycji referencyjnej, ale uzyskanie właściwego ogólnego looku i przekonującej animacji obłoków z AI wymagało wielu rund generowania w ComfyUI i Kling. Wyrenderowałam draka z efektem patronus volume i symulacją obłoków w odpowiadającej kamerze, a następnie skomponowałam wszystko w Fusion. Jedno ujęcie, ale duże obciążenie pracą — same VFX były tylko częścią wyzwania.',
-    tags: ['ai', 'simulations', 'compo'],
-    thumb: 'assets/proj-05/thumb.png',
+      ['video', 'proj-02/hero.mp4', 'Tunnel shot', 'wide'],
+      ['video', 'proj-02/cameras_preview.mp4', 'Camera previews'],
+      ['video', 'proj-02/video_02.mp4', 'Purple version shot'],
+      ['video', 'proj-02/video_00.mp4', 'R&D, stereo effect'],
+      ['video', 'proj-02/video_01.mp4', 'R&D, stereo effect'],
+      ['video', 'proj-02/video_03.mp4', 'R&D, detail'],
+      ['video', 'proj-02/video_06.mp4', 'R&D, ferrofluid'],
+      ['image', 'proj-02/screen_0.png', 'Houdini setup', 'wide'],
+      ['image', 'proj-02/screen_1.png', 'Houdini setup', 'wide'],
+    ] },
+  { id: 'proj-07', title: 'Xiaomi Mix Fold 3', kind: 'Motion wallpaper, solo', client: 'Xiaomi', year: 2023,
+    software: 'Houdini · Solaris · Karma', tags: 'Pyro · RBD · Karma',
+    short: 'My first solo wallpaper: a flower born from an explosion. Several pyro sims layered with particles and RBD, rendered in Karma because it holds volumes better than Redshift.',
+    how: ['Several layered explosion sims', 'Particles and RBD', 'Karma for volume quality'],
+    look: 'proj-07/hero.mp4', build: 'proj-07/render_01.png', ratio: '1700 / 1920', buildLabel: 'colourway',
+    files: [] },
+  { id: 'proj-04', title: 'Xiaomi Amoled', kind: 'Motion wallpaper R&D', client: 'Xiaomi', year: 2024,
+    software: 'Houdini · Redshift', tags: 'Particles · R&D',
+    short: 'A wallpaper built only from particles. The sim had to hold a shape between a flower and a circle while drifting naturally, with no flicker. Simulation only; many R&D passes on shape and behaviour.',
+    how: ['Particle-only shape', 'Silhouette held without flicker', 'Many R&D shape passes'],
+    look: 'proj-04/thumb.png', build: 'proj-04/preview_01.png', ratio: '1151 / 1290',
+    files: [['image', 'proj-04/preview_02.png', 'R&D preview']] },
+  { id: 'proj-06', title: 'Water / Sand / Ice', kind: 'Internal R&D', client: 'Millarc CGI', year: 2024,
+    software: 'Houdini · Redshift', tags: 'FLIP · Grains · R&D',
+    short: 'Automotive research: a camera that follows a wheel over uneven ground, and three separate environment setups with their own water, sand and ice simulations, rendered in Redshift.',
+    how: ['Camera-follows-wheel constraint rig', 'Water, sand and ice sims', 'Redshift renders'],
+    look: 'proj-06/video_03.mp4', build: 'proj-06/sim_preview.mp4', ratio: '16 / 9',
     files: [
-      { type: 'video', src: 'assets/proj-05/hero.mp4', label: 'Hero shot' },
-      { type: 'video', src: 'assets/proj-05/sim_preview.mp4', label: 'Sim preview' },
-      { type: 'video', src: 'assets/proj-05/camera_clay_01.mp4', label: 'Camera clay preview' },
-      { type: 'video', src: 'assets/proj-05/camera_clay_02.mp4', label: 'Camera clay preview' },
-      { type: 'image', src: 'assets/proj-05/ai_concept_iteration.png', label: 'AI concept - iteration' },
-      { type: 'image', src: 'assets/proj-05/ai_first_frame.png', label: 'AI first frame' },
-      { type: 'video', src: 'assets/proj-05/ai_video.mp4', label: 'AI video Kling' }
-    ]
-  },
-  {
-    id: 'proj-06',
-    title: 'Millarc — Internal R&D project',
-    title_pl: 'Millarc — Wewnętrzny projekt R&D',
-    client: 'Millarc CGI',
-    year: '2024',
-    software: 'Houdini · Redshift',
-    desc: 'Internal R&D project exploring automotive VFX across three weather/surface environments: water, sand and ice. I built a camera-follows-object constraint setup to track the wheel moving across uneven terrain, then created three separate environment setups, each with its own simulation — water, sand and ice surface interactions. Rendered all three environments in Redshift.',
-    desc_pl: 'Wewnętrzny projekt R&D eksplorujący VFX motoryzacyjne w trzech środowiskach pogodowych/powierzchniowych: woda, piasek i lód. Zbudowałam setup z constraintem kamera-podąża-za-obiektem, by śledzić koło poruszające się po nierównym terenie, a następnie stworzyłam trzy odrębne setupy środowiskowe, każdy z własną symulacją — interakcje z wodą, piaskiem i lodem. Wszystkie trzy środowiska wyrenderowane w Redshift.',
-    tags: ['simulations', 'procedural', 'compo'],
-    thumb: 'assets/proj-06/thumb.png',
+      ['image', 'proj-06/render_01.png', 'Ice, still render'],
+      ['image', 'proj-06/render_02.png', 'Sand, still render'],
+      ['video', 'proj-06/video_01.mp4', 'Ice environment'],
+      ['video', 'proj-06/video_02.mp4', 'Sand environment'],
+    ] },
+  { id: 'proj-08', title: 'Huawei M Pencil Pro', kind: 'Product FX', client: 'Huawei', year: 2024,
+    software: 'Houdini · Redshift', tags: 'Procedural · POP',
+    short: 'Two product shots with supplied cameras and assets. The scope was the effects: a procedural paint stroke from the brush, and pollen particles that react to it.',
+    how: ['Procedural paint-from-brush', 'Pollen particles interacting with the brush'],
+    look: 'proj-08/video_01.mp4', build: 'proj-08/video_02.mp4', ratio: '16 / 9', buildLabel: 'shot 2',
+    files: [] },
+  { id: 'proj-09', title: 'Xiaomi 13 Pro', kind: 'Product FX', client: 'Xiaomi', year: 2023,
+    software: 'Houdini · Redshift', tags: 'POP · Collisions',
+    short: 'Flying and settling snow on a phone shot with hands: several particle setups and custom snowflake shapes, colliding with and sticking to the phone and the hands.',
+    how: ['Several particle setups', 'Custom snowflake shapes', 'Collisions with phone and hands'],
+    look: 'proj-09/hero.mp4', build: 'proj-09/preview_01.mp4', ratio: '16 / 9',
     files: [
-      { type: 'image', src: 'assets/proj-06/render_01.png', label: 'Ice environment still render' },
-      { type: 'image', src: 'assets/proj-06/render_02.png', label: 'Sand environment still render' },
-      { type: 'video', src: 'assets/proj-06/sim_preview.mp4', label: 'Camera motion preview' },
-      { type: 'video', src: 'assets/proj-06/video_01.mp4', label: 'Ice environment setup' },
-      { type: 'video', src: 'assets/proj-06/video_02.mp4', label: 'Sand environment setup' },
-      { type: 'video', src: 'assets/proj-06/video_03.mp4', label: 'Water environment setup' },
-    ]
-  },
-  {
-    id: 'proj-07',
-    title: 'Xiaomi Mix Fold 3 — Motion wallpaper',
-    title_pl: 'Xiaomi Mix Fold 3 — Motion wallpaper',
-    client: 'Xiaomi',
-    year: '2023',
-    software: 'Houdini · Solaris · Karma',
-    desc: 'My first motion wallpaper built entirely solo. The concept: a flower born from an explosion, realised through a volume-based setup layering several distinct explosion sims alongside particles and RBD. Rendered in Solaris/Karma rather than the studio\'s usual Redshift — Karma handles volume quality significantly better, which made it the right call for this type of effect.',
-    desc_pl: 'Mój pierwszy motion wallpaper zrealizowany w pełni samodzielnie. Koncept: kwiat narodzony z eksplozji, zrealizowany przez setup oparty na volume, łączący kilka odrębnych symulacji eksplozji razem z particles i RBD. Wyrenderowany w Solaris/Karma, a nie standardowym dla studia Redshift — Karma znacznie lepiej radzi sobie z jakością volume, co było właściwą decyzją dla tego typu efektu.',
-    tags: ['wallpaper', 'simulations'],
-    thumb: 'assets/proj-07/thumb.png',
-    files: [
-      { type: 'video', src: 'assets/proj-07/hero.mp4', label: 'Hero shot' },
-      { type: 'image', src: 'assets/proj-07/render_01.png', label: 'Blue color version' },
-    ]
-  },
-  {
-    id: 'proj-08',
-    title: 'Huawei M Pencil Pro',
-    title_pl: 'Huawei M Pencil Pro',
-    client: 'Huawei',
-    year: '2024',
-    software: 'Houdini · Redshift',
-    desc: 'Two product shots for the Huawei M Pencil Pro. Cameras and assets were provided — my scope was the VFX only: a procedural paint-from-brush effect, and on the first shot, an additional particle interaction between the brush and a pollen/dust particle system.',
-    desc_pl: 'Dwa ujęcia produktowe dla Huawei M Pencil Pro. Kamery i assety zostały dostarczone — mój zakres to wyłącznie VFX: proceduralny efekt malowania od pędzla, a w pierwszym ujęciu dodatkowo interakcja particles między pędzlem a systemem particles pyłku/pyłu.',
-    tags: ['product', 'procedural', 'simulations'],
-    thumb: 'assets/proj-08/thumb.png',
-    files: [
-      { type: 'video', src: 'assets/proj-08/video_01.mp4', label: 'Hero Shot_1' },
-      { type: 'video', src: 'assets/proj-08/video_02.mp4', label: 'Shot_2' },
-    ]
-  },
-  {
-    id: 'proj-09',
-    title: 'Xiaomi 13 Pro',
-    title_pl: 'Xiaomi 13 Pro',
-    client: 'Xiaomi',
-    year: '2023',
-    software: 'Houdini · Redshift',
-    desc: 'VFX-only contribution on an earlier project — flying and surface-clinging snow on a phone shot involving hands. Several particle setups combined with custom snowflake shape work, interacting with the phone and hands in frame.',
-    desc_pl: 'Wkład czysto VFX-owy w starszym projekcie — latający i osiadający na powierzchni śnieg w ujęciu telefonu z udziałem rąk. Kilka setupów particles połączonych z własną pracą nad formą płatków śniegu, oddziałujących z telefonem i rękami w kadrze.',
-    tags: ['product', 'simulations', 'procedural'],
-    thumb: 'assets/proj-09/thumb.png',
-    files: [
-      { type: 'video', src: 'assets/proj-09/hero.mp4', label: 'Hero render' },
-      { type: 'video', src: 'assets/proj-09/preview_01.mp4', label: 'Sim preview 1' },
-      { type: 'video', src: 'assets/proj-09/preview_02.mp4', label: 'Sim preview 2' },
-      { type: 'video', src: 'assets/proj-09/preview_03.mp4', label: 'Sim preview 3' },
-    ]
-  },
+      ['video', 'proj-09/preview_02.mp4', 'Sim preview'],
+      ['video', 'proj-09/preview_03.mp4', 'Sim preview'],
+    ] },
 ];
 
-const TAG_LABELS = {
-  wallpaper:   { en: 'Wallpaper',   pl: 'Tapeta' },
-  ai:          { en: 'AI',          pl: 'AI' },
-  product:     { en: 'Product',     pl: 'Produkt' },
-  simulations: { en: 'Simulations', pl: 'Symulacje' },
-  procedural:  { en: 'Procedural',  pl: 'Proceduralne' },
-  compo:       { en: 'Compo',       pl: 'Compo' },
-};
-
-const CONTACT = {
-  email: 'valynets.h@gmail.com',
-  linkedin: 'https://www.linkedin.com/in/hanna-kachurouskaya-096aab114/',
-  behance: 'https://www.behance.net/ValHanna',
-};
-
-/* ─── i18n ─── */
-const i18n = {
-  en: {
-    label: 'Portfolio · Selected Work',
-    role: 'Senior VFX Artist · Technical Artist',
-    intro_desc: 'Procedural simulations, motion wallpapers and product VFX for Huawei, Xiaomi and OnePlus — built in Houdini, from R&D to final delivery.',
-    projects: n => `${n} projects`,
-    enter: 'Enter',
-    back: 'Back',
-    next: 'Next',
-    end_label: 'Contact',
-    end_title: "Let's <em>work</em> together",
-    end_desc: 'Open to VFX, FX TD and technical artist roles — remote or on-site.',
-    top: 'Back to top',
-    open: 'Open project',
-    close_project: 'Close project',
-    label_client: 'Client',
-    label_year: 'Year',
-    label_software: 'Software',
-    lang_btn: 'PL',
-  },
-  pl: {
-    label: 'Portfolio · Wybrane prace',
-    role: 'Senior VFX Artist · Technical Artist',
-    intro_desc: 'Proceduralne symulacje, motion wallpapery i VFX produktowe dla Huawei, Xiaomi i OnePlus — w Houdini, od R&D po finalną dostawę.',
-    projects: n => `${n} projektów`,
-    enter: 'Wejdź',
-    back: 'Wstecz',
-    next: 'Dalej',
-    end_label: 'Kontakt',
-    end_title: 'Porozmawiajmy o <em>współpracy</em>',
-    end_desc: 'Otwarta na role VFX, FX TD i technical artist — zdalnie lub stacjonarnie.',
-    top: 'Na początek',
-    open: 'Otwórz projekt',
-    close_project: 'Zamknij projekt',
-    label_client: 'Klient',
-    label_year: 'Rok',
-    label_software: 'Software',
-    lang_btn: 'EN',
-  },
-};
-let lang = 'en';
-
-const tr = (p, field) => (lang === 'pl' && p[field + '_pl']) || p[field];
-const trTag = tag => (TAG_LABELS[tag] || {})[lang] || tag;
 const pad = n => String(n).padStart(2, '0');
+const isVid = p => p.endsWith('.mp4');
+const mediaEl = (p, extra = '') => isVid(p)
+  ? `<video src="${A + p}" muted loop playsinline autoplay preload="metadata" ${extra}></video>`
+  : `<img src="${A + p}" alt="" loading="lazy" ${extra}>`;
 
-/* ─── ICONS ─── */
-const ICON_EXT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg>';
-const ICON_NEXT = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>';
-const ICON_OPEN = '<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 3h6v6"/><path d="M9 21H3v-6"/><path d="M21 3l-7 7"/><path d="M3 21l7-7"/></svg>';
-const ICON_BACK ='<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>';
+/* ─── BUILD LIST + THUMBS ─── */
+const slats = document.getElementById('slats');
+const thumbs = document.getElementById('thumbs');
+const blind = document.getElementById('blind');
+document.getElementById('count').textContent = `${pad(PROJECTS.length)} projects`;
 
-/* ─── DOM ─── */
-const root = document.documentElement;
-const stopsEl = document.getElementById('stops');
-const scene = document.getElementById('scene');
-const cube = document.getElementById('cube');
-const hud = document.getElementById('hud');
-const hudCount = document.getElementById('hud_count');
-const progressFill = document.getElementById('progress_fill');
+PROJECTS.forEach((p, i) => {
+  slats.insertAdjacentHTML('beforeend', `
+    <li><button class="slat" type="button" data-i="${i}">
+      <span class="n">${pad(i + 1)}</span>
+      <span class="t">${p.title}</span>
+      <span class="meta mono">${p.tags}<br>${p.client} · ${p.year}</span>
+    </button></li>`);
+  thumbs.insertAdjacentHTML('beforeend', `
+    <button class="thumb" type="button" data-i="${i}" aria-label="Open ${p.title}">
+      <img src="${A}${p.id}/thumb.${p.id === 'proj-01' ? 'jpg' : 'png'}" alt="">
+      <span class="cap mono"><b>${pad(i + 1)} ${p.title}</b><span>${p.year}</span></span>
+    </button>`);
+});
 
-const N = PROJECTS.length;
-const LAST = N + 1;                    // stop index of the contact stop
-const sideOf = () => 1;   // cards always on the left, sheets always on the right
-
-/* ─── RENDER STOPS ─── */
-function withIndex(html) {
-  // staggered reveal: give each direct child of .card an --i
-  const tpl = document.createElement('template');
-  tpl.innerHTML = html.trim();
-  tpl.content.querySelectorAll('.card').forEach(card => {
-    [...card.children].forEach((c, i) => c.style.setProperty('--i', i));
-  });
-  return tpl.content;
+/* hovering either side lights up its partner on the other side */
+function light(i) {
+  slats.querySelectorAll('.slat').forEach(s => s.classList.toggle('lit', +s.dataset.i === i));
+  thumbs.querySelectorAll('.thumb').forEach(t => t.classList.toggle('lit', +t.dataset.i === i));
+  thumbs.classList.toggle('dim', i != null);
+}
+for (const box of [slats, thumbs]) {
+  box.addEventListener('pointerover', e => { const el = e.target.closest('[data-i]'); if (el) light(+el.dataset.i); });
+  box.addEventListener('pointerleave', () => light(null));
+  box.addEventListener('focusin', e => { const el = e.target.closest('[data-i]'); if (el) light(+el.dataset.i); });
+  box.addEventListener('click', e => { const el = e.target.closest('[data-i]'); if (el) open(+el.dataset.i); });
 }
 
-function render() {
-  const t = i18n[lang];
-  document.getElementById('lang_btn').textContent = t.lang_btn;
-  root.lang = lang;
+/* ─── PROJECT VIEW ─── */
+const thumbsView = document.getElementById('thumbs_view');
+const projView = document.getElementById('project_view');
+let current = null;
 
-  // every stop: title strip above the sheet, description strip below it
-  const intro = `
-    <section id="s0" class="stop" aria-label="Hanna Kachurouskaya — ${t.label}">
-      <div class="card card-top">
-        <p class="card-label">${t.label}</p>
+function open(i, fromHash) {
+  const p = PROJECTS[i];
+  current = i;
+  const files = p.files.map(([type, src, label, size]) => `
+    <figure class="${size || ''}">
+      <div class="frame">${mediaEl(src)}</div>
+      <figcaption class="mono">${label}</figcaption>
+    </figure>`).join('');
+  const nextP = PROJECTS[(i + 1) % PROJECTS.length];
+
+  projView.innerHTML = `
+    <div class="proj-bar">
+      <span class="n">${pad(i + 1)}</span>
+      <h1>${p.title}</h1>
+      <div class="step">
+        <button class="icon-btn mono" type="button" data-step="-1" aria-label="Previous project">↑</button>
+        <button class="icon-btn mono" type="button" data-step="1" aria-label="Next project">↓</button>
       </div>
-      <div class="card card-bottom">
-        <p class="card-description">${t.intro_desc}</p>
-        <div class="card-row">
-          <p class="card-meta"><span>${t.role}</span><span>${t.projects(pad(N))}</span></p>
-          <p class="card-links">
-            <a href="${CONTACT.behance}" target="_blank" rel="noopener noreferrer">Behance ${ICON_EXT}</a>
-            <a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ${ICON_EXT}</a>
-          </p>
-          <div class="cta-row"><a class="cta" href="#s1">${t.enter} ${ICON_NEXT}</a></div>
-        </div>
-      </div>
-    </section>`;
-
-  const pens = PROJECTS.map((p, j) => {
-    const k = j + 1;
-    return `
-      <li id="s${k}" class="stop pen" aria-labelledby="p${k}_title">
-        <div class="card card-top" data-index="${pad(k)}">
-          <p class="card-label">${p.client} · ${p.year} · ${p.software}</p>
-          <h2 id="p${k}_title">${tr(p, 'title')}</h2>
-        </div>
-        <div class="card card-bottom">
-          <p class="card-description">${tr(p, 'desc')}</p>
-          <div class="card-row">
-            <p class="card-meta">${p.tags.map(tag => `<span class="tag">${trTag(tag)}</span>`).join('')}</p>
-            <div class="cta-row">
-              <button class="cta" type="button" data-open="${j}">${t.open} ${ICON_OPEN}</button>
-              <a class="cta-back" href="#s${k - 1}">${ICON_BACK} ${t.back}</a>
-              <a class="cta-back" href="#s${k + 1}">${t.next} ${ICON_NEXT}</a>
-            </div>
-          </div>
-        </div>
-      </li>`;
-  }).join('');
-
-  const outro = `
-    <section id="s${LAST}" class="stop" aria-label="${t.end_label}">
-      <div class="card card-top">
-        <p class="card-label">${t.end_label}</p>
-      </div>
-      <div class="card card-bottom">
-        <p class="card-description">${t.end_desc}</p>
-        <div class="card-row">
-          <p class="card-links">
-            <a href="mailto:${CONTACT.email}">${CONTACT.email}</a>
-            <a href="${CONTACT.linkedin}" target="_blank" rel="noopener noreferrer">LinkedIn ${ICON_EXT}</a>
-            <a href="${CONTACT.behance}" target="_blank" rel="noopener noreferrer">Behance ${ICON_EXT}</a>
-          </p>
-          <div class="cta-row"><a class="cta-back" href="#s0">${ICON_BACK} ${t.top}</a></div>
-        </div>
-      </div>
-    </section>`;
-
-  stopsEl.replaceChildren(withIndex(intro));
-  const ol = document.createElement('ol');
-  ol.className = 'pen-list';
-  ol.setAttribute('aria-label', 'Projects');
-  ol.append(withIndex(pens));
-  stopsEl.append(ol, withIndex(outro));
-
-  sheets.forEach(f => { f.dataset.key = ''; });
-  observeStops();
-  measure();
-  update();
-}
-
-/* ─── CARD REVEAL ─── */
-let observer;
-function observeStops() {
-  observer?.disconnect();
-  observer = new IntersectionObserver(entries => {
-    entries.forEach(e => e.target.querySelectorAll('.card').forEach(c => c.classList.toggle('is-visible', e.isIntersecting)));
-  }, { threshold: .45 });
-  stopsEl.querySelectorAll('.stop').forEach(s => observer.observe(s));
-}
-
-/* ─── SHEET CONTENT ─── */
-function buildProjectFace(face, p, j) {
-  face.dataset.open = j;
-  const label = document.createElement('span');
-  label.className = 'face-open';
-  label.innerHTML = `${i18n[lang].open} ${ICON_OPEN}`;
-  face.append(label);
-  const ph = document.createElement('div');
-  ph.className = 'face-placeholder';
-  ph.innerHTML = '<span class="face-spinner"></span>';
-  face.append(ph);
-  const img = new Image();
-  img.alt = '';
-  img.decoding = 'async';
-  img.onload = () => {
-    if (!ph.isConnected) return;
-    ph.classList.add('is-done');
-    face.append(img);
-  };
-  img.onerror = () => {
-    if (!ph.isConnected) return;
-    ph.classList.add('is-done');
-    ph.textContent = p.title;
-  };
-  img.src = p.thumb;
-}
-
-function buildIntroFace(face) {
-  const t = i18n[lang];
-  face.innerHTML = `<div class="face-intro">
-    <p class="face-intro-title">Hanna <em>Kachurouskaya</em></p>
-    <p class="face-intro-count">${t.projects(pad(N))}</p>
-  </div>`;
-}
-
-function buildEndFace(face) {
-  const t = i18n[lang];
-  face.innerHTML = `<div class="face-intro">
-    <p class="face-intro-title">${t.end_title}</p>
-    <p class="face-intro-count">${CONTACT.email}</p>
-  </div>`;
-}
-
-/* ─── SHEETS: one card per stop, stacked; the top one flies away on scroll ─── */
-const sheets = [];
-for (let i = 0; i <= LAST; i++) {
-  const el = document.createElement('div');
-  el.className = 'face sheet';
-  // a little random tilt so the stack looks like loose paper
-  el.dataset.rot = (i % 2 ? 1 : -1) * (3 + ((i * 7919) % 13) / 13 * 5);   // 3–8° either way
-  cube.append(el);
-  sheets.push(el);
-}
-
-function fillSheet(i) {
-  if (i < 0 || i > LAST) return;
-  const el = sheets[i];
-  const key = `${i}-${lang}`;
-  if (el.dataset.key === key) return;
-  el.dataset.key = key;
-  delete el.dataset.open;
-  el.replaceChildren();
-  if (i === 0) buildIntroFace(el);
-  else if (i === LAST) buildEndFace(el);
-  else buildProjectFace(el, PROJECTS[i - 1], i - 1);
-}
-
-/* ─── SCROLL → ORIENTATION ─── */
-let tops = [];
-let shiftAmount = 0;
-const compactMQ = matchMedia('(max-width: 56.25em) and (orientation: portrait), (orientation: landscape) and (max-height: 30em)');
-
-function measure() {
-  tops = [...stopsEl.querySelectorAll('.stop')].map(s => s.getBoundingClientRect().top + scrollY);
-  // push the deck away from the card, but never past the screen edge
-  shiftAmount = 0;   // sheets stay centred between the title and description strips
-}
-
-const clamp = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-const lerp = (a, b, e) => a + (b - a) * e;
-const ease = x => x * x * (3 - 2 * x);
-
-function update() {
-  if (!tops.length) return;
-  const y = scrollY;
-  let k = 0;
-  while (k < tops.length - 1 && y >= tops[k + 1]) k++;
-  const f = k < tops.length - 1 ? clamp((y - tops[k]) / (tops[k + 1] - tops[k])) : 0;
-  const e = ease(clamp((f - .12) / .76));          // hold at each stop, roll in between
-  const shift = lerp(sideOf(k), sideOf(Math.min(k + 1, LAST)), e) * shiftAmount;
-  scene.style.translate = `${shift.toFixed(1)}px 0`;
-  root.style.setProperty('--light-x', `calc(50% + ${shift.toFixed(1)}px)`);
-
-  const pos = k + e;                       // continuous position in the deck
-  const W = scene.clientWidth || innerWidth, H = innerHeight;
-  for (let i = 0; i <= LAST; i++) {
-    const el = sheets[i];
-    const d = i - pos;                     // <0: flying off, 0: on top, >0: waiting underneath
-    if (d <= -1 || d > 4) { el.style.visibility = 'hidden'; continue; }
-    fillSheet(i);
-    el.style.visibility = '';
-    const rot = Number(el.dataset.rot);
-    let tf, shade;
-    if (d < 0) {
-      // lift, tilt and fly up and out to the side
-      const q = -d, dir = 1;   // every sheet flies off the same way: up and to the right
-      tf = `translate3d(${(dir * q * q * W * .55).toFixed(1)}px, ${(-q * H * 1.05).toFixed(1)}px, ${(q * 160).toFixed(1)}px)
-            rotateX(${(q * 38).toFixed(2)}deg) rotateZ(${(dir * q * 28).toFixed(2)}deg)`;
-      shade = 0;
-    } else {
-      // stacked behind: further back, lower, slightly rotated and darker
-      tf = `translate3d(${(rot * 1.5 * Math.min(1, d)).toFixed(1)}px, ${(d * 30).toFixed(1)}px, ${(-d * 60).toFixed(1)}px)
-            rotateZ(${(rot * Math.min(1, d)).toFixed(2)}deg) scale(${(1 - d * .03).toFixed(3)})`;
-      shade = Math.min(.45, d * .14);
-    }
-    el.style.transform = tf;
-    el.style.zIndex = String(100 - Math.round(d * 10));
-    el.style.opacity = d > 3 ? String(clamp(4 - d)) : '1';
-    el.style.setProperty('--shade', shade.toFixed(3));
-    el.style.setProperty('--sheen', '0');
-    el.style.setProperty('--content-o', clamp(1 - d * 2.5).toFixed(3));   // fade content in as the sheet reaches the top
-  }
-
-  const t = k + f;
-  const current = Math.round(t);
-  hudCount.textContent = `${pad(current)} / ${pad(LAST)}`;
-  progressFill.style.transform = `scaleX(${(t / LAST).toFixed(4)})`;
-}
-
-let ticking = false;
-function requestUpdate() {
-  if (ticking) return;
-  ticking = true;
-  requestAnimationFrame(() => { ticking = false; update(); });
-}
-
-addEventListener('scroll', requestUpdate, { passive: true });
-addEventListener('resize', () => { measure(); requestUpdate(); });
-
-/* ─── PROJECT MODAL (same viewer as portfolio.html) ─── */
-const modal = document.getElementById('project_modal');
-const modalInner = document.getElementById('project_modal_inner');
-let activeProject = null;
-let mediaIdx = 0;
-
-function placeholderHTML(file) {
-  return `<div class="placeholder-thumb"><span>${file.type === 'video' ? '▶' : '◻'}</span><span>${file.src}</span></div>`;
-}
-
-function mediaHTML(file) {
-  return file.type === 'video'
-    ? `<video src="${file.src}" controls playsinline preload="metadata" data-err></video>`
-    : `<img src="${file.src}" alt="${file.label}" data-err>`;
-}
-
-function thumbsHTML(p) {
-  return p.files.map((f, i) => `
-    <div class="thumb-item${i === 0 ? ' active' : ''}" data-media="${i}">
-      ${f.type === 'video'
-        ? `<video src="${f.src}" preload="metadata" muted></video><span class="type-badge">mp4</span>`
-        : `<img src="${f.src}" alt="">`}
-    </div>`).join('');
-}
-
-function openModal(j, idx = 0) {
-  const p = PROJECTS[j];
-  const t = i18n[lang];
-  activeProject = j;
-  const multi = p.files.length > 1;
-  modalInner.innerHTML = `
-    <button class="modal-x" type="button" data-close>✕</button>
-    <div class="viewer">
-      <div class="viewer-main" id="viewer_main">${mediaHTML(p.files[0])}</div>
-      ${multi ? `
-        <div class="viewer-nav prev" data-step="-1">&#8592;</div>
-        <div class="viewer-nav next" data-step="1">&#8594;</div>
-        <div class="viewer-counter" id="viewer_counter">1 / ${p.files.length}</div>` : ''}
+      <button class="icon-btn mono" type="button" data-close aria-label="Close project">✕</button>
     </div>
-    <div class="viewer-caption" id="viewer_caption">${p.files[0].label}</div>
-    ${multi ? `<div class="thumb-strip">${thumbsHTML(p)}</div>` : ''}
-    <div class="expanded-info">
-      <p class="card-label">${pad(j + 1)} / ${pad(N)}</p>
-      <h2 class="exp-title">${tr(p, 'title')}</h2>
-      <div class="exp-meta">
-        <div><span class="exp-meta-label">${t.label_client}</span>${p.client}</div>
-        <div><span class="exp-meta-label">${t.label_year}</span>${p.year}</div>
-        <div><span class="exp-meta-label">${t.label_software}</span>${p.software}</div>
+    <div class="proj-body">
+      <div class="compare" id="compare" style="aspect-ratio:${p.ratio}; max-height:72vh; margin-inline:auto;" tabindex="0"
+           role="slider" aria-label="Compare final and process" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+        <div class="layer look">${mediaEl(p.look)}</div>
+        <div class="layer build">${mediaEl(p.build)}</div>
+        <div class="handle"></div>
+        <span class="side look mono">final</span>
+        <span class="side tech mono">${p.buildLabel || 'process'}</span>
       </div>
-      <p class="exp-desc">${tr(p, 'desc')}</p>
-      <button class="cta-back exp-close" type="button" data-close>${ICON_BACK} ${t.close_project}</button>
+
+      <div class="facts">
+        <div>
+          <p>${p.short}</p>
+          <ul class="how mono">${p.how.map(h => `<li>${h}</li>`).join('')}</ul>
+        </div>
+        <dl class="mono">
+          <dt>Client</dt><dd>${p.client}</dd>
+          <dt>Year</dt><dd>${p.year}</dd>
+          <dt>Type</dt><dd>${p.kind}</dd>
+          <dt>Tools</dt><dd>${p.software}</dd>
+        </dl>
+      </div>
+
+      ${files ? `<div class="materials-h"><b>More from this project</b><span class="mono">${p.files.length} items</span></div>
+      <div class="materials">${files}</div>` : ''}
+
+      <button class="next" type="button" data-step="1">
+        <span class="mono">Next project</span><b>${nextP.title}</b>
+      </button>
     </div>`;
-  modal.hidden = false;
-  modal.scrollTop = 0;
-  root.style.overflow = 'hidden';
-  watchErrors();
-  if (idx) setMedia(idx);
+
+  thumbsView.hidden = true;
+  projView.hidden = false;
+  projView.scrollTop = 0;
+  blind.classList.add('has-open');
+  slats.querySelectorAll('.slat').forEach(s => s.setAttribute('aria-current', +s.dataset.i === i));
+  if (!fromHash) history.replaceState(null, '', '#' + p.id);
+  wireCompare();
+  syncPair();
 }
 
-function closeModal() {
-  if (activeProject === null) return;
-  modal.hidden = true;
-  modalInner.replaceChildren();   // stops any playing video
-  activeProject = null;
-  mediaIdx = 0;
-  root.style.overflow = '';
+function close() {
+  current = null;
+  projView.hidden = true; projView.innerHTML = '';
+  thumbsView.hidden = false;
+  blind.classList.remove('has-open');
+  slats.querySelectorAll('.slat').forEach(s => s.removeAttribute('aria-current'));
+  history.replaceState(null, '', location.pathname);
 }
 
-function setMedia(i) {
-  if (activeProject === null) return;
-  const files = PROJECTS[activeProject].files;
-  mediaIdx = (i + files.length) % files.length;
-  document.getElementById('viewer_main').innerHTML = mediaHTML(files[mediaIdx]);
-  const counter = document.getElementById('viewer_counter');
-  if (counter) counter.textContent = `${mediaIdx + 1} / ${files.length}`;
-  document.getElementById('viewer_caption').textContent = files[mediaIdx].label;
-  modalInner.querySelectorAll('.thumb-item').forEach((el, k) => el.classList.toggle('active', k === mediaIdx));
-  watchErrors();
-}
-
-// missing media → placeholder with the expected path
-function watchErrors() {
-  const files = PROJECTS[activeProject].files;
-  modalInner.querySelectorAll('[data-err]').forEach(el => {
-    el.removeAttribute('data-err');
-    el.addEventListener('error', () => { el.outerHTML = placeholderHTML(files[mediaIdx]); }, { once: true });
-  });
-}
-
-modal.addEventListener('click', e => {
-  if (e.target === modal || e.target.closest('[data-close]')) return closeModal();
+projView.addEventListener('click', e => {
+  if (e.target.closest('[data-close]')) return close();
   const step = e.target.closest('[data-step]');
-  if (step) return setMedia(mediaIdx + Number(step.dataset.step));
-  const thumb = e.target.closest('[data-media]');
-  if (thumb) setMedia(Number(thumb.dataset.media));
+  if (step) open((current + +step.dataset.step + PROJECTS.length) % PROJECTS.length);
 });
+document.querySelector('[data-home]').addEventListener('click', e => { e.preventDefault(); close(); });
+addEventListener('keydown', e => { if (e.key === 'Escape' && current != null) close(); });
 
-// open from a cube face or a card button
-document.addEventListener('click', e => {
-  const opener = e.target.closest('.face[data-open], .card [data-open]');
-  if (opener) openModal(Number(opener.dataset.open));
-});
-
-/* ─── KEYBOARD: ←/→ jump between stops (or media when a project is open) ─── */
-addEventListener('keydown', e => {
-  if (activeProject !== null) {
-    if (e.key === 'Escape') closeModal();
-    if (e.key === 'ArrowRight') setMedia(mediaIdx + 1);
-    if (e.key === 'ArrowLeft') setMedia(mediaIdx - 1);
-    return;
-  }
-  const dir = { ArrowRight: 1, ArrowDown: 1, PageDown: 1, ' ': 1, ArrowLeft: -1, ArrowUp: -1, PageUp: -1 }[e.key];
-  if (!dir || e.target.closest?.('input, textarea, button, a')) return;
-  e.preventDefault();
-  if (!paging) goTo(currentStop() + dir);
-});
-
-/* ─── PAGED SCROLLING: one wheel gesture = one project, fast animated jump ─── */
-const PAGE_MS = 650;
-let paging = false;
-let lastWheel = 0;
-let needQuiet = false;   // swallow trackpad inertia after a jump
-
-const easeInOut = x => (x < .5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2);
-
-function currentStop() {
-  let best = 0;
-  tops.forEach((top, i) => { if (Math.abs(top - scrollY) < Math.abs(tops[best] - scrollY)) best = i; });
-  return best;
-}
-
-function goTo(k) {
-  k = clamp(k, 0, LAST);
-  const from = scrollY;
-  const to = tops[k];
-  if (Math.abs(to - from) < 2) return;
-  paging = true;
-  const t0 = performance.now();
-  const step = now => {
-    const p = clamp((now - t0) / PAGE_MS);
-    scrollTo({ top: from + (to - from) * easeInOut(p), behavior: 'instant' });
-    if (p < 1) requestAnimationFrame(step);
-    else { paging = false; needQuiet = true; }
+/* slider: follows the pointer, arrow keys nudge it */
+function wireCompare() {
+  const c = document.getElementById('compare');
+  const set = pct => {
+    pct = Math.max(0, Math.min(100, pct));
+    c.style.setProperty('--x', pct + '%');
+    c.setAttribute('aria-valuenow', Math.round(pct));
   };
-  requestAnimationFrame(step);
-}
-
-addEventListener('wheel', e => {
-  if (activeProject !== null || e.ctrlKey) return;   // modal scrolls normally, pinch-zoom untouched
-  e.preventDefault();
-  const now = performance.now();
-  const gap = now - lastWheel;
-  lastWheel = now;
-  if (paging) return;
-  if (needQuiet && gap < 180) return;                 // still the same flick → ignore
-  needQuiet = false;
-  if (Math.abs(e.deltaY) < 3) return;
-  goTo(currentStop() + (e.deltaY > 0 ? 1 : -1));
-}, { passive: false });
-
-// in-page links (Enter / Back / Next / Back to top) use the same quick jump
-document.addEventListener('click', e => {
-  const a = e.target.closest('a[href^="#s"]');
-  if (!a) return;
-  const k = Number(a.getAttribute('href').slice(2));
-  if (Number.isNaN(k)) return;
-  e.preventDefault();
-  goTo(k);
-});
-
-/* ─── LANG ─── */
-document.getElementById('lang_btn').addEventListener('click', () => {
-  lang = lang === 'en' ? 'pl' : 'en';
-  render();
-  if (activeProject !== null) openModal(activeProject, mediaIdx);
-});
-
-/* ─── BACKGROUND: interactive water caustics over a sandy floor (WebGL2) ───
-   A height-field wave sim (ping-pong float textures) + a render pass that turns the
-   surface curvature into caustics, refracts a procedural sand floor, absorbs light
-   with depth and adds sun glints / fresnel. Ambient drops and a drifting "ghost"
-   pointer keep it alive; real pointer moves and clicks make ripples.
-   Falls back to the CSS sky gradient when WebGL2 / float targets are unavailable. */
-(function waterBackground() {
-  const canvas = document.getElementById('water');
-  const gl = canvas.getContext('webgl2', { antialias: false, alpha: false, depth: false, powerPreference: 'high-performance' });
-  if (!gl) { canvas.remove(); return; }
-  if (!gl.getExtension('EXT_color_buffer_float') && !gl.getExtension('EXT_color_buffer_half_float')) { canvas.remove(); return; }
-  gl.getExtension('OES_texture_half_float_linear');
-
-  const MAX_DROPS = 12;
-  const SIM = 256;
-
-  // parameters (Tidepool, recoloured: blue floor, red waves); arrays = colour 0–255
-  const UPD = { propagation: .245, damping: .996, edgeWidth: .045, edgeDamp: .9, clampH: 1.6 };
-  const REN = {
-    causticA: 9, detFloor: .06, clamp1: 6, contrast: 1.22, clamp2: 8, floorBase: .34, causticGain: .3,
-    veinThresh: 1.25, veinGain: .55, veinColor: [255, 30, 20],      // red caustic veins
-    baseDepth: 1.05, depthScale: 1.4, depthNoise: 2, depthNoiseAmp: .25,
-    absorb: [22, 26, 14], absorbScale: 1.1, deepColor: [8, 14, 60], deepGain: .3,   // light, even absorption; navy depths
-    parallax: 2.4, nScale: 8.5,
-    sun1x: .3, sun1y: .45, sun1z: .82, sun2x: -.5, sun2y: .15, sun2z: .78,
-    spec1: 150, spec2: 70, spec2Gain: .35, glintGain: .9, glintColor: [255, 110, 90],   // warm red-tinted glints
-    fresnelPow: 2.2, fresnelGain: .9, skyColor: [230, 24, 16],      // wave slopes catch red
-    // blue sky-gradient floor
-    sandHi: [70, 120, 255], sandLo: [22, 46, 170], rippleScale: 6.5, warpScale: 3, warp: .6,
-    bandFreq: 9, bandSkew: 4, bandGain: .06, grainScale: 240, grainAmp: .045,
-    octaves: 4, lacunarity: 2.03, gain: .5,
-    exposure: 1.25, grain: .022, gamma: .4545, vigOuter: 1.28, vigInner: .32, vigDark: .6, vigBright: 1.05,
-  };
-  const INTS = new Set(['octaves']);
-  const P = {
-    brushRadius: .032, brushBase: .012, brushGain: .9, brushMax: .09, clickStrength: .22, clickRadius: .05,
-    ambientCount: 4, ambientStrength: .018, ambientRate: 1, idle: 2.2, drivenMult: .45,
-    ghostReturn: 10, ghostFade: 1.5, ghostSpeed: 4, ghostGain: 2, simRate: 60, maxSub: 4,
-  };
-
-  const uName = k => 'u' + k[0].toUpperCase() + k.slice(1);
-  const type = (k, v) => (Array.isArray(v) ? 'vec3' : INTS.has(k) ? 'int' : 'float');
-  const decl = o => Object.entries(o).map(([k, v]) => 'uniform ' + type(k, v) + ' ' + uName(k) + ';').join('\n');
-
-  const VERT = `#version 300 es
-out vec2 vUv;
-void main(){ vec2 p=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2)); vUv=p; gl_Position=vec4(p*2.0-1.0,0.0,1.0); }`;
-
-  const UPDATE = `#version 300 es
-precision highp float;
-uniform sampler2D uState; uniform vec2 uTexel; uniform float uAspect;
-uniform int uDropCount; uniform vec4 uDrops[${MAX_DROPS}];
-${decl(UPD)}
-in vec2 vUv; out vec4 o;
-void main(){
-  vec2 uv=vUv; float c=texture(uState,uv).r, p=texture(uState,uv).g;
-  float l=texture(uState,uv-vec2(uTexel.x,0.0)).r, r=texture(uState,uv+vec2(uTexel.x,0.0)).r;
-  float u=texture(uState,uv+vec2(0.0,uTexel.y)).r, d=texture(uState,uv-vec2(0.0,uTexel.y)).r;
-  float nv=(2.0*c-p)+(l+r+u+d-4.0*c)*uPropagation; nv*=uDamping;
-  for(int i=0;i<${MAX_DROPS};i++){ if(i>=uDropCount)break;
-    vec2 dp=uv-uDrops[i].xy; dp.x*=uAspect; float rr=uDrops[i].w;
-    nv+=uDrops[i].z*exp(-dot(dp,dp)/(rr*rr)); }
-  vec2 e=min(uv,1.0-uv);
-  nv*=mix(uEdgeDamp,1.0,smoothstep(0.0,uEdgeWidth,min(e.x,e.y)));
-  o=vec4(clamp(nv,-uClampH,uClampH),c,0.0,1.0);
-}`;
-
-  const RENDER = `#version 300 es
-precision highp float;
-uniform sampler2D uState; uniform vec2 uTexel; uniform vec2 uResolution; uniform float uTime; uniform float uAspect;
-${decl(REN)}
-in vec2 vUv; out vec4 frag;
-float hash(vec2 p){ p=fract(p*vec2(123.34,456.21)); p+=dot(p,p+45.32); return fract(p.x*p.y); }
-float vnoise(vec2 p){ vec2 i=floor(p),f=fract(p); f=f*f*(3.0-2.0*f);
-  float a=hash(i),b=hash(i+vec2(1.0,0.0)),c=hash(i+vec2(0.0,1.0)),d=hash(i+vec2(1.0,1.0));
-  return mix(mix(a,b,f.x),mix(c,d,f.x),f.y); }
-float fbm(vec2 p){ float s=0.0,a=0.5; for(int i=0;i<8;i++){ if(i>=uOctaves)break; s+=a*vnoise(p); p*=uLacunarity; a*=uGain; } return s; }
-vec3 sand(vec2 uv){ vec2 p=uv*vec2(uAspect,1.0);
-  float rip=fbm(p*uRippleScale+fbm(p*uWarpScale)*uWarp);
-  float band=0.5+0.5*sin(rip*uBandFreq+p.x*uBandSkew);
-  vec3 b=mix(uSandHi,uSandLo,rip); b=mix(b,b*(1.0+uBandGain),band);
-  return b+(vnoise(p*uGrainScale)-0.5)*uGrainAmp; }
-void main(){
-  vec2 uv=vUv,t=uTexel;
-  float hc=texture(uState,uv).r;
-  float hl=texture(uState,uv-vec2(t.x,0.0)).r, hr=texture(uState,uv+vec2(t.x,0.0)).r;
-  float hu=texture(uState,uv+vec2(0.0,t.y)).r, hd=texture(uState,uv-vec2(0.0,t.y)).r;
-  float hpp=texture(uState,uv+t).r, hmm=texture(uState,uv-t).r;
-  float hpm=texture(uState,uv+vec2(t.x,-t.y)).r, hmp=texture(uState,uv+vec2(-t.x,t.y)).r;
-  float hx=(hr-hl)*0.5, hy=(hu-hd)*0.5;
-  float hxx=hr-2.0*hc+hl, hyy=hu-2.0*hc+hd, hxy=(hpp-hpm-hmp+hmm)*0.25;
-  float jxx=1.0-uCausticA*hxx, jyy=1.0-uCausticA*hyy, jxy=-uCausticA*hxy;
-  float det=jxx*jyy-jxy*jxy;
-  float ca=clamp(1.0/max(abs(det),uDetFloor),0.0,uClamp1);
-  ca=clamp(pow(ca,uContrast),0.0,uClamp2);
-  vec2 land=uv+vec2(hx,hy)*uParallax;
-  vec3 col=sand(land)*(uFloorBase+ca*uCausticGain);
-  col+=uVeinColor*max(ca-uVeinThresh,0.0)*uVeinGain;
-  float depth=clamp(uBaseDepth-hc*uDepthScale+fbm(land*uDepthNoise)*uDepthNoiseAmp,0.2,3.0);
-  col*=exp(-uAbsorb*depth*uAbsorbScale);
-  col+=uDeepColor*depth*uDeepGain;
-  vec3 N=normalize(vec3(-hx*uNScale,-hy*uNScale,1.0)), V=vec3(0.0,0.0,1.0);
-  vec3 s1=normalize(vec3(uSun1x,uSun1y,uSun1z)+vec3(0.0,0.0,1e-4));
-  vec3 s2=normalize(vec3(uSun2x,uSun2y,uSun2z)+vec3(0.0,0.0,1e-4));
-  float sp=pow(max(dot(N,normalize(s1+V)),0.0),uSpec1)+pow(max(dot(N,normalize(s2+V)),0.0),uSpec2)*uSpec2Gain;
-  col+=sp*uGlintColor*uGlintGain;
-  col=mix(col,uSkyColor,pow(1.0-N.z,uFresnelPow)*uFresnelGain);
-  col*=mix(uVigDark,uVigBright,smoothstep(uVigOuter,uVigInner,length((uv-0.5)*vec2(uAspect,1.0))));
-  col=vec3(1.0)-exp(-col*uExposure);
-  col+=(hash(uv*uResolution+fract(uTime))-0.5)*uGrain;
-  frag=vec4(pow(max(col,vec3(0.0)),vec3(uGamma)),1.0);
-}`;
-
-  function sh(t, src) {
-    const o = gl.createShader(t); gl.shaderSource(o, src); gl.compileShader(o);
-    if (!gl.getShaderParameter(o, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(o));
-    return o;
-  }
-  function prog(vs, fs) {
-    const o = gl.createProgram(); gl.attachShader(o, sh(gl.VERTEX_SHADER, vs)); gl.attachShader(o, sh(gl.FRAGMENT_SHADER, fs));
-    gl.linkProgram(o); if (!gl.getProgramParameter(o, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(o));
-    return o;
-  }
-  let updateP, renderP;
-  try { updateP = prog(VERT, UPDATE); renderP = prog(VERT, RENDER); }
-  catch (e) { console.warn('water background disabled:', e); canvas.remove(); return; }
-
-  const locs = (pr, o, fixed) => {
-    const L = {};
-    Object.keys(o).forEach(k => { L[k] = gl.getUniformLocation(pr, uName(k)); });
-    fixed.forEach(n => { L[n] = gl.getUniformLocation(pr, n); });
-    return L;
-  };
-  const uL = locs(updateP, UPD, ['uState', 'uTexel', 'uAspect', 'uDropCount', 'uDrops']);
-  const rL = locs(renderP, REN, ['uState', 'uTexel', 'uResolution', 'uTime', 'uAspect']);
-  function setUniforms(L, o) {
-    for (const [k, v] of Object.entries(o)) {
-      if (Array.isArray(v)) gl.uniform3f(L[k], v[0] / 255, v[1] / 255, v[2] / 255);
-      else if (INTS.has(k)) gl.uniform1i(L[k], v | 0);
-      else gl.uniform1f(L[k], v);
-    }
-  }
-
-  // ping-pong float targets
-  function makeTarget() {
-    const tex = gl.createTexture(); gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA16F, SIM, SIM, 0, gl.RGBA, gl.HALF_FLOAT, null);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-    const fbo = gl.createFramebuffer(); gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
-    gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
-    return { tex, fbo };
-  }
-  const targets = [makeTarget(), makeTarget()];
-  let read = 0;
-  if (gl.checkFramebufferStatus(gl.FRAMEBUFFER) !== gl.FRAMEBUFFER_COMPLETE) { canvas.remove(); return; }
-  for (const t of targets) {
-    gl.bindFramebuffer(gl.FRAMEBUFFER, t.fbo); gl.viewport(0, 0, SIM, SIM);
-    gl.clearColor(0, 0, 0, 1); gl.clear(gl.COLOR_BUFFER_BIT);
-  }
-  gl.bindFramebuffer(gl.FRAMEBUFFER, null);
-  const vao = gl.createVertexArray();
-
-  // sizing (the canvas fills the page column)
-  let vw = 1, vh = 1;
-  function resize() {
-    const dpr = Math.min(devicePixelRatio || 1, 2);
-    vw = canvas.clientWidth || innerWidth; vh = canvas.clientHeight || innerHeight;
-    canvas.width = Math.floor(vw * dpr); canvas.height = Math.floor(vh * dpr);
-  }
-  resize();
-  addEventListener('resize', resize);
-
-  // drops
-  const dropData = new Float32Array(MAX_DROPS * 4);
-  let pending = [];
-  const queueDrop = (x, y, str, r) => { if (pending.length < MAX_DROPS) pending.push([x, y, str, r]); };
-  function uploadDrops() {
-    const n = Math.min(pending.length, MAX_DROPS);
-    for (let k = 0; k < n; k++) dropData.set(pending[k], k * 4);
-    pending = []; return n;
-  }
-
-  // ambient sources
-  const sources = [];
-  for (let k = 0; k < P.ambientCount; k++) sources.push({
-    px: .2 + .6 * Math.random(), py: .2 + .6 * Math.random(),
-    ax: .1 + .1 * Math.random(), ay: .1 + .1 * Math.random(),
-    sx: .05 + .08 * Math.random(), sy: .05 + .08 * Math.random(),
-    phx: Math.random() * 6.28, phy: Math.random() * 6.28,
-    next: Math.random() * 1.2, period: .7 + Math.random() * 1.1,
+  c.addEventListener('pointermove', e => {
+    const r = c.getBoundingClientRect();
+    set((e.clientX - r.left) / r.width * 100);
   });
+  c.addEventListener('keydown', e => {
+    const now = parseFloat(c.style.getPropertyValue('--x')) || 50;
+    if (e.key === 'ArrowLeft') set(now - 5);
+    if (e.key === 'ArrowRight') set(now + 5);
+  });
+}
+/* keep final and process in step so the wipe lines up */
+function syncPair() {
+  const vids = [...document.querySelectorAll('#compare video')];
+  if (vids.length < 2) return;
+  const [a, b] = vids;
+  a.addEventListener('timeupdate', () => {
+    if (!b.duration) return;
+    const want = a.currentTime % b.duration;
+    if (Math.abs(b.currentTime - want) > .15) b.currentTime = want;
+  });
+}
 
-  const t0 = performance.now();
-  const now = () => (performance.now() - t0) / 1000;
+/* pixel snapping: with display scaling (125%, 150%) a 1px rule and fractional slat heights
+   land between device pixels, so some gaps render thicker than others. Size the hairline
+   and the slats in whole device pixels instead. */
+function snapBlind() {
+  const dpr = devicePixelRatio || 1;
+  const hairDev = Math.max(1, Math.round(dpr));                       // one hairline, in device pixels
+  const headDev = Math.round(document.querySelector('header').getBoundingClientRect().height * dpr);
+  const availDev = Math.round(innerHeight * dpr) - headDev;
+  const slatDev = Math.floor(availDev / 18) - hairDev;                  // nine slats fill about half the column
+  root.style.setProperty('--hair', hairDev / dpr + 'px');
+  root.style.setProperty('--slat-h', slatDev / dpr + 'px');
+}
+const root = document.documentElement;
+addEventListener('resize', snapBlind);
+matchMedia(`(resolution: ${devicePixelRatio}dppx)`).addEventListener?.('change', snapBlind);
+snapBlind();
 
-  // pointer: listen on the window (the canvas sits under the page content)
-  let px = .5, py = .5, has = false, lastI = -1e9;
-  function toUv(cx, cy) {
-    const r = canvas.getBoundingClientRect();
-    const x = (cx - r.left) / r.width, y = (cy - r.top) / r.height;
-    if (x < 0 || x > 1 || y < 0 || y > 1) return null;
-    return [x, 1 - y];
-  }
-  addEventListener('pointermove', e => {
-    const uv = toUv(e.clientX, e.clientY);
-    if (!uv) { has = false; return; }
-    const [x, y] = uv;
-    if (has) queueDrop(x, y, Math.min(P.brushBase + Math.hypot(x - px, y - py) * P.brushGain, P.brushMax), P.brushRadius);
-    px = x; py = y; has = true; lastI = now();
-  }, { passive: true });
-  addEventListener('pointerdown', e => {
-    const uv = toUv(e.clientX, e.clientY);
-    if (!uv) return;
-    queueDrop(uv[0], uv[1], P.clickStrength, P.clickRadius);
-    px = uv[0]; py = uv[1]; has = true; lastI = now();
-  }, { passive: true });
-  document.addEventListener('pointerleave', () => { has = false; });
-
-  function collectAmbient(t, step) {
-    const idle = t - lastI > P.idle;
-    for (const sr of sources) {
-      sr.next -= step;
-      if (sr.next <= 0) {
-        sr.next = (sr.period / Math.max(P.ambientRate, .05)) * (.7 + Math.random() * .6);
-        const x = Math.min(Math.max(sr.px + sr.ax * Math.sin(t * sr.sx * 6.28 + sr.phx), .06), .94);
-        const y = Math.min(Math.max(sr.py + sr.ay * Math.cos(t * sr.sy * 6.28 + sr.phy), .06), .94);
-        queueDrop(x, y, P.ambientStrength * (idle ? 1 : P.drivenMult), .03 + Math.random() * .02);
-      }
-    }
-  }
-
-  // invisible "ghost" cursor that stirs the water while nobody interacts
-  let genv = 0, gpx = .5, gpy = .5, ginit = false;
-  const TAU = 6.283185307;
-  function ghostPos(t) {
-    const sp = P.ghostSpeed;
-    const x = .5 + .30 * Math.sin(t * .037 * TAU * sp) + .12 * Math.sin(t * .011 * TAU * sp + 1.7);
-    const y = .5 + .28 * Math.cos(t * .043 * TAU * sp) + .13 * Math.cos(t * .017 * TAU * sp + 4.1);
-    return [Math.min(Math.max(x, .06), .94), Math.min(Math.max(y, .06), .94)];
-  }
-  function collectGhost(t, step) {
-    const engaged = t - lastI > P.ghostReturn;
-    const rate = step / Math.max(P.ghostFade, .05);
-    genv += Math.max(-rate, Math.min(rate, (engaged ? 1 : 0) - genv));
-    const [gx, gy] = ghostPos(t);
-    if (!ginit) { gpx = gx; gpy = gy; ginit = true; }
-    if (genv > .001) {
-      const mag = Math.min(P.brushBase + Math.hypot(gx - gpx, gy - gpy) * P.brushGain, P.brushMax) * genv * P.ghostGain;
-      if (mag > 1e-4) queueDrop(gx, gy, mag, P.brushRadius);
-    }
-    gpx = gx; gpy = gy;
-  }
-
-  function simStep(step) {
-    collectAmbient(now(), step);
-    collectGhost(now(), step);
-    const cnt = uploadDrops();
-    const src = targets[read], dst = targets[read ^ 1];
-    gl.useProgram(updateP); gl.bindVertexArray(vao);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, dst.fbo); gl.viewport(0, 0, SIM, SIM);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, src.tex);
-    gl.uniform1i(uL.uState, 0); gl.uniform2f(uL.uTexel, 1 / SIM, 1 / SIM); gl.uniform1f(uL.uAspect, vw / vh);
-    gl.uniform1i(uL.uDropCount, cnt); gl.uniform4fv(uL.uDrops, dropData);
-    setUniforms(uL, UPD);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-    read ^= 1;
-  }
-  function draw() {
-    gl.useProgram(renderP); gl.bindVertexArray(vao);
-    gl.bindFramebuffer(gl.FRAMEBUFFER, null); gl.viewport(0, 0, canvas.width, canvas.height);
-    gl.activeTexture(gl.TEXTURE0); gl.bindTexture(gl.TEXTURE_2D, targets[read].tex);
-    gl.uniform1i(rL.uState, 0); gl.uniform2f(rL.uTexel, 1 / SIM, 1 / SIM);
-    gl.uniform2f(rL.uResolution, canvas.width, canvas.height); gl.uniform1f(rL.uTime, now()); gl.uniform1f(rL.uAspect, vw / vh);
-    setUniforms(rL, REN);
-    gl.drawArrays(gl.TRIANGLES, 0, 3);
-  }
-
-  const still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let last = performance.now(), accum = 0;
-  function frame(t) {
-    let dt = (t - last) / 1000; if (dt > .25) dt = .25; last = t;
-    const step = 1 / P.simRate;
-    if (!still) {
-      accum += dt; let n = 0;
-      while (accum >= step && n < P.maxSub) { simStep(step); accum -= step; n++; }
-      if (n === 0) { simStep(step); accum = 0; }
-    }
-    draw();
-    requestAnimationFrame(frame);
-  }
-  requestAnimationFrame(frame);
-})();
-
-/* ─── INIT ─── */
-scene.hidden = false;
-hud.hidden = false;
-render();
-requestAnimationFrame(() => requestAnimationFrame(() => {
-  document.body.dataset.state = 'ready';
-  measure();
-  update();
-}));
+/* deep links: #proj-03 opens that project directly */
+const fromHash = PROJECTS.findIndex(p => '#' + p.id === location.hash);
+if (fromHash >= 0) open(fromHash, true);
 </script>
 </body>
 </html>
