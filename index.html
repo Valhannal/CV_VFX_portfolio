@@ -362,7 +362,7 @@ PROJECTS.forEach((p, i) => {
 });
 
 /* thumbnail grid order (columns fill top to bottom); the list on the left keeps PROJECTS order */
-const THUMB_ORDER = ['proj-01', 'proj-03', 'proj-05', 'proj-07', 'proj-04', 'proj-10', 'proj-08', 'proj-09', 'proj-02'];
+const THUMB_ORDER = ['proj-05', 'proj-01', 'proj-03', 'proj-07', 'proj-04', 'proj-02', 'proj-10', 'proj-08', 'proj-09'];
 THUMB_ORDER.map(id => PROJECTS.findIndex(p => p.id === id)).filter(i => i >= 0).forEach(i => {
   const p = PROJECTS[i];
   thumbs.insertAdjacentHTML('beforeend', `
