@@ -359,6 +359,12 @@ PROJECTS.forEach((p, i) => {
       <span class="t">${p.title}</span>
       <span class="meta mono">${p.tags}<br>${p.client} · ${p.year}</span>
     </button></li>`);
+});
+
+/* thumbnail grid order (columns fill top to bottom); the list on the left keeps PROJECTS order */
+const THUMB_ORDER = ['proj-01', 'proj-03', 'proj-05', 'proj-07', 'proj-04', 'proj-10', 'proj-08', 'proj-09', 'proj-02'];
+THUMB_ORDER.map(id => PROJECTS.findIndex(p => p.id === id)).filter(i => i >= 0).forEach(i => {
+  const p = PROJECTS[i];
   thumbs.insertAdjacentHTML('beforeend', `
     <button class="thumb" type="button" data-i="${i}" aria-label="Open ${p.title}">
       <img src="${A}${p.id}/thumb.${p.id === 'proj-01' ? 'jpg' : 'png'}" alt="">
