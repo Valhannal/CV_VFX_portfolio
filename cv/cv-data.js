@@ -57,11 +57,11 @@ const CV = {
     { year: 2025, title: 'Xiaomi Mix Flip 2', text: 'Solo, concept to delivery: AI concept, vellum petals, particle shimmer', thumb: 'proj-03/thumb.png' },
     { year: 2025, title: 'OnePlus ACE 6T', text: 'Six procedural launch shots, look R&D, lighting and delivery', thumb: 'proj-02/thumb.png' },
     { year: 2024, title: 'Huawei Mate X6', text: 'Factory-set wallpaper: KineFX base with stacked vellum passes', thumb: 'proj-01/thumb.jpg' },
-    { year: 2024, title: 'Xiaomi Amoled', text: 'Particle-only wallpaper, shape and behaviour R&D', thumb: 'proj-04/thumb.png' },
-    { year: 2024, title: 'Huawei M Pencil Pro', text: 'Procedural paint stroke and pollen particles', thumb: 'proj-08/thumb.png' },
-    { year: 2024, title: 'Water / Sand / Ice', text: 'Studio R&D: wheel camera rig, three surface sims', thumb: 'proj-06/thumb.png' },
+    { year: 2024, title: 'Xiaomi Mix Fold 4', text: 'Particle-only wallpaper, shape and behaviour R&D', thumb: 'proj-04/thumb.png' },
     { year: 2023, title: 'Xiaomi Mix Fold 3', text: 'First solo wallpaper: layered pyro, RBD, Karma', thumb: 'proj-07/thumb.png' },
+    { year: 2023, title: 'Huawei Colombo', text: 'Watch Ultimate launch film: many shots, 3D, FX, animation and comp', thumb: 'proj-10/thumb.png' },
     { year: 2023, title: 'Xiaomi 13 Pro', text: 'Snow particles colliding with phone and hands', thumb: 'proj-09/thumb.png' },
+    { year: 2022, title: 'OPPO Swan', text: 'Feather fan wallpaper with a particle layer, 120 fps delivery', thumb: 'proj-08/thumb.png' },
   ],
 
   education: [

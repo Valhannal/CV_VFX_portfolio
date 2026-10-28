@@ -143,6 +143,11 @@
   .compare .side.look { left: .75rem; background: #fff; color: #000; }
   .compare .side.tech { right: .75rem; background: #000; color: #fff; box-shadow: inset 0 0 0 1px #fff; }
 
+  .single-look { margin: 0 auto; max-width: calc(72vh * 16 / 9); background: #000; }
+  .single-look video, .single-look img { width: 100%; display: block; }
+  .pair-title { margin: 2rem 0 .6rem; }
+  .study-note { margin: .7rem 0 1rem; }
+
   .facts { display: grid; grid-template-columns: 1.5fr 1fr; gap: 1.5rem; margin: 1.25rem 0 2rem; }
   .facts p { margin: 0; font-size: 1.02rem; line-height: 1.55; max-width: 56ch; }
   .facts dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: .35rem .9rem; align-content: start; }
@@ -199,7 +204,7 @@
       <div class="view thumbs-view" id="thumbs_view">
         <div class="thumbs" id="thumbs"></div>
         <div class="thumbs-foot">
-          <p>Simulations, motion wallpapers and product FX for Huawei, Xiaomi and OnePlus — from concept and R&amp;D to final delivery. Pick a project to see it built.</p>
+          <p>Simulations, motion wallpapers and product FX for Huawei, Xiaomi, OPPO and OnePlus — from concept and R&amp;D to final delivery. Pick a project to see it built.</p>
           <span class="mono" id="count"></span>
         </div>
       </div>
@@ -215,8 +220,11 @@ const PROJECTS = [
     software: 'Houdini · VEX · Redshift · Fusion', tags: 'Vellum · KineFX · POP',
     short: 'A factory-set motion wallpaper for the Mate X6. One vellum pass moved stiffly, so the unfold was built from a KineFX base and two to three stacked vellum passes until it felt soft, while still landing on the approved final frame.',
     how: ['KineFX-driven base motion', 'Two to three stacked vellum passes', 'Particle sparkle on the vellum geometry'],
-    look: 'proj-01/video_01.mp4', build: 'proj-01/sim_preview_01.mp4', ratio: '1 / 1',
+    look: 'proj-01/final_051_v4.mp4', build: 'proj-01/process_051_v4.mp4', ratio: '1 / 1', buildLabel: 'viewport flipbook', fps: 30,
     files: [
+      ['video', 'proj-01/process_reel_06.mp4', 'Process reel'],
+      ['video', 'proj-01/ai_video_01.mp4', 'AI concept, Kling'],
+      ['video', 'proj-01/video_01.mp4', 'Final render, red'],
       ['video', 'proj-01/video_02.mp4', 'Main simulation'],
       ['video', 'proj-01/sim_preview_02.mp4', 'Sim preview'],
       ['image', 'proj-01/render_01.jpg', 'Colour version'],
@@ -228,7 +236,7 @@ const PROJECTS = [
     software: 'Midjourney · Houdini · VEX · Redshift · Fusion', tags: 'Concept · Vellum · Lookdev',
     short: 'My favourite project: a feminine, luxurious wallpaper built alone from concept to delivery. The fan-shaped glass petals were iterated in Midjourney, then rebuilt as vellum on high-poly meshes with a particle shimmer.',
     how: ['AI concept iterations to lock the look', 'Vellum on high-poly petals', 'Particle shimmer pass'],
-    look: 'proj-03/hero.mp4', build: 'proj-03/sim_preview.mp4', ratio: '860 / 1920',
+    look: 'proj-03/final_034_v3.mp4', build: 'proj-03/process_034_v31.mp4', ratio: '404 / 960', buildLabel: 'viewport flipbook', compareNote: 'Rebuilt simulation; small petal-shape differences remain.', fps: 30,
     files: [
       ['image', 'proj-03/render_01.png', 'Hero render, violet'],
       ['image', 'proj-03/ai_concept_01.png', 'Concept, AI generated'],
@@ -238,12 +246,12 @@ const PROJECTS = [
       ['image', 'proj-03/screen_0.png', 'Houdini setup', 'wide'],
     ] },
   { id: 'proj-05', title: 'Huawei Maestro', kind: 'AI video + VFX', client: 'Huawei', year: 2026,
-    software: 'ComfyUI · Kling · Houdini · Karma · Fusion', tags: 'AI env · Volume · Comp',
+    software: 'ComfyUI · Kling · Houdini · Redshift · Karma · Fusion', tags: 'AI env · Volume · Comp',
     short: 'The opening shot of the film and the studio’s first production AI pipeline: a client dragon with a patronus-style volume, flying through simulated clouds in a generated environment, composited in Fusion.',
     how: ['Environment generated in ComfyUI and Kling', 'Clay camera matched to the AI plate', 'Patronus volume and cloud sim, comp in Fusion'],
-    look: 'proj-05/hero.mp4', build: 'proj-05/camera_clay_02.mp4', ratio: '3 / 1',
+    look: 'proj-05/final_020_v2.mp4', build: 'proj-05/process_020_v27.mp4', ratio: '3 / 1', split: 30, buildLabel: 'clay + AI plate', compareNote: 'Clay dragon and hair over the source AI environment.', fps: 30,
     files: [
-      ['video', 'proj-05/sim_preview.mp4', 'Sim preview'],
+      ['video', 'proj-05/dragon_hair_native_v27.mp4', 'Dragon and hair, native viewport'],
       ['video', 'proj-05/camera_clay_01.mp4', 'Camera clay preview', 'wide'],
       ['image', 'proj-05/ai_concept_iteration.png', 'AI concept iteration'],
       ['image', 'proj-05/ai_first_frame.png', 'AI first frame'],
@@ -253,11 +261,14 @@ const PROJECTS = [
     software: 'Houdini · VEX · Redshift · Fusion', tags: 'Procedural · Lighting',
     short: 'Six launch shots across two colourways: a blinking techno look for purple, a ferrofluid black-diamond look for black. Fully procedural, from concept through lighting to delivery.',
     how: ['Six shots, each with its own look R&D', 'Procedural ferrofluid, no simulation', 'Lighting, rendering and delivery'],
-    look: 'proj-02/video_04.mp4', build: 'proj-02/video_05.mp4', ratio: '16 / 9',
+    look: 'proj-02/pair170_look.mp4', build: 'proj-02/process_170_v3.mp4', ratio: '16 / 9', buildLabel: 'viewport flipbook', compareNote: 'Shot 170, purple tunnel.', fps: 30,
+    pairs: [
+      { title: 'Shot 200, black phone', look: 'proj-02/final_200_V023_v20.mp4', build: 'proj-02/process_200_V023_v20.mp4', ratio: '16 / 9', buildLabel: 'viewport flipbook', fps: 30 },
+      { title: 'Shot 180, purple phone', look: 'proj-02/video_02.mp4', build: 'proj-02/process_180_v2.mp4', ratio: '16 / 9', buildLabel: 'viewport flipbook', fps: 30 },
+    ],
     files: [
+      ['video', 'proj-02/pair170_build.mp4', 'Tunnel shot, raw FX'],
       ['video', 'proj-02/hero.mp4', 'Tunnel shot', 'wide'],
-      ['video', 'proj-02/cameras_preview.mp4', 'Camera previews'],
-      ['video', 'proj-02/video_02.mp4', 'Purple version shot'],
       ['video', 'proj-02/video_00.mp4', 'R&D, stereo effect'],
       ['video', 'proj-02/video_01.mp4', 'R&D, stereo effect'],
       ['video', 'proj-02/video_03.mp4', 'R&D, detail'],
@@ -269,39 +280,63 @@ const PROJECTS = [
     software: 'Houdini · Solaris · Karma', tags: 'Pyro · RBD · Karma',
     short: 'My first solo wallpaper: a flower born from an explosion. Several pyro sims layered with particles and RBD, rendered in Karma because it holds volumes better than Redshift.',
     how: ['Several layered explosion sims', 'Particles and RBD', 'Karma for volume quality'],
-    look: 'proj-07/hero.mp4', build: 'proj-07/render_01.png', ratio: '1700 / 1920', buildLabel: 'colourway',
-    files: [] },
-  { id: 'proj-04', title: 'Xiaomi Amoled', kind: 'Motion wallpaper R&D', client: 'Xiaomi', year: 2024,
-    software: 'Houdini · Redshift', tags: 'Particles · R&D',
-    short: 'A wallpaper built only from particles. The sim had to hold a shape between a flower and a circle while drifting naturally, with no flicker. Simulation only; many R&D passes on shape and behaviour.',
-    how: ['Particle-only shape', 'Silhouette held without flicker', 'Many R&D shape passes'],
-    look: 'proj-04/thumb.png', build: 'proj-04/preview_01.png', ratio: '1151 / 1290',
-    files: [['image', 'proj-04/preview_02.png', 'R&D preview']] },
-  { id: 'proj-06', title: 'Water / Sand / Ice', kind: 'Internal R&D', client: 'Millarc CGI', year: 2024,
-    software: 'Houdini · Redshift', tags: 'FLIP · Grains · R&D',
-    short: 'Automotive research: a camera that follows a wheel over uneven ground, and three separate environment setups with their own water, sand and ice simulations, rendered in Redshift.',
-    how: ['Camera-follows-wheel constraint rig', 'Water, sand and ice sims', 'Redshift renders'],
-    look: 'proj-06/video_03.mp4', build: 'proj-06/sim_preview.mp4', ratio: '16 / 9',
+    look: 'proj-07/hero_trim.mp4', build: 'proj-07/blue_flipbook_0150_v18_fast.mp4', ratio: '850 / 960', buildLabel: 'pyro volume flipbook', compareNote: 'Final render in the yellow colourway against the rebuilt volume simulation (flipbook retimed to the final). The final also includes particles and debris.', fps: 30,
     files: [
-      ['image', 'proj-06/render_01.png', 'Ice, still render'],
-      ['image', 'proj-06/render_02.png', 'Sand, still render'],
-      ['video', 'proj-06/video_01.mp4', 'Ice environment'],
-      ['video', 'proj-06/video_02.mp4', 'Sand environment'],
+      ['image', 'proj-07/render_01.png', 'Colour version, blue'],
+      ['image', 'proj-07/breakdown_01.jpg', 'Final vs volume pass, frames 10 / 30 / 90'],
+      ['video', 'proj-07/v006.mp4', 'Earlier version, smoke'],
+      ['video', 'proj-07/v004.mp4', 'First version, dark'],
     ] },
-  { id: 'proj-08', title: 'Huawei M Pencil Pro', kind: 'Product FX', client: 'Huawei', year: 2024,
-    software: 'Houdini · Redshift', tags: 'Procedural · POP',
-    short: 'Two product shots with supplied cameras and assets. The scope was the effects: a procedural paint stroke from the brush, and pollen particles that react to it.',
-    how: ['Procedural paint-from-brush', 'Pollen particles interacting with the brush'],
-    look: 'proj-08/video_01.mp4', build: 'proj-08/video_02.mp4', ratio: '16 / 9', buildLabel: 'shot 2',
-    files: [] },
+  { id: 'proj-04', title: 'Xiaomi Mix Fold 4', kind: 'Motion wallpaper R&D', client: 'Xiaomi', year: 2024,
+    software: 'Houdini · Redshift', tags: 'Particles · R&D',
+    short: 'A particle wallpaper for the Mix Fold 4, built only from particles. The sim had to hold a shape between a flower and a circle while drifting naturally, with no flicker. Simulation only; many R&D passes on shape and behaviour.',
+    how: ['Particle-only shape', 'Silhouette held without flicker', 'Many R&D shape passes'],
+    look: 'proj-04/pair_look.mp4', build: 'proj-04/process_040_authored_v9_pair.mp4', ratio: '800 / 896', buildLabel: 'viewport flipbook', compareNote: 'Earlier viewport study from the same top-down angle; the flipbook camera slowly pulls back, so shapes line up only partly.', fps: 25,
+    files: [
+      ['video', 'proj-04/process_reel_rnd.mp4', 'Process reel, R&D shapes and colour versions'],
+      ['video', 'proj-04/hero.mp4', 'Delivery, shot 040'],
+      ['image', 'proj-04/compare_01.jpg', 'Final, native resim and GL point viewport, frames 25 / 60 / 149'],
+      ['image', 'proj-04/preview_02.png', 'R&D preview'],
+    ] },
+  { id: 'proj-10', title: 'Huawei Colombo', kind: 'Product film', client: 'Huawei', year: 2023,
+    software: 'Houdini · Redshift · After Effects · Nuke', tags: 'FX · Animation · Comp',
+    short: 'Launch film for the Huawei Watch Ultimate. I worked on a large part of the shots across the whole film: the satellite in orbit, the drop toward the sea, the watch under water, in a sand storm and striking a rock, and the closing key visual. 3D, FX, animation, lighting, rendering and compositing.',
+    how: ['Many shots, from layout to final comp', 'Underwater bubbles, sand storm, satellite in orbit', 'Lighting and rendering in Redshift, compositing of the final shots'],
+    look: 'proj-10/final_323_watch.mp4', build: 'proj-10/process_323_cam035.mp4', ratio: '16 / 9', buildLabel: 'viewport flipbook', compareNote: 'Shot 323, key visual: final against the viewport flipbook of the same take.', fps: 25,
+    files: [
+      ['video', 'proj-10/process_reel_stills.mp4', 'Process reel, stills from many shots', 'wide'],
+      ['video', 'proj-10/comp_reel_rock_shot.mp4', 'Watch striking a rock: compositing passes to final'],
+      ['video', 'proj-10/satellite_comp_0319.mp4', 'Satellite shot, 3D and compositing', 'wide'],
+      ['video', 'proj-10/flipbook_310_satellite_cam3.mp4', 'Shot 310, from orbit down through the clouds, viewport flipbook'],
+      ['video', 'proj-10/render_320_V006_T002.mp4', 'Shot 320, render, other take'],
+      ['video', 'proj-10/flipbook_320_V004_T002.mp4', 'Shot 320, bubbles, viewport flipbook'],
+      ['image', 'proj-10/still_300_sea.jpg', 'Shot 300, sea and light beam', 'wide'],
+      ['video', 'proj-10/shot_300_light_beam.mp4', 'Shot 300, light beam, animation'],
+    ] },
+  { id: 'proj-08', title: 'OPPO Swan', kind: 'Motion wallpaper', client: 'OPPO', year: 2022,
+    software: 'Houdini · Redshift', tags: 'Particles · Lookdev',
+    short: 'A fan of feathers that opens upward like a swan’s tail, with fine particles shedding from the feather edges. Rendered in blue and purple colourways and delivered at 120 fps.',
+    how: ['Feather fan unfolding from the base', 'Particle dust along the feather edges', 'Delivery at 120 fps'],
+    look: 'proj-08/final_swan_blue.mp4', build: 'proj-08/process_swan_V004_T002.mp4', ratio: '15 / 14', buildLabel: 'viewport flipbook', compareNote: 'V004 flipbook, retimed from 6 s to the 4 s of the 120 fps final.', fps: 60,
+    files: [
+      ['video', 'proj-08/process_reel.mp4', 'Process reel, flipbooks V002 to V005'],
+      ['video', 'proj-08/presentation_feathers.mp4', 'Presentation, feathers'],
+      ['video', 'proj-08/presentation_phones.mp4', 'Presentation, phones'],
+      ['video', 'proj-08/presentation_launch.mp4', 'Launch event screen'],
+      ['image', 'proj-08/presentation_product.jpg', 'Presentation, product'],
+    ] },
   { id: 'proj-09', title: 'Xiaomi 13 Pro', kind: 'Product FX', client: 'Xiaomi', year: 2023,
     software: 'Houdini · Redshift', tags: 'POP · Collisions',
     short: 'Flying and settling snow on a phone shot with hands: several particle setups and custom snowflake shapes, colliding with and sticking to the phone and the hands.',
     how: ['Several particle setups', 'Custom snowflake shapes', 'Collisions with phone and hands'],
-    look: 'proj-09/hero.mp4', build: 'proj-09/preview_01.mp4', ratio: '16 / 9',
+    look: 'proj-09/sequence_A_B_C.mp4', single: true, comparison: false, ratio: '16 / 9', fps: 30,
     files: [
-      ['video', 'proj-09/preview_02.mp4', 'Sim preview'],
-      ['video', 'proj-09/preview_03.mp4', 'Sim preview'],
+      ['video', 'proj-09/pair_look.mp4', 'Earlier take, final render'],
+      ['video', 'proj-09/process_050_v2.mp4', 'Earlier take, viewport flipbook'],
+      ['video', 'proj-09/process_shot_A_cam1.mp4', 'Viewport flipbook, shot 050, camera 1'],
+      ['video', 'proj-09/flipbook_050_cam2.mp4', 'Viewport flipbook, shot 050, camera 2'],
+      ['video', 'proj-09/flipbook_050_cam3.mp4', 'Viewport flipbook, shot 050, camera 3'],
+      ['video', 'proj-09/flipbook_055_cam4.mp4', 'Viewport flipbook, shot 055, camera 4'],
     ] },
 ];
 
@@ -349,6 +384,18 @@ const thumbsView = document.getElementById('thumbs_view');
 const projView = document.getElementById('project_view');
 let current = null;
 
+function compareBlock(id, pair, label) {
+  const split = pair.split ?? 50;
+  return `<div class="compare" id="${id}" style="--x:${split}%; aspect-ratio:${pair.ratio}; max-height:72vh; margin-inline:auto;" tabindex="0"
+           role="slider" aria-label="${label}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${split}">
+        <div class="layer look">${mediaEl(pair.look)}</div>
+        <div class="layer build">${mediaEl(pair.build)}</div>
+        <div class="handle"></div>
+        <span class="side look mono">final</span>
+        <span class="side tech mono">${pair.buildLabel || 'process'}</span>
+      </div>`;
+}
+
 function open(i, fromHash) {
   const p = PROJECTS[i];
   current = i;
@@ -370,14 +417,9 @@ function open(i, fromHash) {
       <button class="icon-btn mono" type="button" data-close aria-label="Close project">✕</button>
     </div>
     <div class="proj-body">
-      <div class="compare" id="compare" style="aspect-ratio:${p.ratio}; max-height:72vh; margin-inline:auto;" tabindex="0"
-           role="slider" aria-label="Compare final and process" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-        <div class="layer look">${mediaEl(p.look)}</div>
-        <div class="layer build">${mediaEl(p.build)}</div>
-        <div class="handle"></div>
-        <span class="side look mono">final</span>
-        <span class="side tech mono">${p.buildLabel || 'process'}</span>
-      </div>
+      ${p.single ? `<figure class="single-look"><div class="frame">${mediaEl(p.look, 'controls')}</div></figure>` : compareBlock('compare', p, 'Compare final and process')}
+      ${p.compareNote ? `<p class="study-note mono">${p.compareNote}</p>` : ''}
+      ${(p.pairs || []).map((q, k) => `<p class="pair-title mono">${q.title}</p>` + compareBlock('compare_' + (k + 1), q, `Compare final and process, ${q.title}`)).join('')}
 
       <div class="facts">
         <div>
@@ -429,31 +471,34 @@ addEventListener('keydown', e => { if (e.key === 'Escape' && current != null) cl
 
 /* slider: follows the pointer, arrow keys nudge it */
 function wireCompare() {
-  const c = document.getElementById('compare');
-  const set = pct => {
-    pct = Math.max(0, Math.min(100, pct));
-    c.style.setProperty('--x', pct + '%');
-    c.setAttribute('aria-valuenow', Math.round(pct));
-  };
-  c.addEventListener('pointermove', e => {
-    const r = c.getBoundingClientRect();
-    set((e.clientX - r.left) / r.width * 100);
-  });
-  c.addEventListener('keydown', e => {
-    const now = parseFloat(c.style.getPropertyValue('--x')) || 50;
-    if (e.key === 'ArrowLeft') set(now - 5);
-    if (e.key === 'ArrowRight') set(now + 5);
+  document.querySelectorAll('#project_view .compare').forEach(c => {
+    const set = pct => {
+      pct = Math.max(0, Math.min(100, pct));
+      c.style.setProperty('--x', pct + '%');
+      c.setAttribute('aria-valuenow', Math.round(pct));
+    };
+    c.addEventListener('pointermove', e => {
+      const r = c.getBoundingClientRect();
+      set((e.clientX - r.left) / r.width * 100);
+    });
+    c.addEventListener('keydown', e => {
+      const now = parseFloat(c.style.getPropertyValue('--x')) || 50;
+      if (e.key === 'ArrowLeft') set(now - 5);
+      if (e.key === 'ArrowRight') set(now + 5);
+    });
   });
 }
 /* keep final and process in step so the wipe lines up */
 function syncPair() {
-  const vids = [...document.querySelectorAll('#compare video')];
-  if (vids.length < 2) return;
-  const [a, b] = vids;
-  a.addEventListener('timeupdate', () => {
-    if (!b.duration) return;
-    const want = a.currentTime % b.duration;
-    if (Math.abs(b.currentTime - want) > .15) b.currentTime = want;
+  document.querySelectorAll('#project_view .compare').forEach(c => {
+    const vids = [...c.querySelectorAll('video')];
+    if (vids.length < 2) return;
+    const [a, b] = vids;
+    a.addEventListener('timeupdate', () => {
+      if (!b.duration) return;
+      const want = a.currentTime % b.duration;
+      if (Math.abs(b.currentTime - want) > .15) b.currentTime = want;
+    });
   });
 }
 
