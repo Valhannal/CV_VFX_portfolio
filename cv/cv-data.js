@@ -36,7 +36,8 @@ const CV = {
   ],
 
   experience: [
-    { title: 'Senior VFX Artist', org: 'Millarc CGI, Kraków', from: 'Mar 2022', to: 'Jun 2026',
+    { title: 'CGI Generalist', org: 'Freelance', from: 'Sep 2026', to: 'present' },
+    { title: 'Senior VFX / 3D Generalist', org: 'Millarc CGI, Kraków', from: 'Mar 2022', to: 'Jun 2026',
       bullets: [
         '3D animation, motion design and product visualization for 50+ commercial projects for Huawei, OnePlus, Xiaomi, OPPO and Vivo, including motion wallpapers featured in <a href="https://www.stashmedia.tv/mobile-motion-millarc-shows-off-smartphone-wallpapers/">Stash Magazine</a>.',
         'Houdini FX: pyro, volumes, FLIP, particles, RBD, Vellum, KineFX, procedural setups in VEX, wedging, USD scene assembly in Solaris, lookdev and rendering of effects in Redshift, Karma and V-Ray.',
@@ -45,7 +46,7 @@ const CV = {
         'Integrated AI-generated material with CG and live-action footage in compositing, beyond standalone generation.',
         'Led concept development and mentored junior artists.',
       ] },
-    { title: 'Pipeline Developer', org: 'Millarc CGI, Kraków', from: 'Mar 2024', to: 'Jun 2026',
+    { title: 'Pipeline Developer / Technical Artist', org: 'Millarc CGI, Kraków', from: 'Mar 2024', to: 'Jun 2026',
       text: 'Built the studio’s internal tools and automated routine tasks such as file naming, preview generation and project tracking, so artists could focus on creative work.' },
     { title: '3D Artist, Architectural & Product Visualization', org: 'The Digital Bunch, VERO Digital, freelance', from: 'Oct 2016', to: 'Mar 2022',
       text: 'Architectural, interior and product visualization from drawings to post-production; led projects and mentored junior artists.' },
@@ -79,7 +80,7 @@ const H = {
   contactRows: () => CV.contact.map(c => `<div class="row kv"><span>${c.label}</span><a href="${c.href}">${c.text}</a></div>`).join(''),
   detailRows: () => CV.details.map(d => `<div class="row kv"><span>${d.label}</span><span>${todo(d.text, d.todo)}</span></div>`).join(''),
   skillRows: () => CV.skills.map(s => `<div class="row skill"><b>${s.group}</b><span>${s.items}</span></div>`).join(''),
-  jobRows: () => CV.experience.map(e => `<div class="row job"><h3>${e.title}<span class="org">${e.org}</span></h3><span class="mono">${when(e)}</span>${e.bullets ? `<ul>${e.bullets.map(x => `<li>${x}</li>`).join('')}</ul>` : `<p>${e.text}</p>`}</div>`).join(''),
+  jobRows: () => CV.experience.map(e => `<div class="row job"><h3>${e.title}<span class="org">${e.org}</span></h3><span class="mono">${when(e)}</span>${e.bullets ? `<ul>${e.bullets.map(x => `<li>${x}</li>`).join('')}</ul>` : (e.text ? `<p>${e.text}</p>` : '')}</div>`).join(''),
   projectRows: () => CV.projects.map(p => `<div class="row proj"><span class="mono">${p.year}</span><b>${p.title}</b><span>${p.text}</span></div>`).join(''),
   eduRows: () => CV.education.map(e => `<div class="row job edu"><h3>${e.title}${e.org ? `<span class="org">${e.org}</span>` : ''}</h3><span class="mono">${e.when}</span></div>`).join(''),
   workStrip: (n = 6) => CV.projects.slice(0, n).map(p => `<img src="${A + p.thumb}" alt="${p.title}">`).join(''),
